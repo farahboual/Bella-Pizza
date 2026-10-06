@@ -95,7 +95,12 @@ export function CartDrawer(){
  const close=()=>{setOpen(false);setDone(null)}
  return <div className="cart-ov" onClick={close}><aside className="cart" role="dialog" aria-modal="true" aria-label="Votre commande" onClick={e=>e.stopPropagation()}>
   <div className="cart-h"><h2>{done?'Merci !':'Votre commande'}</h2><button className="x" onClick={close} aria-label="Fermer">×</button></div>
-  {done?<div className="cart-b"><p className="big">Commande n° {done} envoyée.</p><p>Le restaurant l’a reçue. {type=='livraison'?'Le livreur arrive dès que votre commande est prête.':type=='sur_place'?(tableNumber?`Votre commande sera servie à la Table n° ${tableNumber}.`:'Votre commande sera servie à votre table / comptoir.'):'Vous pouvez venir la récupérer au 15 rue de Rouen.'} Pensez à régler {type=='livraison'?'à la livraison':'sur place'}.</p><button className="btn ink" onClick={close}>Fermer</button></div>
+  {done?<div className="cart-b"><p className="big">Commande n° {done} envoyée.</p><p>Le restaurant l’a reçue. {type=='livraison'?'Le livreur arrive dès que votre commande est prête.':type=='sur_place'?(tableNumber?`Votre commande sera servie à la Table n° ${tableNumber}.`:'Votre commande sera servie à votre table / comptoir.'):'Vous pouvez venir la récupérer au 15 rue de Rouen.'} Pensez à régler {type=='livraison'?'à la livraison':'sur place'}.</p>
+  <div style={{background:'var(--bg)',padding:16,borderRadius:16,border:'1px solid var(--line)',margin:'12px 0',textAlign:'center'}}>
+   <p style={{fontWeight:700,marginBottom:8}}>⭐ Satisfait de votre repas ?</p>
+   <a href="https://www.google.com/maps/search/?api=1&query=Taco+Pizza+15+rue+de+Rouen+49400+Saumur" target="_blank" rel="noopener noreferrer" className="btn red" style={{fontSize:13,padding:'10px 16px',width:'100%'}}>Laissez-nous 5 étoiles sur Google Maps →</a>
+  </div>
+  <button className="btn ink" onClick={close}>Fermer</button></div>
   :!count?<div className="cart-b"><p>Votre panier est vide. Ajoutez des plats avec le bouton <b>+</b> sur la carte.</p></div>
   :<form className="cart-b" onSubmit={submit}>
    <ul className="cl">{lines.map(l=>{const c=CATALOG[l.id],price=getPrice(l.id,cfg);return <li key={l.id}><div className="cl-t"><b>{c.name}</b><span>{eur(price*l.qty)}</span></div>
