@@ -29,15 +29,15 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 #er{color:var(--red);min-height:22px;margin-bottom:12px;font-weight:700;font-size:14px}
 .container{max-width:1080px;margin:32px auto;padding:0 24px}
 .page-title{font:900 32px var(--font);letter-spacing:-.04em;margin-bottom:24px}
-.tabs{display:flex;gap:8px;margin-bottom:24px;background:var(--white);padding:8px;border-radius:99px;border:1px solid var(--line);width:fit-content}
-.tab{font:700 14px var(--font);padding:10px 22px;border-radius:99px;border:0;background:transparent;color:var(--mute);cursor:pointer;transition:all .2s}
+.tabs{display:flex;gap:8px;margin-bottom:24px;background:var(--white);padding:8px;border-radius:99px;border:1px solid var(--line);width:fit-content;flex-wrap:wrap}
+.tab{font:700 14px var(--font);padding:10px 20px;border-radius:99px;border:0;background:transparent;color:var(--mute);cursor:pointer;transition:all .2s}
 .tab.active{background:var(--dark);color:#fff}
 .card{background:var(--white);border-radius:28px;padding:32px;border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.02);margin-bottom:24px}
 .card h2{font:900 22px var(--font);letter-spacing:-.03em;margin-bottom:20px;display:flex;align-items:center;gap:10px}
 .form-group{margin-bottom:20px;display:grid;gap:8px}
 .form-group label{font-weight:700;font-size:14px;color:var(--dark)}
-.form-group input,.form-group textarea{font:15px var(--font);padding:14px 18px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);width:100%}
-.form-group input:focus,.form-group textarea:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
+.form-group input,.form-group textarea,.form-group select{font:15px var(--font);padding:14px 18px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);width:100%}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
 .status-box{display:flex;gap:16px;align-items:center;padding:20px 24px;background:var(--bg);border-radius:20px;border:1px solid var(--line);margin-bottom:20px}
 .status-pill{display:inline-flex;align-items:center;gap:8px;font:800 14px var(--font);padding:6px 14px;border-radius:99px}
 .status-pill.open{background:#dcfce7;color:#166534}
@@ -51,6 +51,10 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 .item-cat{font-size:12px;color:var(--mute);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .price-input-wrap{display:flex;align-items:center;gap:6px;font:700 15px var(--font)}
 .price-input{width:80px;font:700 15px var(--font);padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);text-align:right;background:#fff}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--bg);border-radius:20px;padding:20px;border:1px solid var(--line)}
+.stat-card h3{font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
+.stat-card .val{font:900 28px var(--font);color:var(--dark);margin-top:6px}
 .toast{position:fixed;bottom:28px;right:28px;background:var(--dark);color:#fff;padding:16px 28px;border-radius:18px;font-weight:700;box-shadow:0 16px 40px rgba(0,0,0,.2);display:none;z-index:100}
 @media(max-width:768px){.item-row{grid-template-columns:1fr 1fr;gap:12px}.item-row > div:first-child{grid-column:1/-1}}
 </style></head><body>
@@ -88,6 +92,9 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
  <div class="tabs" role="tablist">
   <button class="tab active" data-tab="status" role="tab">Statut &amp; Ouverture</button>
   <button class="tab" data-tab="menu" role="tab">Prix &amp; Ruptures</button>
+  <button class="tab" data-tab="promos" role="tab">Codes Promo</button>
+  <button class="tab" data-tab="qr" role="tab">QR Codes Tables</button>
+  <button class="tab" data-tab="sales" role="tab">Rapport Z &amp; Ventes</button>
   <button class="tab" data-tab="rib" role="tab">Compte Bancaire</button>
  </div>
 
@@ -119,7 +126,57 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
   </div>
  </div>
 
- <!-- TAB 3: RIB & BANQUE -->
+ <!-- TAB 3: CODES PROMO -->
+ <div id="tab-promos" class="tab-content" style="display:none" role="tabpanel">
+  <div class="card">
+   <h2>Créer un Code Promo</h2>
+   <form id="promo-form" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:24px">
+    <div class="form-group" style="margin:0"><label>Code (ex: WELCOME10)</label><input type="text" id="p-code" required placeholder="BIENVENUE10" style="text-transform:uppercase"></div>
+    <div class="form-group" style="margin:0"><label>Type</label><select id="p-type"><option value="percent">Pourcentage (%)</option><option value="fixed">Montant fixe (€)</option></select></div>
+    <div class="form-group" style="margin:0"><label>Valeur (ex: 10% ou 5€)</label><input type="number" id="p-val" step="1" min="1" required placeholder="10"></div>
+    <button type="submit" class="btn red">Créer le code</button>
+   </form>
+   <h2>Codes Promo Actifs</h2>
+   <div id="promos-list" class="items-table">Chargement des codes...</div>
+  </div>
+ </div>
+
+ <!-- TAB 4: QR CODES TABLES -->
+ <div id="tab-qr" class="tab-content" style="display:none" role="tabpanel">
+  <div class="card">
+   <h2>Générateur de QR Codes pour Tables</h2>
+   <p style="color:var(--mute);margin-bottom:20px">Générez un lien direct ou QR code pour chaque table du restaurant. Le client scannant ce code aura le mode « Sur place » et son numéro de table directement enregistrés.</p>
+   <div style="display:flex;gap:12px;margin-bottom:24px">
+    <input type="number" id="table-num-input" class="search-box" min="1" max="99" value="1" style="width:140px;margin:0" placeholder="Table n°">
+    <button id="gen-qr-btn" class="btn ink">Générer le lien QR Table</button>
+   </div>
+   <div id="qr-result" style="padding:20px;background:var(--bg);border-radius:18px;border:1px solid var(--line);display:none">
+    <strong id="qr-table-title" style="font-size:18px;display:block;margin-bottom:8px">Table n° 1</strong>
+    <p style="margin-bottom:12px">Lien direct : <a id="qr-link-url" href="#" target="_blank">...</a></p>
+    <button id="copy-qr-btn" class="btn ghost">Copier le lien</button>
+   </div>
+  </div>
+ </div>
+
+ <!-- TAB 5: RAPPORT Z & VENTES -->
+ <div id="tab-sales" class="tab-content" style="display:none" role="tabpanel">
+  <div class="card">
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h2>Rapport Z &amp; Statistiques des Ventes</h2>
+    <button id="export-csv-btn" class="btn ghost">📥 Exporter en CSV</button>
+   </div>
+   <div class="stat-grid">
+    <div class="stat-card"><h3>Chiffre d'Affaires du jour</h3><div id="stat-ca" class="val">0,00 €</div></div>
+    <div class="stat-card"><h3>Nombre de commandes</h3><div id="stat-count" class="val">0</div></div>
+    <div class="stat-card"><h3>Livraisons</h3><div id="stat-deliv" class="val">0</div></div>
+    <div class="stat-card"><h3>À Emporter / Sur Place</h3><div id="stat-take" class="val">0</div></div>
+   </div>
+   <h2>Détail des dernières commandes</h2>
+   <div id="sales-list" class="items-table">Chargement...</div>
+  </div>
+ </div>
+
+ <!-- TAB 6: RIB & BANQUE -->
  <div id="tab-rib" class="tab-content" style="display:none" role="tabpanel">
   <div class="card">
    <h2>Paiements &amp; Coordonnées Bancaires</h2>
@@ -145,7 +202,7 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 
 <script>
 const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
-let key='',config={},overrides={},catalog={}
+let key='',config={},overrides={},promos={},catalog={},sales=[]
 
 function showToast(msg='Modifications enregistrées !'){
  const t=$('#toast');t.textContent=msg;t.style.display='block'
@@ -171,9 +228,13 @@ async function loadData(){
   const j=await r.json()
   config=j.config||{}
   overrides=j.overrides||{}
+  promos=j.promos||{}
   catalog=j.catalog||{}
+  sales=j.sales||[]
   renderStatus()
   renderMenu()
+  renderPromos()
+  renderSales()
   renderRib()
  }catch(e){console.error(e)}
 }
@@ -255,6 +316,94 @@ $('#items-list').onclick=async e=>{
   const res=await api({action:'saveOverride',data:{id,price:priceVal,outOfStock:!!ov.outOfStock}})
   if(res.ok){overrides=await res.json();showToast('Nouveau prix enregistré')}
  }
+}
+
+// PROMOS
+function renderPromos(){
+ const list=$('#promos-list')
+ const keys=Object.keys(promos)
+ if(!keys.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucun code promo actif</p>';return}
+ list.innerHTML=keys.map(code=>{
+  const pr=promos[code]
+  const valText=pr.discountType==='percent'?`-${pr.discountValue}%`:`-${eur(pr.discountValue)}`
+  return `<div class="item-row" data-code="${code}">
+   <div><div class="item-name">${pr.code}</div><div class="item-cat">${valText}</div></div>
+   <div><button class="btn ${pr.active?'ok':'warn'}" data-act="toggle-promo">${pr.active?'Actif':'Inactif'}</button></div>
+   <div><button class="btn red" data-act="del-promo">Supprimer</button></div>
+  </div>`
+ }).join('')
+}
+
+$('#promo-form').onsubmit=async e=>{
+ e.preventDefault()
+ const code=$('#p-code').value.trim().toUpperCase()
+ const type=$('#p-type').value
+ let val=+($('#p-val').value)
+ if(type==='fixed')val=val*100
+ const res=await api({action:'savePromo',data:{code,discountType:type,discountValue:val,active:true}})
+ if(res.ok){promos=await res.json();renderPromos();$('#p-code').value='';showToast('Code promo créé !')}
+}
+
+$('#promos-list').onclick=async e=>{
+ const btn=e.target.closest('button')
+ if(!btn)return
+ const row=btn.closest('.item-row')
+ const code=row.dataset.code
+ const pr=promos[code]
+ if(btn.dataset.act==='toggle-promo'){
+  const res=await api({action:'savePromo',data:{code,discountType:pr.discountType,discountValue:pr.discountValue,active:!pr.active}})
+  if(res.ok){promos=await res.json();renderPromos();showToast()}
+ }
+ if(btn.dataset.act==='del-promo'){
+  const res=await api({action:'deletePromo',data:{code}})
+  if(res.ok){promos=await res.json();renderPromos();showToast('Code promo supprimé')}
+ }
+}
+
+// QR CODES TABLES
+$('#gen-qr-btn').onclick=()=>{
+ const num=$('#table-num-input').value||'1'
+ const url=`${location.origin}/?table=${num}`
+ $('#qr-table-title').textContent=`Table n° ${num}`
+ $('#qr-link-url').textContent=url
+ $('#qr-link-url').href=url
+ $('#qr-result').style.display='block'
+}
+$('#copy-qr-btn').onclick=()=>{
+ const url=$('#qr-link-url').href
+ navigator.clipboard?.writeText(url)
+ showToast('Lien QR Table copié !')
+}
+
+// SALES & REPORT Z
+function renderSales(){
+ const ca=sales.reduce((s,o)=>s+o.total,0)
+ $('#stat-ca').textContent=eur(ca)
+ $('#stat-count').textContent=sales.length
+ $('#stat-deliv').textContent=sales.filter(o=>o.type==='livraison').length
+ $('#stat-take').textContent=sales.filter(o=>o.type!=='livraison').length
+
+ const list=$('#sales-list')
+ if(!sales.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucune commande enregistrée aujourd\'hui</p>';return}
+ list.innerHTML=sales.map(o=>`
+  <div class="item-row">
+   <div><div class="item-name">#${o.number} · ${o.customer?.name||'Client'} (${o.type.toUpperCase()})</div><div class="item-cat">${new Date(o.createdAt).toLocaleTimeString('fr-FR')}</div></div>
+   <div><b>${eur(o.total)}</b></div>
+   <div><span class="status-pill ${o.paid?'open':'closed'}">${o.paid?'Payé en ligne':'À encaisser'}</span></div>
+  </div>
+ `).join('')
+}
+
+$('#export-csv-btn').onclick=()=>{
+ if(!sales.length){alert('Aucune vente à exporter');return}
+ const rows=[['N°','Date','Type','Total','Statut Paiement','Nom Client','Tel']]
+ sales.forEach(o=>rows.push([o.number,new Date(o.createdAt).toLocaleString('fr-FR'),o.type,(o.total/100).toFixed(2),o.paid?'Payé en ligne':'À encaisser',o.customer?.name||'',o.customer?.phone||'']))
+ const csv=rows.map(r=>r.map(x=>`"${x}"`).join(',')).join('\n')
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'})
+ const link=document.createElement('a')
+ link.href=URL.createObjectURL(blob)
+ link.download=`Ventes_TacoPizza_${new Date().toISOString().slice(0,10)}.csv`
+ link.click()
 }
 
 function renderRib(){

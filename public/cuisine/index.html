@@ -83,7 +83,7 @@ function getOrderData(o){
  if(typeof cust==='string'){try{cust=JSON.parse(cust)}catch{cust={}}}
  return {items:Array.isArray(items)?items:[],cust:cust||{}}
 }
-const typeLabel=t=>t==='livraison'?'LIVRAISON':t==='sur_place'?'SUR PLACE':'À EMPORTER'
+const typeLabel=o=>o.type==='livraison'?'LIVRAISON':o.type==='sur_place'?(o.tableNumber?`SUR PLACE (Table ${esc(o.tableNumber)})`:'SUR PLACE'):'À EMPORTER'
 const typeClass=t=>t==='livraison'?'mod':t==='sur_place'?'sp':'mod'
 // ----- print 80mm ticket -----
 function print(o){
@@ -91,7 +91,7 @@ function print(o){
   if(!o)return
   const {items,cust}=getOrderData(o)
   const lines=items.map(l=>`<div class="l big"><span>${l.qty||1} × ${esc(l.name)}</span><span>${eur((l.price||0)*(l.qty||1))}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
-  $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${typeLabel(o.type)}</div><hr>${lines}<hr><div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+typeLabel(o.type)+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
+  $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${typeLabel(o)}${o.tableNumber?`<br>TABLE N° ${esc(o.tableNumber)}`:''}</div><hr>${lines}<hr>${o.discount>0?`<div class="l"><span>Réduction</span><span>-${eur(o.discount)}</span></div>`:''}<div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+typeLabel(o)+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
   window.print()
  }catch(err){
   console.error('[Print Error]',err)
@@ -105,8 +105,9 @@ function render(){
   const {items,cust}=getOrderData(o)
   return `<article class="o ${o.status}" data-id="${o.id}">
   <div class="top"><b>#${o.number}</b><span>${time(o.createdAt)}</span></div>
-  <div class="tags"><span class="tag ${typeClass(o.type)}">${typeLabel(o.type)}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
+  <div class="tags"><span class="tag ${typeClass(o.type)}">${typeLabel(o)}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
   <ul>${items.map(l=>`<li><b>${l.qty||1}</b> <div><span>${esc(l.name)}</span>${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</div></li>`).join('')}</ul>
+  ${o.discount>0?`<div style="font-size:13px;color:var(--green);font-weight:700">🏷️ Code promo appliqué (-${eur(o.discount)})</div>`:''}
   ${o.note?`<div class="note">💬 ${esc(o.note)}</div>`:''}
   <div class="cust"><b>${esc(cust.name)}</b> · <a href="tel:${esc(cust.phone)}">${esc(cust.phone)}</a>${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>
   <div class="acts">${o.status==='new'?'<button data-s="accepted" class="btn red">Accepter la commande</button>':o.status==='accepted'?'<button data-s="ready" class="btn ink">Prête</button>':'<button data-s="done" class="btn ok">Remise / livrée</button>'}<button class="btn ghost" data-p="1" aria-label="Imprimer le ticket" style="flex:none;width:52px;padding:0">🖨</button></div></article>`
