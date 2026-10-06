@@ -93,7 +93,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.
 $('#test').onclick=()=>{ring()}
 $('#mute').onclick=e=>{muted=!muted;e.target.textContent=muted?'Réactiver l’alarme':'Couper l’alarme';alarm()}
 async function load(){try{const r=await api('');if(r.status===401){sessionStorage.removeItem('k');location.reload();return}
- const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();$('#st').textContent='en direct · '+time(Date.now())+(j.persistent?'':' · MODE TEST (base non connectée)')}catch{$('#st').textContent='connexion perdue, nouvel essai…'}}
+ const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();
+ if(j.dbError){console.error('[Supabase Error]',j.dbError);$('#st').innerHTML=`<span style="color:#ff8a80;font-weight:700" title="${esc(j.dbError)}">⚠️ Base SQL : ${esc(j.dbError.slice(0,55))}</span>`}
+ else{$('#st').textContent='en direct'+(j.persistent?' (Supabase)':' (mode mémoire)')+' · '+time(Date.now())}}catch{$('#st').textContent='connexion perdue, nouvel essai…'}}
 $('#f').onsubmit=async e=>{e.preventDefault();key=$('#pw').value
  ctx=new(window.AudioContext||window.webkitAudioContext)();ring()
  const r=await api('');if(r.status===401){$('#er').textContent='Mot de passe incorrect';return}
