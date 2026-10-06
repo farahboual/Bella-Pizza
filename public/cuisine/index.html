@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cuisine — Taco Pizza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0F100C;--lime:#C6F432;--red:#C41E17;--bg:#F2EFE4}
-*{box-sizing:border-box;margin:0}body{font:16px/1.4 system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--ink);color:var(--lime)}
-header h1{font-size:20px;letter-spacing:-.02em}.st{font-size:13px;opacity:.85}
-button{font:600 15px system-ui;border:0;border-radius:99px;padding:12px 20px;cursor:pointer;background:var(--lime);color:var(--ink)}
-button.d{background:var(--ink);color:#fff}button.g{background:#fff;border:1.5px solid var(--ink)}
-#gate{position:fixed;inset:0;z-index:20;background:rgba(15,16,12,.92);color:#fff;display:grid;place-items:center;text-align:center;padding:24px}
-#gate p{margin:10px 0 20px;opacity:.8}#gate button{font-size:20px;padding:18px 32px}#pw{display:block;margin:0 auto 12px;font:18px system-ui;padding:14px 18px;border-radius:12px;border:0;width:min(320px,100%)}#er{color:#ff8a80;min-height:22px;margin-bottom:8px}
-main{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;padding:16px}
-.o{background:#fff;border-radius:18px;padding:16px;border:3px solid transparent;display:flex;flex-direction:column;gap:8px}
-.o.new{border-color:var(--red);animation:bl 1s infinite}.o.accepted{border-color:var(--ink)}.o.ready{border-color:#6a8f00}
-@keyframes bl{50%{background:#ffe9e7}}
-.top{display:flex;justify-content:space-between;align-items:baseline}.top b{font-size:28px;letter-spacing:-.03em}
-.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--ink);color:var(--lime);margin-right:6px}
-.tag.pay{background:#2d7d1f;color:#fff}.tag.due{background:var(--red);color:#fff}
-ul{list-style:none;padding:0}li{padding:4px 0;border-bottom:1px dashed #ccc}li i{display:block;font-size:13px;color:#a02}
-.acts{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}.empty{grid-column:1/-1;text-align:center;padding:60px;opacity:.5}
+:root{--bg:#F7F3EE;--white:#ffffff;--red:#C41E17;--red2:#E82020;--dark:#1A1511;--mute:#6B6560;--line:rgba(26,21,17,.1);--green:#166534;--green-bg:#dcfce7;--font:'Nunito',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}body{font:15px/1.4 var(--font);background:var(--bg);color:var(--dark);-webkit-font-smoothing:antialiased}
+a{color:var(--red);text-decoration:none;font-weight:700}
+header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--line);box-shadow:0 4px 24px rgba(0,0,0,.04)}
+header h1{font:900 22px var(--font);letter-spacing:-.03em} header h1 span{color:var(--red)}
+.st{font-size:13px;font-weight:600;color:var(--mute);margin-top:2px}
+.btn{font:700 15px var(--font);border:0;border-radius:99px;padding:12px 20px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.96)}
+.btn.red{background:var(--red);color:#fff} .btn.red:hover{background:var(--red2);box-shadow:0 8px 20px -8px rgba(196,30,23,.5)}
+.btn.ink{background:var(--dark);color:#fff} .btn.ink:hover{box-shadow:0 8px 20px -8px rgba(0,0,0,.4)}
+.btn.ok{background:#22c55e;color:#fff}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--dark)} .btn.ghost:hover{background:var(--bg)}
+#gate{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:24px}
+#f{background:var(--white);padding:48px 40px;border-radius:32px;box-shadow:0 24px 48px -12px rgba(0,0,0,.08);text-align:center;max-width:440px;width:100%;border:1px solid var(--line)}
+#f h1{font:900 32px var(--font);letter-spacing:-.04em;margin-bottom:12px} #f h1 span{color:var(--red)}
+#f p{margin:0 0 24px;color:var(--mute);font-size:15px}
+#pw{display:block;margin:0 auto 12px;font:600 16px var(--font);padding:14px 20px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg);width:100%;text-align:center}
+#pw:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
+#er{color:var(--red);min-height:22px;margin-bottom:12px;font-weight:700;font-size:14px}
+#go{width:100%;padding:16px;font-size:16px}
+main{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;padding:24px}
+.o{background:#fff;border-radius:24px;padding:24px;border:2px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.03);display:flex;flex-direction:column;gap:16px;transition:all .3s}
+.o.new{border-color:var(--red);box-shadow:0 12px 32px -12px rgba(196,30,23,.25);animation:bl 2s infinite}
+.o.accepted{border-color:var(--line)} .o.ready{border-color:#22c55e}
+@keyframes bl{0%,100%{background:#fff}50%{background:#fff8f7}}
+.top{display:flex;justify-content:space-between;align-items:baseline}
+.top b{font:900 32px var(--font);letter-spacing:-.04em;color:var(--dark)}
+.top span{font:700 15px var(--font);color:var(--mute)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{display:inline-flex;padding:5px 12px;border-radius:9px;font:800 12px var(--font);text-transform:uppercase;letter-spacing:.05em}
+.tag.mod{background:var(--bg);color:var(--mute)}
+.tag.pay{background:var(--green-bg);color:var(--green)}
+.tag.due{background:#fff0ef;color:var(--red)}
+ul{list-style:none;padding:8px 12px;margin:0;background:var(--bg);border-radius:16px;border:1px solid var(--line)}
+li{padding:10px 0;border-bottom:1px solid rgba(26,21,17,.06);display:flex;align-items:flex-start;gap:10px} li:last-child{border:0}
+li b{font-weight:900;color:var(--red);font-size:16px;min-width:24px}
+li div{flex:1}
+li i{display:block;font:600 13px var(--font);color:#b25;margin-top:4px;font-style:normal;background:#ffe0e0;padding:4px 8px;border-radius:6px;width:fit-content}
+.cust{background:var(--bg);padding:14px;border-radius:16px;font-size:14px;line-height:1.5}
+.cust b{font-size:16px;font-weight:800}
+.note{padding:12px;border-radius:12px;background:#fff8e1;border:1px solid #ffe082;color:#8f6c00;font-weight:600}
+.acts{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap;padding-top:8px} .acts .btn{flex:1}
+.empty{grid-column:1/-1;text-align:center;padding:120px 20px;color:var(--mute);font:800 24px var(--font);letter-spacing:-.03em}
 #ticket{display:none}
 @media print{
  @page{size:80mm auto;margin:0}
@@ -28,8 +56,8 @@ ul{list-style:none;padding:0}li{padding:4px 0;border-bottom:1px dashed #ccc}li i
  #ticket .l{display:flex;justify-content:space-between;gap:8px}#ticket .big{font-size:16px;font-weight:700}#ticket .c{text-align:center}
 }
 </style></head><body>
-<div id="gate"><form id="f"><h1>Écran cuisine</h1><p>Entrez le mot de passe, puis touchez le bouton pour activer le son.<br>Mettez le volume de l’appareil au maximum et laissez cet onglet ouvert.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go">Se connecter et activer le son</button></form></div>
-<header><div><h1>Cuisine · Taco Pizza</h1><div class="st" id="st">connexion…</div></div><div><button class="g" id="test">Test du son</button> <button class="d" id="mute">Couper l’alarme</button></div></header>
+<div id="gate"><form id="f"><h1>Taco<span>Pizza</span></h1><p><b>Écran cuisine</b><br>Entrez le mot de passe, touchez pour activer le son et mettez le volume au maximum.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red">Se connecter et activer le son</button></form></div>
+<header><div><h1>Taco<span>Pizza</span> Cuisine</h1><div class="st" id="st">connexion…</div></div><div><button class="btn ghost" id="test">Test du son</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
 <main id="list"></main>
 <div id="ticket"></div>
 <script>
@@ -39,51 +67,29 @@ let orders=new Map(),ctx,muted=false,timer,key=''
 const time=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'})
 // ----- Restaurant service bell / counter bell chime ("Ding! Ding!") -----
 function chime(t,freq=2093,vol=.8){
- const partials=[
-  {ratio:.5,gain:.12,decay:1.4},
-  {ratio:1,gain:.85,decay:2.2},
-  {ratio:1.586,gain:.38,decay:1},
-  {ratio:2.713,gain:.24,decay:.6},
-  {ratio:4.18,gain:.14,decay:.3},
-  {ratio:6.25,gain:.09,decay:.08}
- ]
- partials.forEach(p=>{
-  const o=ctx.createOscillator(),g=ctx.createGain()
-  o.type='sine'
-  o.frequency.setValueAtTime(freq*p.ratio,t)
-  g.gain.setValueAtTime(vol*p.gain,t)
-  g.gain.exponentialRampToValueAtTime(0.0001,t+p.decay)
-  o.connect(g);g.connect(ctx.destination)
-  o.start(t);o.stop(t+p.decay+.05)
- })
+ const partials=[{ratio:.5,gain:.12,decay:1.4},{ratio:1,gain:.85,decay:2.2},{ratio:1.586,gain:.38,decay:1},{ratio:2.713,gain:.24,decay:.6},{ratio:4.18,gain:.14,decay:.3},{ratio:6.25,gain:.09,decay:.08}]
+ partials.forEach(p=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(freq*p.ratio,t);g.gain.setValueAtTime(vol*p.gain,t);g.gain.exponentialRampToValueAtTime(0.0001,t+p.decay);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+p.decay+.05)})
 }
 function ring(){
  if(!ctx)return
  if(ctx.state!=='running')ctx.resume()
- const t=ctx.currentTime+.02
- chime(t,2093,.7)
- chime(t+.35,2093,.85)
+ const t=ctx.currentTime+.02; chime(t,2093,.7); chime(t+.35,2093,.85)
 }
 function alarm(){const has=[...orders.values()].some(o=>o.status==='new');if(has&&!muted){if(!timer){ring();timer=setInterval(ring,3600)}}else{clearInterval(timer);timer=null}}
 // ----- print 80mm ticket -----
 function print(o){const lines=o.items.map(l=>`<div class="l big"><span>${l.qty} × ${esc(l.name)}</span><span>${eur(l.price*l.qty)}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
- $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number} · ${time(o.createdAt)}</div><hr>
- <div class="big c">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</div><hr>${lines}<hr>
- <div class="l big"><span>TOTAL</span><span>${eur(o.total)}</span></div>
- <div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+(o.type==='livraison'?'livraison':'sur place')+')'}</div><hr>
- <div>${esc(o.customer.name)}<br>Tél ${esc(o.customer.phone)}${o.type==='livraison'?`<br>${esc(o.customer.address)}<br>${esc(o.customer.postcode)}`:''}</div>
- ${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
+ $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number} · ${time(o.createdAt)}</div><hr><div class="big c">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</div><hr>${lines}<hr><div class="l big"><span>TOTAL</span><span>${eur(o.total)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+(o.type==='livraison'?'livraison':'sur place')+')'}</div><hr><div>${esc(o.customer.name)}<br>Tél ${esc(o.customer.phone)}${o.type==='livraison'?`<br>${esc(o.customer.address)}<br>${esc(o.customer.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
  window.print()}
 // ----- UI -----
 function render(){
  const L=[...orders.values()].filter(o=>o.status!=='done').sort((a,b)=>a.createdAt-b.createdAt)
  $('#list').innerHTML=L.length?L.map(o=>`<article class="o ${o.status}" data-id="${o.id}">
   <div class="top"><b>#${o.number}</b><span>${time(o.createdAt)}</span></div>
-  <div><span class="tag">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total)}</span></div>
-  <ul>${o.items.map(l=>`<li><b>${l.qty} ×</b> ${esc(l.name)}${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</li>`).join('')}</ul>
-  ${o.note?`<div><b>Note :</b> ${esc(o.note)}</div>`:''}
-  <div><b>${esc(o.customer.name)}</b> · <a href="tel:${esc(o.customer.phone)}">${esc(o.customer.phone)}</a>${o.type==='livraison'?`<br>${esc(o.customer.address)}, ${esc(o.customer.postcode)}`:''}</div>
-  <div class="acts">${o.status==='new'?'<button data-s="accepted">Accepter</button>':o.status==='accepted'?'<button data-s="ready">Prête</button>':'<button data-s="done">Remise / livrée</button>'}<button class="g" data-p="1" aria-label="Imprimer le ticket">🖨 Imprimer</button></div></article>`).join(''):'<div class="empty">Aucune commande en cours</div>'
+  <div class="tags"><span class="tag mod">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total)}</span></div>
+  <ul>${o.items.map(l=>`<li><b>${l.qty}</b> <div><span>${esc(l.name)}</span>${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</div></li>`).join('')}</ul>
+  ${o.note?`<div class="note">💬 ${esc(o.note)}</div>`:''}
+  <div class="cust"><b>${esc(o.customer.name)}</b> · <a href="tel:${esc(o.customer.phone)}">${esc(o.customer.phone)}</a>${o.type==='livraison'?`<br>${esc(o.customer.address)}<br>${esc(o.customer.postcode)}`:''}</div>
+  <div class="acts">${o.status==='new'?'<button data-s="accepted" class="btn red">Accepter la commande</button>':o.status==='accepted'?'<button data-s="ready" class="btn ink">Prête</button>':'<button data-s="done" class="btn ok">Remise / livrée</button>'}<button class="btn ghost" data-p="1" aria-label="Imprimer le ticket" style="flex:none;width:52px;padding:0">🖨</button></div></article>`).join(''):'<div class="empty">Pas de commandes en cours 🎉</div>'
  alarm()}
 $('#list').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const o=orders.get(b.closest('.o').dataset.id)
  if(b.dataset.p)return print(o)
@@ -94,7 +100,7 @@ $('#test').onclick=()=>{ring()}
 $('#mute').onclick=e=>{muted=!muted;e.target.textContent=muted?'Réactiver l’alarme':'Couper l’alarme';alarm()}
 async function load(){try{const r=await api('');if(r.status===401){sessionStorage.removeItem('k');location.reload();return}
  const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();
- if(j.dbError){console.error('[Supabase Error]',j.dbError);$('#st').innerHTML=`<span style="color:#ff8a80;font-weight:700" title="${esc(j.dbError)}">⚠️ Base SQL : ${esc(j.dbError.slice(0,55))}</span>`}
+ if(j.dbError){console.error('[Supabase Error]',j.dbError);$('#st').innerHTML=`<span style="color:var(--red);font-weight:700" title="${esc(j.dbError)}">⚠️ Base SQL : ${esc(j.dbError.slice(0,55))}</span>`}
  else{$('#st').textContent='en direct'+(j.persistent?' (Supabase)':' (mode mémoire)')+' · '+time(Date.now())}}catch{$('#st').textContent='connexion perdue, nouvel essai…'}}
 $('#f').onsubmit=async e=>{e.preventDefault();key=$('#pw').value
  ctx=new(window.AudioContext||window.webkitAudioContext)();ring()
