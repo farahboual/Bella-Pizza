@@ -2,29 +2,51 @@ import {createContext,useContext,useEffect,useState} from 'react'
 import {CATALOG,RULES,eur} from '../shared/catalog.js'
 const Ctx=createContext(null),useCart=()=>useContext(Ctx)
 const KEY='tp-cart'
+
+const getPrice=(id,cfg)=>{
+ const ov=cfg?.overrides?.[id]
+ return (ov&&typeof ov.price==='number'&&ov.price>0)?ov.price:(CATALOG[id]?.price||0)
+}
+
+const isOut=(id,cfg)=>!!cfg?.overrides?.[id]?.outOfStock
+
 export function CartProvider({children}){
  const[lines,setLines]=useState(()=>{try{return(JSON.parse(localStorage.getItem(KEY))||[]).filter(l=>CATALOG[l.id])}catch{return[]}})
  const[open,setOpen]=useState(false),[cfg,setCfg]=useState(null)
  useEffect(()=>{try{localStorage.setItem(KEY,JSON.stringify(lines))}catch{}},[lines])
  useEffect(()=>{fetch('/api/config').then(r=>r.ok?r.json():null).then(setCfg).catch(()=>setCfg(null))},[])
  useEffect(()=>{document.body.style.overflow=open?'hidden':'';const k=e=>e.key=='Escape'&&setOpen(false);addEventListener('keydown',k);return()=>removeEventListener('keydown',k)},[open])
- const add=id=>setLines(l=>l.some(a=>a.id==id)?l.map(a=>a.id==id?{...a,qty:Math.min(a.qty+1,30)}:a):[...l,{id,qty:1,note:''}])
+
+ const add=id=>{
+  if(isOut(id,cfg))return
+  setLines(l=>l.some(a=>a.id==id)?l.map(a=>a.id==id?{...a,qty:Math.min(a.qty+1,30)}:a):[...l,{id,qty:1,note:''}])
+ }
  const setQty=(id,q)=>setLines(l=>q<1?l.filter(a=>a.id!=id):l.map(a=>a.id==id?{...a,qty:Math.min(q,30)}:a))
  const setNote=(id,note)=>setLines(l=>l.map(a=>a.id==id?{...a,note}:a))
- const total=lines.reduce((s,l)=>s+CATALOG[l.id].price*l.qty,0),count=lines.reduce((s,l)=>s+l.qty,0)
- return <Ctx.Provider value={{lines,add,setQty,setNote,clear:()=>setLines([]),total,count,open,setOpen,cfg,enabled:!!cfg}}>{children}</Ctx.Provider>
+ const total=lines.reduce((s,l)=>s+getPrice(l.id,cfg)*l.qty,0),count=lines.reduce((s,l)=>s+l.qty,0)
+ return <Ctx.Provider value={{lines,add,setQty,setNote,clear:()=>setLines([]),total,count,open,setOpen,cfg,enabled:!!cfg,getPrice,isOut}}>{children}</Ctx.Provider>
 }
-export const AddBtn=({id})=>{const{add,enabled}=useCart(),[ok,setOk]=useState(false)
+
+export const AddBtn=({id})=>{
+ const{add,enabled,isOut,cfg}=useCart(),[ok,setOk]=useState(false)
  if(!enabled||!CATALOG[id])return null
- return <button className={'add'+(ok?' ok':'')} aria-label={`Ajouter ${CATALOG[id].name} au panier`} onClick={()=>{add(id);setOk(true);setTimeout(()=>setOk(false),900)}}>{ok?'✓':'+'}</button>}
-export const CartButton=()=>{const{count,enabled,setOpen}=useCart();if(!enabled)return null
- return <button className="cartbtn" aria-label={`Panier, ${count} article${count>1?'s':''}`} onClick={()=>setOpen(true)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 7h12l-1 12H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>{count>0&&<b>{count}</b>}</button>}
+ const out=isOut(id,cfg)
+ if(out)return <span className="tag-out">Rupture</span>
+ return <button className={'add'+(ok?' ok':'')} aria-label={`Ajouter ${CATALOG[id].name} au panier`} onClick={()=>{add(id);setOk(true);setTimeout(()=>setOk(false),900)}}>{ok?'✓':'+'}</button>
+}
+
+export const CartButton=()=>{
+ const{count,enabled,setOpen}=useCart();if(!enabled)return null
+ return <button className="cartbtn" aria-label={`Panier, ${count} article${count>1?'s':''}`} onClick={()=>setOpen(true)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 7h12l-1 12H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>{count>0&&<b>{count}</b>}</button>
+}
+
 export const OrderBtn=({className='btn lime',children='Commander en ligne'})=>{const{enabled,setOpen}=useCart();return enabled?<button className={className} onClick={()=>setOpen(true)}>{children}</button>:null}
+
 export const MobileBar=({tel})=>{const{enabled,count,total,setOpen}=useCart()
  return <div className="bar">{enabled?<button className="btn ink" onClick={()=>setOpen(true)}>{count?`Voir mon panier · ${eur(total)}`:'Commander en ligne'}</button>:<a className="btn ink" href={tel}>Appeler pour commander</a>}</div>}
 
 export function CartDrawer(){
- const{lines,setQty,setNote,clear,total,count,open,setOpen,cfg}=useCart()
+ const{lines,setQty,setNote,clear,total,count,open,setOpen,cfg,getPrice}=useCart()
  const[type,setType]=useState('emporter'),[pay,setPay]=useState(''),[f,setF]=useState({name:'',phone:'',email:'',address:'',postcode:''}),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
  if(!open||!cfg)return null
  const payment=pay||(cfg.online?'online':'sur_place'),upd=k=>e=>setF({...f,[k]:e.target.value})
@@ -37,14 +59,14 @@ export function CartDrawer(){
  const close=()=>{setOpen(false);setDone(null)}
  return <div className="cart-ov" onClick={close}><aside className="cart" role="dialog" aria-modal="true" aria-label="Votre commande" onClick={e=>e.stopPropagation()}>
   <div className="cart-h"><h2>{done?'Merci !':'Votre commande'}</h2><button className="x" onClick={close} aria-label="Fermer">×</button></div>
-  {done?<div className="cart-b"><p className="big">Commande n° {done} envoyée.</p><p>Le restaurant l’a reçue. {type=='livraison'?'Le livreur arrive dès que votre commande est prête.':'Vous pouvez venir la récupérer au 15 rue de Rouen.'} Pensez à régler {type=='livraison'?'à la livraison':'sur place'}.</p><button className="btn ink" onClick={close}>Fermer</button></div>
+  {done?<div className="cart-b"><p className="big">Commande n° {done} envoyée.</p><p>Le restaurant l’a reçue. {type=='livraison'?'Le livreur arrive dès que votre commande est prête.':type=='sur_place'?'Votre commande sera servie à votre table / comptoir.':'Vous pouvez venir la récupérer au 15 rue de Rouen.'} Pensez à régler {type=='livraison'?'à la livraison':'sur place'}.</p><button className="btn ink" onClick={close}>Fermer</button></div>
   :!count?<div className="cart-b"><p>Votre panier est vide. Ajoutez des plats avec le bouton <b>+</b> sur la carte.</p></div>
   :<form className="cart-b" onSubmit={submit}>
-   <ul className="cl">{lines.map(l=>{const c=CATALOG[l.id];return <li key={l.id}><div className="cl-t"><b>{c.name}</b><span>{eur(c.price*l.qty)}</span></div>
+   <ul className="cl">{lines.map(l=>{const c=CATALOG[l.id],price=getPrice(l.id,cfg);return <li key={l.id}><div className="cl-t"><b>{c.name}</b><span>{eur(price*l.qty)}</span></div>
     <div className="cl-q"><button type="button" onClick={()=>setQty(l.id,l.qty-1)} aria-label="Retirer un">−</button><span aria-live="polite">{l.qty}</span><button type="button" onClick={()=>setQty(l.id,l.qty+1)} aria-label="Ajouter un">+</button>
     <input value={l.note} maxLength={120} onChange={e=>setNote(l.id,e.target.value)} placeholder="Précisions (sauces, boisson, sans oignon…)" aria-label={`Précisions pour ${c.name}`}/></div></li>})}</ul>
-   <fieldset className="seg"><legend>Mode</legend>{[['emporter','À emporter'],['livraison','Livraison']].map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
-   {short&&<p className="warn">Livraison à partir de {eur(RULES.deliveryMin)} de commande (il manque {eur(RULES.deliveryMin-total)}). Ou choisissez « À emporter ».</p>}
+   <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
+   {short&&<p className="warn">Livraison à partir de {eur(RULES.deliveryMin)} de commande (il manque {eur(RULES.deliveryMin-total)}). Ou choisissez « À emporter » ou « Sur place ».</p>}
    <label>Nom<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
    <label>Téléphone<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
    <label>E-mail <small>(reçu de paiement, facultatif)</small><input type="email" autoComplete="email" value={f.email} onChange={upd('email')}/></label>
@@ -53,7 +75,7 @@ export function CartDrawer(){
    <fieldset className="seg"><legend>Paiement</legend>
     {cfg.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>Carte en ligne</label>}
     <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?'À la livraison':'Sur place'}</label></fieldset>
-   {closed&&<p className="warn">Nous sommes fermés. Commandes : 11h–14h30 et 18h–23h (fermé dimanche midi).</p>}
+   {closed&&<p className="warn">{cfg.closedReason||'Nous sommes fermés pour le moment. Commandes ouvertes 11h–14h30 et 18h–23h (fermé dimanche midi).'}</p>}
    {err&&<p className="warn" role="alert">{err}</p>}
    <div className="cart-f"><div className="tot"><span>Total</span><b>{eur(total)}</b></div>
     <button className="btn ink" disabled={busy||short||closed}>{busy?'Envoi…':payment=='online'?`Payer ${eur(total)}`:'Envoyer la commande'}</button>
@@ -61,7 +83,6 @@ export function CartDrawer(){
   </form>}
  </aside></div>}
 
-// shown after coming back from Stripe (?commande=ID or ?annule=ID)
 export function OrderBanner(){
  const{clear}=useCart(),[m,setM]=useState(null)
  useEffect(()=>{const q=new URLSearchParams(location.search),id=q.get('commande'),no=q.get('annule');if(!id&&!no)return

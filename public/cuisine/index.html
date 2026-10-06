@@ -55,9 +55,10 @@ li i{display:block;font:600 13px var(--font);color:#b25;margin-top:4px;font-styl
  #ticket h2{font-size:22px;text-align:center}#ticket hr{border:0;border-top:1px dashed #000;margin:6px 0}
  #ticket .l{display:flex;justify-content:space-between;gap:8px}#ticket .big{font-size:16px;font-weight:700}#ticket .c{text-align:center}
 }
+.tag.sp{background:#e0e7ff;color:#3730a3}
 </style></head><body>
 <div id="gate"><form id="f"><h1>Taco<span>Pizza</span></h1><p><b>Écran cuisine</b><br>Entrez le mot de passe, touchez pour activer le son et mettez le volume au maximum.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red">Se connecter et activer le son</button></form></div>
-<header><div><h1>Taco<span>Pizza</span> Cuisine</h1><div class="st" id="st">connexion…</div></div><div><button class="btn ghost" id="test">Test du son</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
+<header><div><h1>Taco<span>Pizza</span> Cuisine</h1><div class="st" id="st">connexion…</div></div><div style="display:flex;gap:8px;align-items:center"><a href="/gerant/index.html" class="btn ghost" style="text-decoration:none">⚙️ Espace Gérant</a> <button class="btn ghost" id="test">Test du son</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
 <main id="list"></main>
 <div id="ticket"></div>
 <script>
@@ -82,13 +83,15 @@ function getOrderData(o){
  if(typeof cust==='string'){try{cust=JSON.parse(cust)}catch{cust={}}}
  return {items:Array.isArray(items)?items:[],cust:cust||{}}
 }
+const typeLabel=t=>t==='livraison'?'LIVRAISON':t==='sur_place'?'SUR PLACE':'À EMPORTER'
+const typeClass=t=>t==='livraison'?'mod':t==='sur_place'?'sp':'mod'
 // ----- print 80mm ticket -----
 function print(o){
  try{
   if(!o)return
   const {items,cust}=getOrderData(o)
   const lines=items.map(l=>`<div class="l big"><span>${l.qty||1} × ${esc(l.name)}</span><span>${eur((l.price||0)*(l.qty||1))}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
-  $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</div><hr>${lines}<hr><div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+(o.type==='livraison'?'livraison':'sur place')+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
+  $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${typeLabel(o.type)}</div><hr>${lines}<hr><div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+typeLabel(o.type)+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
   window.print()
  }catch(err){
   console.error('[Print Error]',err)
@@ -102,7 +105,7 @@ function render(){
   const {items,cust}=getOrderData(o)
   return `<article class="o ${o.status}" data-id="${o.id}">
   <div class="top"><b>#${o.number}</b><span>${time(o.createdAt)}</span></div>
-  <div class="tags"><span class="tag mod">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
+  <div class="tags"><span class="tag ${typeClass(o.type)}">${typeLabel(o.type)}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
   <ul>${items.map(l=>`<li><b>${l.qty||1}</b> <div><span>${esc(l.name)}</span>${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</div></li>`).join('')}</ul>
   ${o.note?`<div class="note">💬 ${esc(o.note)}</div>`:''}
   <div class="cust"><b>${esc(cust.name)}</b> · <a href="tel:${esc(cust.phone)}">${esc(cust.phone)}</a>${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>

@@ -1,9 +1,9 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
-import {getConfig,orderStatus,createOrder,stripeWebhook,kitchen} from './lib/handlers.js'
+import {getConfig,orderStatus,createOrder,stripeWebhook,kitchen,managerApi} from './lib/handlers.js'
 
 function apiDevPlugin(){
- const API={'/api/config':getConfig,'/api/order-status':orderStatus,'/api/orders':createOrder,'/api/stripe-webhook':stripeWebhook,'/api/kitchen':kitchen}
+ const API={'/api/config':getConfig,'/api/order-status':orderStatus,'/api/orders':createOrder,'/api/stripe-webhook':stripeWebhook,'/api/kitchen':kitchen,'/api/manager':managerApi}
  return {
   name:'api-dev-server',
   configureServer(server){

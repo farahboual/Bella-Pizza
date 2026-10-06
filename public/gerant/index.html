@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Espace Gérant — Taco Pizza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F3EE;--white:#ffffff;--red:#C41E17;--red2:#E82020;--dark:#1A1511;--mute:#6B6560;--line:rgba(26,21,17,.1);--font:'Nunito',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}body{font:15px/1.4 var(--font);background:var(--bg);color:var(--dark);-webkit-font-smoothing:antialiased}
+a{color:var(--red);text-decoration:none;font-weight:700}
+header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--line);box-shadow:0 4px 24px rgba(0,0,0,.04)}
+header h1{font:900 22px var(--font);letter-spacing:-.03em} header h1 span{color:var(--red)}
+.btn{font:700 14px var(--font);border:0;border-radius:99px;padding:10px 18px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{transform:scale(.96)}
+.btn.red{background:var(--red);color:#fff} .btn.red:hover{background:var(--red2)}
+.btn.ink{background:var(--dark);color:#fff}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--dark)}
+.btn.ok{background:#22c55e;color:#fff}
+.btn.warn{background:#ef4444;color:#fff}
+#gate{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:24px}
+#f{background:var(--white);padding:48px 40px;border-radius:32px;box-shadow:0 24px 48px -12px rgba(0,0,0,.08);text-align:center;max-width:440px;width:100%;border:1px solid var(--line)}
+#f h1{font:900 32px var(--font);letter-spacing:-.04em;margin-bottom:12px} #f h1 span{color:var(--red)}
+#f p{margin:0 0 24px;color:var(--mute);font-size:15px}
+#pw{display:block;margin:0 auto 12px;font:600 16px var(--font);padding:14px 20px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg);width:100%;text-align:center}
+#er{color:var(--red);min-height:22px;margin-bottom:12px;font-weight:700;font-size:14px}
+.container{max-width:1000px;margin:24px auto;padding:0 24px}
+.tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:2px solid var(--line);padding-bottom:12px}
+.tab{font:800 15px var(--font);padding:10px 20px;border-radius:99px;border:0;background:transparent;color:var(--mute);cursor:pointer;transition:all .2s}
+.tab.active{background:var(--dark);color:#fff}
+.card{background:#fff;border-radius:24px;padding:28px;border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.03);margin-bottom:24px}
+.card h2{font:800 20px var(--font);letter-spacing:-.03em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.form-group{margin-bottom:16px;display:grid;gap:6px}
+.form-group label{font-weight:700;font-size:14px}
+.form-group input,.form-group textarea{font:15px var(--font);padding:12px 16px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg)}
+.form-group input:focus,.form-group textarea:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
+.status-toggle{display:flex;gap:12px;align-items:center;padding:16px;background:var(--bg);border-radius:16px;margin-bottom:16px}
+.search-box{font:16px var(--font);padding:14px 20px;border-radius:16px;border:1.5px solid var(--line);width:100%;margin-bottom:20px}
+.item-row{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.item-row:last-child{border:0}
+.item-name{font-weight:800;font-size:15px}
+.item-cat{font-size:12px;color:var(--mute);font-weight:600}
+.price-input{width:90px;font:700 15px var(--font);padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);text-align:right}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:#fff;padding:14px 24px;border-radius:16px;font-weight:700;box-shadow:0 12px 32px rgba(0,0,0,.2);display:none;z-index:100}
+@media(max-width:640px){.item-row{grid-template-columns:1fr 1fr;gap:8px}.item-row > div:first-child{grid-column:1/-1}}
+</style></head><body>
+<div id="gate"><form id="f"><h1>Taco<span>Pizza</span></h1><p><b>Espace Gérant</b><br>Entrez le mot de passe administrateur pour accéder à la gestion.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red" style="width:100%;padding:16px;font-size:16px">Se connecter</button></form></div>
+<header><div><h1>Taco<span>Pizza</span> Gérant</h1><div style="font-size:13px;color:var(--mute)">Gestion des prix, stocks, ouvertures et RIB</div></div><div><a href="/cuisine/index.html" class="btn ghost">📺 Écran Cuisine</a></div></header>
+
+<div class="container">
+ <div class="tabs">
+  <button class="tab active" data-tab="status">🔴 Status & Ouverture</button>
+  <button class="tab" data-tab="menu">🍕 Prix & Stocks</button>
+  <button class="tab" data-tab="rib">🏦 Compte & RIB</button>
+ </div>
+
+ <!-- TAB 1: STATUS -->
+ <div id="tab-status" class="tab-content">
+  <div class="card">
+   <h2>Ouverture du restaurant</h2>
+   <div class="status-toggle">
+    <strong id="status-label" style="font-size:18px">Chargement…</strong>
+    <button id="toggle-closed-btn" class="btn red" style="margin-left:auto">Changer</button>
+   </div>
+   <div class="form-group">
+    <label>Message d'information / raison de fermeture (facultatif)</label>
+    <textarea id="closed-reason" rows="3" placeholder="Ex: Restaurant complet ce soir. Les commandes en ligne reprennent demain à 11h."></textarea>
+   </div>
+   <button id="save-status-btn" class="btn ink">Enregistrer les modifications</button>
+  </div>
+ </div>
+
+ <!-- TAB 2: MENU PRIX & STOCKS -->
+ <div id="tab-menu" class="tab-content" style="display:none">
+  <div class="card">
+   <h2>Prix & Gestion des ruptures de stock</h2>
+   <input type="text" id="search-item" class="search-box" placeholder="🔎 Rechercher un produit (ex: Reine, Kebab, Coca...)">
+   <div id="items-list">Chargement du menu…</div>
+  </div>
+ </div>
+
+ <!-- TAB 3: RIB & BANQUE -->
+ <div id="tab-rib" class="tab-content" style="display:none">
+  <div class="card">
+   <h2>💳 Paiements Stripe & Informations Bancaires</h2>
+   <p style="color:var(--mute);margin-bottom:20px">Les paiements en ligne par carte bleue effectués par vos clients sont automatiquement versés sur votre compte bancaire par Stripe selon votre calendrier de virement.</p>
+   <div class="form-group">
+    <label>Titulaire du compte (Nom de la société / Gérant)</label>
+    <input type="text" id="rib-holder" placeholder="Ex: SARL TACO PIZZA">
+   </div>
+   <div class="form-group">
+    <label>IBAN (Compte de réception)</label>
+    <input type="text" id="rib-iban" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX">
+   </div>
+   <div class="form-group">
+    <label>BIC / SWIFT</label>
+    <input type="text" id="rib-bic" placeholder="BNPAFRPPXXX">
+   </div>
+   <button id="save-rib-btn" class="btn ink">Enregistrer les coordonnées bancaires</button>
+  </div>
+ </div>
+</div>
+
+<div id="toast" class="toast">Modifications enregistrées !</div>
+
+<script>
+const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
+let key='',config={},overrides={},catalog={}
+
+function showToast(msg='Modifications enregistrées !'){
+ const t=$('#toast');t.textContent=msg;t.style.display='block'
+ setTimeout(()=>t.style.display='none',2500)
+}
+
+const api=async(body)=>fetch('/api/manager',{method:body?'POST':'GET',headers:{'x-kitchen-key':key,'content-type':'application/json'},body:body?JSON.stringify(body):undefined})
+
+// Tabs navigation
+document.querySelectorAll('.tab').forEach(b=>{
+ b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'))
+  document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none')
+  b.classList.add('active')
+  $('#tab-'+b.dataset.tab).style.display='block'
+ }
+})
+
+async function loadData(){
+ try{
+  const r=await api()
+  if(r.status===401){sessionStorage.removeItem('k');location.reload();return}
+  const j=await r.json()
+  config=j.config||{}
+  overrides=j.overrides||{}
+  catalog=j.catalog||{}
+  renderStatus()
+  renderMenu()
+  renderRib()
+ }catch(e){console.error(e)}
+}
+
+function renderStatus(){
+ const isClosed=!!config.manualClosed
+ $('#status-label').innerHTML=isClosed?'🔴 <span style="color:var(--red)">Commandes fermées manuellement</span>':'🟢 <span style="color:#22c55e">Commandes ouvertes (Horaires normaux)</span>'
+ $('#closed-reason').value=config.closedReason||''
+ const btn=$('#toggle-closed-btn')
+ btn.textContent=isClosed?'Réouvrir le restaurant':'Fermer temporairement'
+ btn.className='btn '+(isClosed?'ok':'warn')
+ btn.onclick=async()=>{
+  config.manualClosed=!config.manualClosed
+  await saveConfig()
+  renderStatus()
+ }
+}
+
+$('#save-status-btn').onclick=saveConfig
+
+async function saveConfig(){
+ const reason=$('#closed-reason').value.trim()
+ const res=await api({action:'updateConfig',data:{manualClosed:!!config.manualClosed,closedReason:reason}})
+ if(res.ok){config=await res.json();renderStatus();showToast()}
+}
+
+function renderMenu(query=''){
+ const q=query.toLowerCase().trim()
+ const list=$('#items-list')
+ const keys=Object.keys(catalog).filter(id=>{
+  const item=catalog[id]
+  return !q||item.name.toLowerCase().includes(q)||item.cat.toLowerCase().includes(q)
+ })
+
+ if(!keys.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucun produit trouvé</p>';return}
+
+ list.innerHTML=keys.map(id=>{
+  const item=catalog[id]
+  const ov=overrides[id]||{}
+  const currentPrice=typeof ov.price==='number'&&ov.price>0?ov.price:item.price
+  const isOut=!!ov.outOfStock
+  return `<div class="item-row" data-id="${id}">
+   <div><div class="item-name">${item.name}</div><div class="item-cat">${item.cat}</div></div>
+   <div><input type="number" step="0.50" min="0" class="price-input" value="${(currentPrice/100).toFixed(2)}"> €</div>
+   <div><button class="btn ${isOut?'warn':'ghost'}" data-act="stock">${isOut?'❌ Rupture':'✅ En stock'}</button></div>
+   <div><button class="btn ink" data-act="save">Sauver</button></div>
+  </div>`
+ }).join('')
+}
+
+$('#search-item').oninput=e=>renderMenu(e.target.value)
+
+$('#items-list').onclick=async e=>{
+ const btn=e.target.closest('button')
+ if(!btn)return
+ const row=btn.closest('.item-row')
+ const id=row.dataset.id
+ const priceVal=parseFloat(row.querySelector('.price-input').value)*100
+ const ov=overrides[id]||{}
+
+ if(btn.dataset.act==='stock'){
+  const newOut=!ov.outOfStock
+  const res=await api({action:'saveOverride',data:{id,price:priceVal,outOfStock:newOut}})
+  if(res.ok){overrides=await res.json();renderMenu($('#search-item').value);showToast(newOut?'Produit en rupture !':'Produit remis en stock !')}
+ }
+ if(btn.dataset.act==='save'){
+  const res=await api({action:'saveOverride',data:{id,price:priceVal,outOfStock:!!ov.outOfStock}})
+  if(res.ok){overrides=await res.json();showToast('Prix mis à jour !')}
+ }
+}
+
+function renderRib(){
+ $('#rib-holder').value=config.ribHolder||''
+ $('#rib-iban').value=config.ribIban||''
+ $('#rib-bic').value=config.ribBic||''
+}
+
+$('#save-rib-btn').onclick=async()=>{
+ const holder=$('#rib-holder').value.trim()
+ const iban=$('#rib-iban').value.trim()
+ const bic=$('#rib-bic').value.trim()
+ const res=await api({action:'updateConfig',data:{ribHolder:holder,ribIban:iban,ribBic:bic}})
+ if(res.ok){config=await res.json();showToast('Coordonnées RIB sauvegardées !')}
+}
+
+// Gate auth
+const saved=sessionStorage.getItem('k')
+if(saved){key=saved;$('#gate').remove();loadData()}
+$('#f').onsubmit=async e=>{
+ e.preventDefault();key=$('#pw').value
+ const r=await api()
+ if(r.status===401){$('#er').textContent='Mot de passe incorrect';return}
+ sessionStorage.setItem('k',key);$('#gate').remove();loadData()
+}
+</script></body></html>
