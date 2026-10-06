@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cuisine — Taco Pizza</title>
+<style>
+:root{--ink:#0F100C;--lime:#C6F432;--red:#C41E17;--bg:#F2EFE4}
+*{box-sizing:border-box;margin:0}body{font:16px/1.4 system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--ink);color:var(--lime)}
+header h1{font-size:20px;letter-spacing:-.02em}.st{font-size:13px;opacity:.85}
+button{font:600 15px system-ui;border:0;border-radius:99px;padding:12px 20px;cursor:pointer;background:var(--lime);color:var(--ink)}
+button.d{background:var(--ink);color:#fff}button.g{background:#fff;border:1.5px solid var(--ink)}
+#gate{position:fixed;inset:0;z-index:20;background:rgba(15,16,12,.92);color:#fff;display:grid;place-items:center;text-align:center;padding:24px}
+#gate p{margin:10px 0 20px;opacity:.8}#gate button{font-size:20px;padding:18px 32px}#pw{display:block;margin:0 auto 12px;font:18px system-ui;padding:14px 18px;border-radius:12px;border:0;width:min(320px,100%)}#er{color:#ff8a80;min-height:22px;margin-bottom:8px}
+main{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;padding:16px}
+.o{background:#fff;border-radius:18px;padding:16px;border:3px solid transparent;display:flex;flex-direction:column;gap:8px}
+.o.new{border-color:var(--red);animation:bl 1s infinite}.o.accepted{border-color:var(--ink)}.o.ready{border-color:#6a8f00}
+@keyframes bl{50%{background:#ffe9e7}}
+.top{display:flex;justify-content:space-between;align-items:baseline}.top b{font-size:28px;letter-spacing:-.03em}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--ink);color:var(--lime);margin-right:6px}
+.tag.pay{background:#2d7d1f;color:#fff}.tag.due{background:var(--red);color:#fff}
+ul{list-style:none;padding:0}li{padding:4px 0;border-bottom:1px dashed #ccc}li i{display:block;font-size:13px;color:#a02}
+.acts{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}.empty{grid-column:1/-1;text-align:center;padding:60px;opacity:.5}
+#ticket{display:none}
+@media print{
+ @page{size:80mm auto;margin:0}
+ body>*:not(#ticket){display:none!important}
+ #ticket{display:block;width:72mm;margin:0 auto;padding:4mm 0;font:13px/1.35 'Courier New',monospace;color:#000;background:#fff}
+ #ticket h2{font-size:22px;text-align:center}#ticket hr{border:0;border-top:1px dashed #000;margin:6px 0}
+ #ticket .l{display:flex;justify-content:space-between;gap:8px}#ticket .big{font-size:16px;font-weight:700}#ticket .c{text-align:center}
+}
+</style></head><body>
+<div id="gate"><form id="f"><h1>Écran cuisine</h1><p>Entrez le mot de passe, puis touchez le bouton pour activer le son.<br>Mettez le volume de l’appareil au maximum et laissez cet onglet ouvert.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go">Se connecter et activer le son</button></form></div>
+<header><div><h1>Cuisine · Taco Pizza</h1><div class="st" id="st">connexion…</div></div><div><button class="g" id="test">Test du son</button> <button class="d" id="mute">Couper l’alarme</button></div></header>
+<main id="list"></main>
+<div id="ticket"></div>
+<script>
+const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))
+let orders=new Map(),ctx,muted=false,timer,key=''
+const time=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'})
+// ----- loud alarm (generated, no audio file needed) -----
+function beep(f,t,d){const o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+.01);g.gain.setValueAtTime(1,t+d-.03);g.gain.linearRampToValueAtTime(0,t+d);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+d)}
+function ring(){if(!ctx)return;if(ctx.state!=='running')ctx.resume();const t=ctx.currentTime+.05;[880,1320,880,1320].forEach((f,i)=>beep(f,t+i*.22,.2))}
+function alarm(){const has=[...orders.values()].some(o=>o.status==='new');if(has&&!muted){if(!timer){ring();timer=setInterval(ring,2200)}}else{clearInterval(timer);timer=null}}
+// ----- print 80mm ticket -----
+function print(o){const lines=o.items.map(l=>`<div class="l big"><span>${l.qty} × ${esc(l.name)}</span><span>${eur(l.price*l.qty)}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
+ $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number} · ${time(o.createdAt)}</div><hr>
+ <div class="big c">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</div><hr>${lines}<hr>
+ <div class="l big"><span>TOTAL</span><span>${eur(o.total)}</span></div>
+ <div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+(o.type==='livraison'?'livraison':'sur place')+')'}</div><hr>
+ <div>${esc(o.customer.name)}<br>Tél ${esc(o.customer.phone)}${o.type==='livraison'?`<br>${esc(o.customer.address)}<br>${esc(o.customer.postcode)}`:''}</div>
+ ${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
+ window.print()}
+// ----- UI -----
+function render(){
+ const L=[...orders.values()].filter(o=>o.status!=='done').sort((a,b)=>a.createdAt-b.createdAt)
+ $('#list').innerHTML=L.length?L.map(o=>`<article class="o ${o.status}" data-id="${o.id}">
+  <div class="top"><b>#${o.number}</b><span>${time(o.createdAt)}</span></div>
+  <div><span class="tag">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total)}</span></div>
+  <ul>${o.items.map(l=>`<li><b>${l.qty} ×</b> ${esc(l.name)}${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</li>`).join('')}</ul>
+  ${o.note?`<div><b>Note :</b> ${esc(o.note)}</div>`:''}
+  <div><b>${esc(o.customer.name)}</b> · <a href="tel:${esc(o.customer.phone)}">${esc(o.customer.phone)}</a>${o.type==='livraison'?`<br>${esc(o.customer.address)}, ${esc(o.customer.postcode)}`:''}</div>
+  <div class="acts">${o.status==='new'?'<button data-s="accepted">Accepter</button>':o.status==='accepted'?'<button data-s="ready">Prête</button>':'<button data-s="done">Remise / livrée</button>'}<button class="g" data-p="1" aria-label="Imprimer le ticket">🖨 Imprimer</button></div></article>`).join(''):'<div class="empty">Aucune commande en cours</div>'
+ alarm()}
+$('#list').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const o=orders.get(b.closest('.o').dataset.id)
+ if(b.dataset.p)return print(o)
+ const r=await api('',{method:'POST',body:JSON.stringify({id:o.id,status:b.dataset.s})});if(r.ok){orders.set(o.id,await r.json());render()}else load()}
+const api=(p,o={})=>fetch('/api/kitchen'+p,{...o,headers:{'x-kitchen-key':key,'content-type':'application/json'}})
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.wakeLock?.request('screen').catch(()=>{})})
+$('#test').onclick=()=>{ring()}
+$('#mute').onclick=e=>{muted=!muted;e.target.textContent=muted?'Réactiver l’alarme':'Couper l’alarme';alarm()}
+async function load(){try{const r=await api('');if(r.status===401){sessionStorage.removeItem('k');location.reload();return}
+ const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();$('#st').textContent='en direct · '+time(Date.now())+(j.persistent?'':' · MODE TEST (base non connectée)')}catch{$('#st').textContent='connexion perdue, nouvel essai…'}}
+$('#f').onsubmit=async e=>{e.preventDefault();key=$('#pw').value
+ ctx=new(window.AudioContext||window.webkitAudioContext)();ring()
+ const r=await api('');if(r.status===401){$('#er').textContent='Mot de passe incorrect';return}
+ sessionStorage.setItem('k',key);$('#gate').remove();navigator.wakeLock?.request('screen').catch(()=>{});load();setInterval(load,3000)}
+</script></body></html>
