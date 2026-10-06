@@ -76,23 +76,32 @@ function ring(){
  const t=ctx.currentTime+.02; chime(t,2093,.7); chime(t+.35,2093,.85)
 }
 function alarm(){const has=[...orders.values()].some(o=>o.status==='new');if(has&&!muted){if(!timer){ring();timer=setInterval(ring,3600)}}else{clearInterval(timer);timer=null}}
+function getOrderData(o){
+ let items=o.items,cust=o.customer
+ if(typeof items==='string'){try{items=JSON.parse(items)}catch{items=[]}}
+ if(typeof cust==='string'){try{cust=JSON.parse(cust)}catch{cust={}}}
+ return {items:Array.isArray(items)?items:[],cust:cust||{}}
+}
 // ----- print 80mm ticket -----
 function print(o){
  if(!o)return
- const items=Array.isArray(o.items)?o.items:(typeof o.items==='string'?JSON.parse(o.items):[])
- const lines=items.map(l=>`<div class="l big"><span>${l.qty} × ${esc(l.name)}</span><span>${eur(l.price*l.qty)}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
- $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number} · ${time(o.createdAt)}</div><hr><div class="big c">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</div><hr>${lines}<hr><div class="l big"><span>TOTAL</span><span>${eur(o.total)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+(o.type==='livraison'?'livraison':'sur place')+')'}</div><hr><div>${esc(o.customer.name)}<br>Tél ${esc(o.customer.phone)}${o.type==='livraison'?`<br>${esc(o.customer.address)}<br>${esc(o.customer.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
+ const {items,cust}=getOrderData(o)
+ const lines=items.map(l=>`<div class="l big"><span>${l.qty||1} × ${esc(l.name)}</span><span>${eur((l.price||0)*(l.qty||1))}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
+ $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</div><hr>${lines}<hr><div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+(o.type==='livraison'?'livraison':'sur place')+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}`
  window.print()}
 // ----- UI -----
 function render(){
  const L=[...orders.values()].filter(o=>o.status!=='done').sort((a,b)=>a.createdAt-b.createdAt)
- $('#list').innerHTML=L.length?L.map(o=>`<article class="o ${o.status}" data-id="${o.id}">
+ $('#list').innerHTML=L.length?L.map(o=>{
+  const {items,cust}=getOrderData(o)
+  return `<article class="o ${o.status}" data-id="${o.id}">
   <div class="top"><b>#${o.number}</b><span>${time(o.createdAt)}</span></div>
-  <div class="tags"><span class="tag mod">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total)}</span></div>
-  <ul>${o.items.map(l=>`<li><b>${l.qty}</b> <div><span>${esc(l.name)}</span>${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</div></li>`).join('')}</ul>
+  <div class="tags"><span class="tag mod">${o.type==='livraison'?'LIVRAISON':'À EMPORTER'}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
+  <ul>${items.map(l=>`<li><b>${l.qty||1}</b> <div><span>${esc(l.name)}</span>${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</div></li>`).join('')}</ul>
   ${o.note?`<div class="note">💬 ${esc(o.note)}</div>`:''}
-  <div class="cust"><b>${esc(o.customer.name)}</b> · <a href="tel:${esc(o.customer.phone)}">${esc(o.customer.phone)}</a>${o.type==='livraison'?`<br>${esc(o.customer.address)}<br>${esc(o.customer.postcode)}`:''}</div>
-  <div class="acts">${o.status==='new'?'<button data-s="accepted" class="btn red">Accepter la commande</button>':o.status==='accepted'?'<button data-s="ready" class="btn ink">Prête</button>':'<button data-s="done" class="btn ok">Remise / livrée</button>'}<button class="btn ghost" data-p="1" aria-label="Imprimer le ticket" style="flex:none;width:52px;padding:0">🖨</button></div></article>`).join(''):'<div class="empty">Pas de commandes en cours 🎉</div>'
+  <div class="cust"><b>${esc(cust.name)}</b> · <a href="tel:${esc(cust.phone)}">${esc(cust.phone)}</a>${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>
+  <div class="acts">${o.status==='new'?'<button data-s="accepted" class="btn red">Accepter la commande</button>':o.status==='accepted'?'<button data-s="ready" class="btn ink">Prête</button>':'<button data-s="done" class="btn ok">Remise / livrée</button>'}<button class="btn ghost" data-p="1" aria-label="Imprimer le ticket" style="flex:none;width:52px;padding:0">🖨</button></div></article>`
+ }).join(''):'<div class="empty">Pas de commandes en cours 🎉</div>'
  alarm()}
 $('#list').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const art=b.closest('.o');if(!art)return;const o=orders.get(art.dataset.id);if(!o)return;
  if(b.dataset.p)return print(o)
