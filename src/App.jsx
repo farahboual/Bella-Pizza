@@ -6,7 +6,7 @@ import burgersImg from './assets/burgers.webp'
 import tacosImg from './assets/tacos.webp'
 import sandwichsImg from './assets/sandwichs.webp'
 import saladesImg from './assets/salades.webp'
-import {CartProvider,CartButton,CartDrawer,AddBtn,OrderBtn,MobileBar,OrderBanner} from './cart.jsx'
+import {CartProvider,CartButton,CartDrawer,AddBtn,OrderBtn,MobileBar,OrderBanner,useCart} from './cart.jsx'
 import {slug,CATALOG,eur} from '../shared/catalog.js'
 
 const TEL='tel:+33241035787'
@@ -282,6 +282,9 @@ const Generic=({c})=><>
 </>
 
 function Menu(){
+  const {cfg}=useCart()
+  const customList=Object.values(cfg?.customItems||{})
+  const allCats=customList.length ? [{id:'special',t:'Spécialités'}, ...CATS] : CATS
   const[cat,setCat]=useState('pizzas'),[size,setSize]=useState(1),tabs=useRef()
   const pick=id=>{
     setCat(id)
@@ -290,16 +293,16 @@ function Menu(){
     if(scrollY<y-2)scrollTo({top:y,behavior:'smooth'})
   }
   const key=e=>{
-    const k=CATS.findIndex(c=>c.id==cat),n=e.key=='ArrowRight'?Math.min(k+1,CATS.length-1):e.key=='ArrowLeft'?Math.max(k-1,0):k
-    if(n!=k){pick(CATS[n].id);document.getElementById('t-'+CATS[n].id).focus()}
+    const k=allCats.findIndex(c=>c.id==cat),n=e.key=='ArrowRight'?Math.min(k+1,allCats.length-1):e.key=='ArrowLeft'?Math.max(k-1,0):k
+    if(n!=k){pick(allCats[n].id);document.getElementById('t-'+allCats[n].id).focus()}
   }
-  const c=CATS.find(x=>x.id==cat)
+  const c=allCats.find(x=>x.id==cat)
   return(
     <section className="menu" id="carte">
       <div className="wrap">
         <div className="sec-header"><h2 className="sec-title">La carte.</h2></div>
         <div className="tabs" role="tablist" aria-label="Catégories" ref={tabs} onKeyDown={key}>
-          {CATS.map(x=>(
+          {allCats.map(x=>(
             <button key={x.id} id={'t-'+x.id} className="tab" role="tab" aria-selected={x.id==cat} onClick={()=>pick(x.id)}>
               {x.t}{x.id==cat&&<motion.span layoutId="ind" className="ind" transition={{type:'spring',stiffness:500,damping:38}}/>}
             </button>
@@ -309,7 +312,19 @@ function Menu(){
           <motion.div key={cat} className="panel" role="tabpanel" aria-labelledby={'t-'+cat}
             initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
             transition={{duration:.25,ease}}>
-            {c.pizza?<Pizzas size={size} setSize={setSize}/>:<Generic c={c}/>}
+            {cat==='special'?(
+              <>
+                <div className="ph">
+                  <h3>Spécialités &amp; Nouveautés</h3>
+                  <p>Créations spéciales du chef</p>
+                </div>
+                <div className="list">
+                  {customList.map(it=>(
+                    <Row key={it.id} n={it.name} d={it.desc||it.cat} p={eur(it.price)} id={it.id}/>
+                  ))}
+                </div>
+              </>
+            ):c?.pizza?<Pizzas size={size} setSize={setSize}/>:<Generic c={c}/>}
           </motion.div>
         </AnimatePresence>
       </div>

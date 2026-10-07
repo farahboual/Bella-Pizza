@@ -66,3 +66,16 @@ create policy "Menu Overrides Read Access" on public.menu_overrides for select u
 create policy "Menu Overrides Service Access" on public.menu_overrides for all using (true) with check (true);
 create policy "Promos Read Access" on public.promos for select using (true);
 create policy "Promos Service Access" on public.promos for all using (true) with check (true);
+
+-- 5. Articles personnalisés ajoutés par le gérant
+create table if not exists public.custom_items(
+ id text primary key,
+ name text not null,
+ cat text not null default 'Divers',
+ price int not null,
+ desc text default ''
+);
+alter table public.custom_items enable row level security;
+grant all on table public.custom_items to postgres, service_role, anon, authenticated;
+create policy "Custom Items Read Access" on public.custom_items for select using (true);
+create policy "Custom Items Service Access" on public.custom_items for all using (true) with check (true);

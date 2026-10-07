@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Espace Gérant — Taco Pizza</title>
+<title>Espace Superadmin — Taco Pizza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -12,6 +12,7 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 .logo svg{width:36px;height:36px;flex:none}
 .logo b{font:italic 900 20px/1 var(--font);letter-spacing:-.02em}
 .logo span{display:block;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.badge-admin{background:var(--red);color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;letter-spacing:.06em;text-transform:uppercase}
 .btn{font:700 14px var(--font);border:0;border-radius:99px;padding:12px 22px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
 .btn:active{transform:scale(.96)}
 .btn.red{background:var(--red);color:#fff} .btn.red:hover{background:var(--red2);box-shadow:0 8px 20px -8px rgba(196,30,23,.5)}
@@ -28,7 +29,8 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 #pw:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
 #er{color:var(--red);min-height:22px;margin-bottom:12px;font-weight:700;font-size:14px}
 .container{max-width:1080px;margin:32px auto;padding:0 24px}
-.page-title{font:900 32px var(--font);letter-spacing:-.04em;margin-bottom:24px}
+.page-title{font:900 32px var(--font);letter-spacing:-.04em;margin-bottom:6px}
+.page-sub{color:var(--mute);font-size:15px;margin-bottom:24px}
 .tabs{display:flex;gap:8px;margin-bottom:24px;background:var(--white);padding:8px;border-radius:99px;border:1px solid var(--line);width:fit-content;flex-wrap:wrap}
 .tab{font:700 14px var(--font);padding:10px 20px;border-radius:99px;border:0;background:transparent;color:var(--mute);cursor:pointer;transition:all .2s}
 .tab.active{background:var(--dark);color:#fff}
@@ -45,10 +47,11 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 .search-box{font:16px var(--font);padding:14px 20px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg);width:100%;margin-bottom:24px}
 .search-box:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
 .items-table{display:grid;gap:10px}
-.item-row{display:grid;grid-template-columns:1fr 140px 140px 90px;gap:16px;align-items:center;padding:16px 20px;background:var(--bg);border-radius:18px;border:1px solid var(--line);transition:background .2s}
+.item-row{display:grid;grid-template-columns:1fr 140px 140px auto;gap:16px;align-items:center;padding:16px 20px;background:var(--bg);border-radius:18px;border:1px solid var(--line);transition:background .2s}
 .item-row:hover{background:#fff5f4}
 .item-name{font-weight:800;font-size:15px;color:var(--dark)}
 .item-cat{font-size:12px;color:var(--mute);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.badge-custom{display:inline-block;background:#fee2e2;color:var(--red);font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;margin-left:6px;text-transform:uppercase;letter-spacing:.05em}
 .price-input-wrap{display:flex;align-items:center;gap:6px;font:700 15px var(--font)}
 .price-input{width:80px;font:700 15px var(--font);padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);text-align:right;background:#fff}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
@@ -56,7 +59,23 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 .stat-card h3{font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
 .stat-card .val{font:900 28px var(--font);color:var(--dark);margin-top:6px}
 .toast{position:fixed;bottom:28px;right:28px;background:var(--dark);color:#fff;padding:16px 28px;border-radius:18px;font-weight:700;box-shadow:0 16px 40px rgba(0,0,0,.2);display:none;z-index:100}
-@media(max-width:768px){.item-row{grid-template-columns:1fr 1fr;gap:12px}.item-row > div:first-child{grid-column:1/-1}}
+.qr-preview-box{display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:center;background:var(--bg);padding:28px;border-radius:24px;border:1px solid var(--line);margin-top:20px}
+.qr-img-wrap{background:#fff;padding:16px;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.06);text-align:center}
+.qr-img-wrap img{width:100%;max-width:220px;height:auto;display:block;margin:0 auto}
+.chevalet-card{background:#fff;border:2px dashed var(--line);border-radius:24px;padding:28px;text-align:center}
+.quick-tbls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 20px}
+.quick-tbl-btn{padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font:700 13px var(--font);cursor:pointer}
+.quick-tbl-btn.on{background:var(--red);color:#fff;border-color:var(--red)}
+@media(max-width:768px){
+ .item-row{grid-template-columns:1fr 1fr;gap:12px}
+ .item-row > div:first-child{grid-column:1/-1}
+ .qr-preview-box{grid-template-columns:1fr}
+}
+@media print{
+ body>*:not(#chevalet-print-area){display:none!important}
+ #chevalet-print-area{display:block!important;position:absolute;top:0;left:0;width:100%;padding:40px;text-align:center;background:#fff}
+}
+#chevalet-print-area{display:none}
 </style></head><body>
 
 <!-- PASSWORD GATE -->
@@ -66,32 +85,36 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#C41E17"/><path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/><circle cx="15" cy="20" r="3.2" fill="#fff"/><circle cx="29" cy="32" r="3.2" fill="#fff"/></svg>
    <b>Taco<span>Pizza</span></b>
   </div>
-  <h1>Espace Gérant</h1>
-  <p>Accès restreint. Veuillez entrer le mot de passe administrateur du restaurant.</p>
-  <input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe gérant" required>
+  <h1>Espace Superadmin</h1>
+  <p>Accès superadministrateur du restaurant. Veuillez vous identifier.</p>
+  <input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe superadmin" required>
   <div id="er"></div>
-  <button id="go" class="btn red" style="width:100%;padding:16px;font-size:16px">Se connecter</button>
+  <button id="go" class="btn red" style="width:100%;padding:16px;font-size:16px">Accéder au tableau de bord</button>
  </form>
 </div>
 
 <!-- HEADER -->
 <header>
- <a className="logo" href="#top" aria-label="Taco Pizza Gérant">
-  <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#C41E17"/><path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/><circle cx="15" cy="20" r="3.2" fill="#fff"/><circle cx="29" cy="32" r="3.2" fill="#fff"/></svg>
-  <b>Taco<span>Pizza</span></b>
- </a>
  <div style="display:flex;gap:12px;align-items:center">
-  <a href="/cuisine/index.html" class="btn ghost">Écran Cuisine</a>
+  <a class="logo" href="#top" aria-label="Taco Pizza Superadmin">
+   <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#C41E17"/><path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/><circle cx="15" cy="20" r="3.2" fill="#fff"/><circle cx="29" cy="32" r="3.2" fill="#fff"/></svg>
+   <b>Taco<span>Pizza</span></b>
+  </a>
+  <span class="badge-admin">Superadmin</span>
+ </div>
+ <div style="display:flex;gap:12px;align-items:center">
+  <a href="/cuisine/index.html" class="btn ghost" target="_blank">Ouvrir Écran Cuisine ↗</a>
   <button id="logout-btn" class="btn ghost">Déconnexion</button>
  </div>
 </header>
 
 <div class="container">
- <h1 class="page-title">Tableau de bord gérant</h1>
+ <h1 class="page-title">Tableau de bord Superadmin</h1>
+ <p class="page-sub">Gestion intégrale : ouvertures, carte, nouveaux plats, codes promo, QR codes et comptabilité.</p>
 
  <div class="tabs" role="tablist">
   <button class="tab active" data-tab="status" role="tab">Statut &amp; Ouverture</button>
-  <button class="tab" data-tab="menu" role="tab">Prix &amp; Ruptures</button>
+  <button class="tab" data-tab="menu" role="tab">Carte &amp; Produits</button>
   <button class="tab" data-tab="promos" role="tab">Codes Promo</button>
   <button class="tab" data-tab="qr" role="tab">QR Codes Tables</button>
   <button class="tab" data-tab="sales" role="tab">Rapport Z &amp; Ventes</button>
@@ -117,11 +140,42 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
   </div>
  </div>
 
- <!-- TAB 2: MENU PRIX & STOCKS -->
+ <!-- TAB 2: MENU PRIX & PRODUITS -->
  <div id="tab-menu" class="tab-content" style="display:none" role="tabpanel">
   <div class="card">
-   <h2>Gestion de la carte &amp; des stocks</h2>
-   <input type="text" id="search-item" class="search-box" placeholder="Rechercher un plat, pizza, boisson...">
+   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+    <h2>Gestion de la carte &amp; des produits</h2>
+    <button id="toggle-new-prod-btn" class="btn red">➕ Ajouter un nouveau produit</button>
+   </div>
+
+   <!-- FORMULAIRE AJOUT PRODUIT -->
+   <div id="new-prod-box" style="display:none;background:var(--bg);padding:24px;border-radius:20px;border:1.5px solid var(--line);margin-bottom:24px">
+    <h3 style="font-size:18px;font-weight:900;margin-bottom:16px">Nouveau produit à la carte</h3>
+    <form id="new-prod-form" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+     <div class="form-group" style="margin:0"><label>Nom du produit *</label><input type="text" id="np-name" required placeholder="Ex: Burger Bacon BBQ"></div>
+     <div class="form-group" style="margin:0"><label>Catégorie</label>
+      <select id="np-cat">
+       <option value="Pizzas">Pizzas</option>
+       <option value="Tacos">Tacos</option>
+       <option value="Burgers">Burgers</option>
+       <option value="Sandwichs">Sandwichs</option>
+       <option value="Tex-Mex">Tex-Mex</option>
+       <option value="Salades">Salades</option>
+       <option value="Boissons">Boissons</option>
+       <option value="Desserts">Desserts</option>
+       <option value="Divers">Divers</option>
+      </select>
+     </div>
+     <div class="form-group" style="margin:0"><label>Prix (€) *</label><input type="number" id="np-price" step="0.50" min="0.5" required placeholder="10.50"></div>
+     <div class="form-group" style="margin:0"><label>Description / Ingrédients</label><input type="text" id="np-desc" placeholder="Sauce maison, cheddar affiné, steak 150g..."></div>
+     <div style="grid-column:1/-1;display:flex;gap:10px;margin-top:8px">
+      <button type="submit" class="btn ink">Enregistrer le produit</button>
+      <button type="button" id="cancel-new-prod" class="btn ghost">Annuler</button>
+     </div>
+    </form>
+   </div>
+
+   <input type="text" id="search-item" class="search-box" placeholder="Rechercher un plat, pizza, burger, produit personnalisé...">
    <div id="items-list" class="items-table">Chargement de la carte...</div>
   </div>
  </div>
@@ -144,16 +198,43 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
  <!-- TAB 4: QR CODES TABLES -->
  <div id="tab-qr" class="tab-content" style="display:none" role="tabpanel">
   <div class="card">
-   <h2>Générateur de QR Codes pour Tables</h2>
-   <p style="color:var(--mute);margin-bottom:20px">Générez un lien direct ou QR code pour chaque table du restaurant. Le client scannant ce code aura le mode « Sur place » et son numéro de table directement enregistrés.</p>
-   <div style="display:flex;gap:12px;margin-bottom:24px">
-    <input type="number" id="table-num-input" class="search-box" min="1" max="99" value="1" style="width:140px;margin:0" placeholder="Table n°">
-    <button id="gen-qr-btn" class="btn ink">Générer le lien QR Table</button>
+   <h2>Générateur &amp; Impression de QR Codes pour Tables</h2>
+   <p style="color:var(--mute);margin-bottom:16px;line-height:1.5">Générez un QR Code avec son <b>chevalet de table imprimable</b> pour vos clients sur place. Lorsqu'ils le scannent avec leur téléphone, ils accèdent directement à votre carte avec le mode « Sur place » et le numéro de table pré-rempli !</p>
+
+   <label style="font-weight:700;font-size:14px;display:block;margin-bottom:6px">Sélection rapide de table :</label>
+   <div class="quick-tbls">
+    <button class="quick-tbl-btn on" data-num="1">Table 1</button>
+    <button class="quick-tbl-btn" data-num="2">Table 2</button>
+    <button class="quick-tbl-btn" data-num="3">Table 3</button>
+    <button class="quick-tbl-btn" data-num="4">Table 4</button>
+    <button class="quick-tbl-btn" data-num="5">Table 5</button>
+    <button class="quick-tbl-btn" data-num="6">Table 6</button>
+    <button class="quick-tbl-btn" data-num="7">Table 7</button>
+    <button class="quick-tbl-btn" data-num="8">Table 8</button>
+    <button class="quick-tbl-btn" data-num="9">Table 9</button>
+    <button class="quick-tbl-btn" data-num="10">Table 10</button>
    </div>
-   <div id="qr-result" style="padding:20px;background:var(--bg);border-radius:18px;border:1px solid var(--line);display:none">
-    <strong id="qr-table-title" style="font-size:18px;display:block;margin-bottom:8px">Table n° 1</strong>
-    <p style="margin-bottom:12px">Lien direct : <a id="qr-link-url" href="#" target="_blank">...</a></p>
-    <button id="copy-qr-btn" class="btn ghost">Copier le lien</button>
+
+   <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+    <label style="font-weight:700;font-size:14px">Ou numéro personnalisé :</label>
+    <input type="number" id="table-num-input" class="search-box" min="1" max="99" value="1" style="width:120px;margin:0" placeholder="N°">
+    <button id="gen-qr-btn" class="btn ink">Afficher</button>
+   </div>
+
+   <div class="qr-preview-box">
+    <div class="qr-img-wrap">
+     <img id="qr-img" src="" alt="QR Code Table">
+     <div style="margin-top:12px;font-weight:800;font-size:13px;color:var(--mute)">Scannable par smartphone</div>
+    </div>
+    <div>
+     <h3 id="qr-table-title" style="font-size:24px;font-weight:900;margin-bottom:8px">Table n° 1</h3>
+     <p style="color:var(--mute);margin-bottom:16px;font-size:14px">Lien direct : <a id="qr-link-url" href="#" target="_blank" style="word-break:break-all">...</a></p>
+     <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button id="print-chevalet-btn" class="btn red">🖨️ Imprimer le chevalet de table</button>
+      <button id="download-qr-btn" class="btn ghost">💾 Télécharger l'image QR</button>
+      <button id="copy-qr-btn" class="btn ghost">📋 Copier le lien</button>
+     </div>
+    </div>
    </div>
   </div>
  </div>
@@ -198,11 +279,27 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
  </div>
 </div>
 
+<!-- CHEVALET DE TABLE IMPRIMABLE -->
+<div id="chevalet-print-area">
+ <div style="max-width:380px;margin:0 auto;border:3px solid #1A1511;border-radius:24px;padding:36px;font-family:'Nunito',sans-serif">
+  <h1 style="font-size:28px;font-weight:900;color:#C41E17;margin-bottom:4px">TACO PIZZA</h1>
+  <p style="font-size:14px;color:#6B6560;font-weight:700;margin-bottom:20px">15 rue de Rouen, 49400 Saumur</p>
+  <div style="background:#F7F3EE;padding:12px;border-radius:16px;display:inline-block;margin-bottom:20px">
+   <h2 id="print-tbl-title" style="font-size:32px;font-weight:900;color:#1A1511">TABLE N° 1</h2>
+  </div>
+  <div style="margin:16px 0">
+   <img id="print-qr-img" src="" alt="QR" style="width:240px;height:240px;display:block;margin:0 auto">
+  </div>
+  <p style="font-size:18px;font-weight:800;color:#1A1511;margin:16px 0 6px">Scannez pour commander</p>
+  <p style="font-size:14px;color:#6B6560">Consultez notre carte et commandez directement depuis votre smartphone.</p>
+ </div>
+</div>
+
 <div id="toast" class="toast">Modifications enregistrées !</div>
 
 <script>
 const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
-let key='',config={},overrides={},promos={},catalog={},sales=[]
+let key='',config={},overrides={},promos={},catalog={},customItems={},sales=[]
 
 function showToast(msg='Modifications enregistrées !'){
  const t=$('#toast');t.textContent=msg;t.style.display='block'
@@ -230,12 +327,14 @@ async function loadData(){
   overrides=j.overrides||{}
   promos=j.promos||{}
   catalog=j.catalog||{}
+  customItems=j.customItems||{}
   sales=j.sales||[]
   renderStatus()
   renderMenu()
   renderPromos()
   renderSales()
   renderRib()
+  updateQrView(1)
  }catch(e){console.error(e)}
 }
 
@@ -273,26 +372,58 @@ async function saveConfig(){
  if(res.ok){config=await res.json();renderStatus();showToast()}
 }
 
+// TOGGLE NOUVEAU PRODUIT FORM
+$('#toggle-new-prod-btn').onclick=()=>{
+ const box=$('#new-prod-box')
+ box.style.display=box.style.display==='none'?'block':'none'
+}
+$('#cancel-new-prod').onclick=()=>{
+ $('#new-prod-box').style.display='none'
+}
+$('#new-prod-form').onsubmit=async e=>{
+ e.preventDefault()
+ const name=$('#np-name').value.trim()
+ const cat=$('#np-cat').value
+ const price=Math.round(parseFloat($('#np-price').value)*100)
+ const desc=$('#np-desc').value.trim()
+ const res=await api({action:'saveCustomItem',data:{name,cat,price,desc}})
+ if(res.ok){
+  customItems=await res.json()
+  renderMenu($('#search-item').value)
+  $('#new-prod-form').reset()
+  $('#new-prod-box').style.display='none'
+  showToast('Nouveau produit ajouté à la carte !')
+ }
+}
+
 function renderMenu(query=''){
  const q=query.toLowerCase().trim()
  const list=$('#items-list')
- const keys=Object.keys(catalog).filter(id=>{
-  const item=catalog[id]
+ const allItems={...catalog,...customItems}
+ const keys=Object.keys(allItems).filter(id=>{
+  const item=allItems[id]
   return !q||item.name.toLowerCase().includes(q)||item.cat.toLowerCase().includes(q)
  })
 
  if(!keys.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucun produit trouvé</p>';return}
 
  list.innerHTML=keys.map(id=>{
-  const item=catalog[id]
+  const item=allItems[id]
+  const isCustom=!!customItems[id]
   const ov=overrides[id]||{}
   const currentPrice=typeof ov.price==='number'&&ov.price>0?ov.price:item.price
   const isOut=!!ov.outOfStock
   return `<div class="item-row" data-id="${id}">
-   <div><div class="item-name">${item.name}</div><div class="item-cat">${item.cat}</div></div>
+   <div>
+    <div class="item-name">${item.name} ${isCustom?'<span class="badge-custom">Créé par vous</span>':''}</div>
+    <div class="item-cat">${item.cat}${item.desc?` · <i>${item.desc}</i>`:''}</div>
+   </div>
    <div class="price-input-wrap"><input type="number" step="0.50" min="0" class="price-input" value="${(currentPrice/100).toFixed(2)}"> €</div>
    <div><button class="btn ${isOut?'warn':'ghost'}" data-act="stock">${isOut?'Rupture':'En stock'}</button></div>
-   <div><button class="btn ink" data-act="save">Enregistrer</button></div>
+   <div style="display:flex;gap:6px">
+    <button class="btn ink" data-act="save">Enregistrer</button>
+    ${isCustom?'<button class="btn warn" data-act="del-custom" title="Supprimer ce produit" style="padding:10px 14px">🗑️</button>':''}
+   </div>
   </div>`
  }).join('')
 }
@@ -315,6 +446,11 @@ $('#items-list').onclick=async e=>{
  if(btn.dataset.act==='save'){
   const res=await api({action:'saveOverride',data:{id,price:priceVal,outOfStock:!!ov.outOfStock}})
   if(res.ok){overrides=await res.json();showToast('Nouveau prix enregistré')}
+ }
+ if(btn.dataset.act==='del-custom'){
+  if(!confirm('Voulez-vous vraiment supprimer définitivement ce produit de la carte ?'))return
+  const res=await api({action:'deleteCustomItem',data:{id}})
+  if(res.ok){customItems=await res.json();renderMenu($('#search-item').value);showToast('Produit supprimé de la carte')}
  }
 }
 
@@ -361,18 +497,44 @@ $('#promos-list').onclick=async e=>{
 }
 
 // QR CODES TABLES
-$('#gen-qr-btn').onclick=()=>{
- const num=$('#table-num-input').value||'1'
- const url=`${location.origin}/?table=${num}`
- $('#qr-table-title').textContent=`Table n° ${num}`
+function updateQrView(num){
+ const n=String(num||'1')
+ $('#table-num-input').value=n
+ const url=`${location.origin}/?table=${n}`
+ const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(url)}`
+ $('#qr-table-title').textContent=`Table n° ${n}`
  $('#qr-link-url').textContent=url
  $('#qr-link-url').href=url
- $('#qr-result').style.display='block'
+ $('#qr-img').src=qrUrl
+ $('#print-tbl-title').textContent=`TABLE N° ${n}`
+ $('#print-qr-img').src=qrUrl
+
+ document.querySelectorAll('.quick-tbl-btn').forEach(b=>{
+  b.classList.toggle('on', b.dataset.num===n)
+ })
 }
+
+document.querySelectorAll('.quick-tbl-btn').forEach(b=>{
+ b.onclick=()=>updateQrView(b.dataset.num)
+})
+$('#gen-qr-btn').onclick=()=>updateQrView($('#table-num-input').value)
+
 $('#copy-qr-btn').onclick=()=>{
  const url=$('#qr-link-url').href
  navigator.clipboard?.writeText(url)
- showToast('Lien QR Table copié !')
+ showToast('Lien copié dans le presse-papier !')
+}
+
+$('#download-qr-btn').onclick=()=>{
+ const a=document.createElement('a')
+ a.href=$('#qr-img').src
+ a.target='_blank'
+ a.download=`QRCode_Table_${$('#table-num-input').value}.png`
+ a.click()
+}
+
+$('#print-chevalet-btn').onclick=()=>{
+ window.print()
 }
 
 // SALES & REPORT Z

@@ -341,12 +341,42 @@ ok('Order accepted after re-open (201)', r.status === 201, `status=${r.status}`)
 section('7. Static pages')
 
 r = await get('/cuisine')
-ok('Kitchen screen served', r.status === 200 && (await r.text()).includes('Écran cuisine'))
+const cuisineHtml = await r.text()
+ok('Kitchen screen served', r.status === 200 && cuisineHtml.includes('Écran cuisine'))
+ok('Kitchen screen has NO Espace Gérant button', !cuisineHtml.includes('Espace Gérant'))
 
 r = await get('/gerant')
 const gerantHtml = await r.text()
 ok('Gérant screen served', r.status === 200)
 ok('Gérant has password gate', gerantHtml.includes('password') || gerantHtml.includes('mot de passe') || gerantHtml.includes('Mot de passe'))
+ok('Gérant screen has QR chevalet and custom products form', gerantHtml.includes('new-prod-form') && gerantHtml.includes('chevalet'))
+
+// ─── Section 8: Custom items (produits gérant) ────────────────────────────────
+section('8. Custom items (produits gérant)')
+
+// saveCustomItem
+r = await post('/api/manager', { action: 'saveCustomItem', data: { name: 'Burger Spécial Maison', cat: 'Burgers', price: 1050, desc: 'Recette du chef' } }, GK)
+j = await r.json()
+ok('saveCustomItem created (200)', r.status === 200, `status=${r.status}`)
+const customId = Object.keys(j).find(k => k.startsWith('custom:'))
+ok('Custom item has custom: prefix id', !!customId, `keys=${Object.keys(j).join(',')}`)
+
+// Custom item accepted in order
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: customId, qty: 1 }], customer: { name: 'CustomClient', phone: '0688877766' } })
+ok('Custom item accepted in order (201)', r.status === 201, `status=${r.status}`)
+
+// saveCustomItem — missing required field
+r = await post('/api/manager', { action: 'saveCustomItem', data: { cat: 'Test' } }, GK)
+ok('saveCustomItem missing name/price → 400', r.status === 400, `status=${r.status}`)
+
+// deleteCustomItem
+r = await post('/api/manager', { action: 'deleteCustomItem', data: { id: customId } }, GK)
+j = await r.json()
+ok('deleteCustomItem removed item (200)', r.status === 200 && !j[customId], `status=${r.status} keys=${Object.keys(j).join(',')}`)
+
+// Deleted custom item rejected in new order
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: customId, qty: 1 }], customer: { name: 'DeletedClient', phone: '0688877755' } })
+ok('Deleted custom item rejected in order (400)', r.status === 400, `status=${r.status}`)
 
 // ─── Summary ──────────────────────────────────────────────────────────────────
 srv.kill()

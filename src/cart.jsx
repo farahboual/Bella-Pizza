@@ -1,17 +1,18 @@
 import {createContext,useContext,useEffect,useState} from 'react'
 import {CATALOG,RULES,eur} from '../shared/catalog.js'
-const Ctx=createContext(null),useCart=()=>useContext(Ctx)
+const Ctx=createContext(null)
+export const useCart=()=>useContext(Ctx)
 const KEY='tp-cart'
 
 const getPrice=(id,cfg)=>{
  const ov=cfg?.overrides?.[id]
- return (ov&&typeof ov.price==='number'&&ov.price>0)?ov.price:(CATALOG[id]?.price||0)
+ return (ov&&typeof ov.price==='number'&&ov.price>0)?ov.price:(CATALOG[id]?.price||cfg?.customItems?.[id]?.price||0)
 }
 
 const isOut=(id,cfg)=>!!cfg?.overrides?.[id]?.outOfStock
 
 export function CartProvider({children}){
- const[lines,setLines]=useState(()=>{try{return(JSON.parse(localStorage.getItem(KEY))||[]).filter(l=>CATALOG[l.id])}catch{return[]}})
+ const[lines,setLines]=useState(()=>{try{return(JSON.parse(localStorage.getItem(KEY))||[]).filter(l=>CATALOG[l.id]||l.id.startsWith('custom:'))}catch{return[]}})
  const[open,setOpen]=useState(false),[cfg,setCfg]=useState(null)
  useEffect(()=>{try{localStorage.setItem(KEY,JSON.stringify(lines))}catch{}},[lines])
  useEffect(()=>{fetch('/api/config').then(r=>r.ok?r.json():null).then(setCfg).catch(()=>setCfg(null))},[])
@@ -29,10 +30,11 @@ export function CartProvider({children}){
 
 export const AddBtn=({id})=>{
  const{add,enabled,isOut,cfg}=useCart(),[ok,setOk]=useState(false)
- if(!enabled||!CATALOG[id])return null
+ const item=CATALOG[id]||cfg?.customItems?.[id]
+ if(!enabled||!item)return null
  const out=isOut(id,cfg)
  if(out)return <span className="tag-out">Rupture</span>
- return <button className={'add'+(ok?' ok':'')} aria-label={`Ajouter ${CATALOG[id].name} au panier`} onClick={()=>{add(id);setOk(true);setTimeout(()=>setOk(false),900)}}>{ok?'✓':'+'}</button>
+ return <button className={'add'+(ok?' ok':'')} aria-label={`Ajouter ${item.name} au panier`} onClick={()=>{add(id);setOk(true);setTimeout(()=>setOk(false),900)}}>{ok?'✓':'+'}</button>
 }
 
 export const CartButton=()=>{
@@ -103,7 +105,7 @@ export function CartDrawer(){
   <button className="btn ink" onClick={close}>Fermer</button></div>
   :!count?<div className="cart-b"><p>Votre panier est vide. Ajoutez des plats avec le bouton <b>+</b> sur la carte.</p></div>
   :<form className="cart-b" onSubmit={submit}>
-   <ul className="cl">{lines.map(l=>{const c=CATALOG[l.id],price=getPrice(l.id,cfg);return <li key={l.id}><div className="cl-t"><b>{c.name}</b><span>{eur(price*l.qty)}</span></div>
+   <ul className="cl">{lines.map(l=>{const c=CATALOG[l.id]||cfg?.customItems?.[l.id]||{name:'Article'},price=getPrice(l.id,cfg);return <li key={l.id}><div className="cl-t"><b>{c.name}</b><span>{eur(price*l.qty)}</span></div>
     <div className="cl-q"><button type="button" onClick={()=>setQty(l.id,l.qty-1)} aria-label="Retirer un">−</button><span aria-live="polite">{l.qty}</span><button type="button" onClick={()=>setQty(l.id,l.qty+1)} aria-label="Ajouter un">+</button>
     <input value={l.note} maxLength={120} onChange={e=>setNote(l.id,e.target.value)} placeholder="Précisions (sauces, boisson, sans oignon…)" aria-label={`Précisions pour ${c.name}`}/></div></li>})}</ul>
    <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
