@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Espace Superadmin — Taco Pizza</title>
+<title>Espace Gérant — Taco Pizza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -85,9 +85,9 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#C41E17"/><path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/><circle cx="15" cy="20" r="3.2" fill="#fff"/><circle cx="29" cy="32" r="3.2" fill="#fff"/></svg>
    <b>Taco<span>Pizza</span></b>
   </div>
-  <h1>Espace Superadmin</h1>
-  <p>Accès superadministrateur du restaurant. Veuillez vous identifier.</p>
-  <input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe superadmin" required>
+  <h1>Espace Gérant</h1>
+  <p>Accès gérant du restaurant. Veuillez vous identifier.</p>
+  <input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe gérant" required>
   <div id="er"></div>
   <button id="go" class="btn red" style="width:100%;padding:16px;font-size:16px">Accéder au tableau de bord</button>
  </form>
@@ -96,11 +96,11 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 <!-- HEADER -->
 <header>
  <div style="display:flex;gap:12px;align-items:center">
-  <a class="logo" href="#top" aria-label="Taco Pizza Superadmin">
+  <a class="logo" href="#top" aria-label="Taco Pizza Gérant">
    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#C41E17"/><path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/><circle cx="15" cy="20" r="3.2" fill="#fff"/><circle cx="29" cy="32" r="3.2" fill="#fff"/></svg>
    <b>Taco<span>Pizza</span></b>
   </a>
-  <span class="badge-admin">Superadmin</span>
+  <span class="badge-admin">Gérant</span>
  </div>
  <div style="display:flex;gap:12px;align-items:center">
   <a href="/cuisine/index.html" class="btn ghost" target="_blank">Ouvrir Écran Cuisine ↗</a>
@@ -109,7 +109,7 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 </header>
 
 <div class="container">
- <h1 class="page-title">Tableau de bord Superadmin</h1>
+ <h1 class="page-title">Tableau de bord Gérant</h1>
  <p class="page-sub">Gestion intégrale : ouvertures, carte, nouveaux plats, codes promo, QR codes et comptabilité.</p>
 
  <div class="tabs" role="tablist">

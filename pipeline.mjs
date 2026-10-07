@@ -344,12 +344,15 @@ r = await get('/cuisine')
 const cuisineHtml = await r.text()
 ok('Kitchen screen served', r.status === 200 && cuisineHtml.includes('Écran cuisine'))
 ok('Kitchen screen has NO Espace Gérant button', !cuisineHtml.includes('Espace Gérant'))
+ok('Kitchen screen has NO Test du son button', !cuisineHtml.includes('Test du son'))
+ok('Kitchen screen has NO "en direct (Supabase)" text', !cuisineHtml.includes('en direct') && !cuisineHtml.includes('Supabase)'))
 
 r = await get('/gerant')
 const gerantHtml = await r.text()
 ok('Gérant screen served', r.status === 200)
 ok('Gérant has password gate', gerantHtml.includes('password') || gerantHtml.includes('mot de passe') || gerantHtml.includes('Mot de passe'))
 ok('Gérant screen has QR chevalet and custom products form', gerantHtml.includes('new-prod-form') && gerantHtml.includes('chevalet'))
+ok('Gérant screen has NO "Superadmin" term', !gerantHtml.toLowerCase().includes('superadmin'))
 
 // ─── Section 8: Custom items (produits gérant) ────────────────────────────────
 section('8. Custom items (produits gérant)')
