@@ -15,7 +15,7 @@ export function CartProvider({children}){
  const[lines,setLines]=useState(()=>{try{return(JSON.parse(localStorage.getItem(KEY))||[]).filter(l=>CATALOG[l.id]||l.id.startsWith('custom:'))}catch{return[]}})
  const[open,setOpen]=useState(false),[cfg,setCfg]=useState(null)
  useEffect(()=>{try{localStorage.setItem(KEY,JSON.stringify(lines))}catch{}},[lines])
- useEffect(()=>{fetch('/api/config').then(r=>r.ok?r.json():null).then(setCfg).catch(()=>setCfg(null))},[])
+ useEffect(()=>{fetch('/api/config').then(r=>r.ok?r.json():null).then(data=>{setCfg(data);if(data?.customItems){setLines(l=>l.filter(a=>CATALOG[a.id]||(a.id.startsWith('custom:')&&!!data.customItems[a.id])))}}).catch(()=>setCfg(null))},[])
  useEffect(()=>{document.body.style.overflow=open?'hidden':'';const k=e=>e.key=='Escape'&&setOpen(false);addEventListener('keydown',k);return()=>removeEventListener('keydown',k)},[open])
 
  const add=id=>{

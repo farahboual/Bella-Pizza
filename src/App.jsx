@@ -282,7 +282,7 @@ const Generic=({c})=><>
 </>
 
 function Menu(){
-  const {cfg}=useCart()
+  const {cfg,getPrice,isOut}=useCart()
   const customList=Object.values(cfg?.customItems||{})
   const allCats=customList.length ? [{id:'special',t:'Spécialités'}, ...CATS] : CATS
   const[cat,setCat]=useState('pizzas'),[size,setSize]=useState(1),tabs=useRef()
@@ -319,9 +319,20 @@ function Menu(){
                   <p>Créations spéciales du chef</p>
                 </div>
                 <div className="list">
-                  {customList.map(it=>(
-                    <Row key={it.id} n={it.name} d={it.desc||it.cat} p={eur(it.price)} id={it.id}/>
-                  ))}
+                  {customList.map(it=>{
+                    const liveP=getPrice(it.id,cfg)||it.price
+                    const out=isOut(it.id,cfg)
+                    return(
+                      <div key={it.id} className={'row'+(out?' row-out':'')}>
+                        <h4 style={out?{color:'var(--mute)'}:{}}>{it.name}</h4>
+                        {(it.desc||it.cat)&&<p style={out?{color:'var(--mute)'}:{}}>{it.desc||it.cat}</p>}
+                        <div className="pcol">
+                          <motion.span key={liveP} className="pr" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:.3}}>{eur(liveP)}</motion.span>
+                          {out?<span className="tag-out">Rupture</span>:<AddBtn id={it.id}/>}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </>
             ):c?.pizza?<Pizzas size={size} setSize={setSize}/>:<Generic c={c}/>}

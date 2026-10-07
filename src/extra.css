@@ -12,6 +12,15 @@
 .add:active { transform: scale(.92) }
 .add.ok { background: #22c55e; color: #fff }
 
+/* Out-of-stock badge (replaces add button) */
+.tag-out {
+  flex: none; display: inline-flex; align-items: center; padding: 4px 10px;
+  border-radius: 99px; background: #f3f4f6; color: var(--mute);
+  font: 700 11px var(--d); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap;
+}
+/* Row greyed out when out of stock */
+.row-out { opacity: .55 }
+
 /* Cart button in header */
 .cartbtn {
   position: relative; flex: none; width: 44px; height: 44px; border-radius: 50%;
