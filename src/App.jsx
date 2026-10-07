@@ -172,6 +172,7 @@ const PICKS=[
 ]
 
 function Bestsellers(){
+  const {cfg,getPrice,isOut}=useCart()
   const items=CATS.flatMap(c=>
     (c.items||[]).slice(0,2).map(([n,d,p])=>{
       const id=`${c.id}:${slug(n)}`
@@ -188,21 +189,25 @@ function Bestsellers(){
           <a className="sec-link" href="#carte">Voir toute la carte →</a>
         </div>
         <div className="items-grid">
-          {items.map((it,i)=>(
-            <motion.div key={it.id} className="item-card"
-              initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:'-40px'}}
-              transition={{duration:.6,delay:i*.08,ease}}>
-              <img src={it.img} alt={it.name}/>
-              <div className="item-body">
-                <h4>{it.name}</h4>
-                {it.desc&&<p>{it.desc}</p>}
-              </div>
-              <div className="item-footer">
-                <span className="item-price">{eur(it.price)}</span>
-                <AddBtn id={it.id}/>
-              </div>
-            </motion.div>
-          ))}
+          {items.map((it,i)=>{
+            const livePrice=getPrice?getPrice(it.id,cfg):it.price
+            const out=isOut?isOut(it.id,cfg):false
+            return(
+              <motion.div key={it.id} className={'item-card'+(out?' row-out':'')}
+                initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:'-40px'}}
+                transition={{duration:.6,delay:i*.08,ease}}>
+                <img src={it.img} alt={it.name}/>
+                <div className="item-body">
+                  <h4>{it.name}</h4>
+                  {it.desc&&<p>{it.desc}</p>}
+                </div>
+                <div className="item-footer">
+                  <span className="item-price">{eur(livePrice||it.price)}</span>
+                  <AddBtn id={it.id}/>
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </section>
@@ -229,15 +234,21 @@ function PromoBanner(){
 }
 
 // Menu section (carte)
-const Row=({n,d,p,id})=>(
-  <div className={'row'+(p?'':' np')}>
-    <h4>{n}</h4>{d&&<p>{d}</p>}
-    <div className="pcol">
-      <motion.span key={p} className="pr" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:.3}}>{p}</motion.span>
-      {id&&<AddBtn id={id}/>}
+const Row=({n,d,p,id})=>{
+  const {cfg,getPrice,isOut}=useCart()
+  const livePrice=id&&getPrice?getPrice(id,cfg):null
+  const displayPrice=livePrice?eur(livePrice):p
+  const out=id&&isOut?isOut(id,cfg):false
+  return(
+    <div className={'row'+(p?'':' np')+(out?' row-out':'')}>
+      <h4>{n}</h4>{d&&<p>{d}</p>}
+      <div className="pcol">
+        <motion.span key={displayPrice} className="pr" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:.3}}>{displayPrice}</motion.span>
+        {id&&<AddBtn id={id}/>}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 function Pizzas({size,setSize}){
   const price=SZ[size][1]
@@ -319,20 +330,9 @@ function Menu(){
                   <p>Créations spéciales du chef</p>
                 </div>
                 <div className="list">
-                  {customList.map(it=>{
-                    const liveP=getPrice(it.id,cfg)||it.price
-                    const out=isOut(it.id,cfg)
-                    return(
-                      <div key={it.id} className={'row'+(out?' row-out':'')}>
-                        <h4 style={out?{color:'var(--mute)'}:{}}>{it.name}</h4>
-                        {(it.desc||it.cat)&&<p style={out?{color:'var(--mute)'}:{}}>{it.desc||it.cat}</p>}
-                        <div className="pcol">
-                          <motion.span key={liveP} className="pr" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:.3}}>{eur(liveP)}</motion.span>
-                          {out?<span className="tag-out">Rupture</span>:<AddBtn id={it.id}/>}
-                        </div>
-                      </div>
-                    )
-                  })}
+                  {customList.map(it=>(
+                    <Row key={it.id} n={it.name} d={it.desc||it.cat} p={eur(it.price)} id={it.id}/>
+                  ))}
                 </div>
               </>
             ):c?.pizza?<Pizzas size={size} setSize={setSize}/>:<Generic c={c}/>}
