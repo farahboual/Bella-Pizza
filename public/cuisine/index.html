@@ -64,7 +64,7 @@ li i{display:block;font:600 13px var(--font);color:#b25;margin-top:4px;font-styl
 <script>
 const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))
-let orders=new Map(),ctx,muted=false,autoPrint=false,timer,key='',printedSet=new Set()
+let orders=new Map(),ctx,muted=false,autoPrint=false,timer,key='',printedSet=new Set(),printQueue=[]
 const time=t=>{try{const d=new Date(t);return isNaN(d.getTime())?'--:--':d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'})}catch{return '--:--'}}
 // ----- Restaurant service bell / counter bell chime ("Ding! Ding!") -----
 function chime(t,freq=2093,vol=.8){
@@ -86,7 +86,8 @@ function getOrderData(o){
 const typeLabel=o=>o.type==='livraison'?'LIVRAISON':o.type==='sur_place'?(o.tableNumber?`SUR PLACE (Table ${esc(o.tableNumber)})`:'SUR PLACE'):'À EMPORTER'
 const typeClass=t=>t==='livraison'?'mod':t==='sur_place'?'sp':'mod'
 // ----- print 80mm ticket -----
-function print(o){
+// NOTE: function is named printTicket (not print) to avoid shadowing window.print()
+function printTicket(o){
  try{
   if(!o)return
   const {items,cust}=getOrderData(o)
@@ -95,8 +96,17 @@ function print(o){
   window.print()
  }catch(err){
   console.error('[Print Error]',err)
-  alert('Erreur lors de l’impression : '+err.message)
+  alert('Erreur lors de l\'impression : '+err.message)
  }
+}
+// Drain the auto-print queue one ticket at a time (500ms apart so the print dialog can close)
+let draining=false
+function drainPrintQueue(){
+ if(draining||!printQueue.length)return
+ draining=true
+ const o=printQueue.shift()
+ printTicket(o)
+ setTimeout(()=>{draining=false;drainPrintQueue()},500)
 }
 // ----- UI -----
 function render(){
@@ -118,7 +128,7 @@ $('#list').onclick=async e=>{
  const art=b.closest('.o');if(!art)return;
  const o=orders.get(art.dataset.id);
  if(b.dataset.p){
-  if(o){print(o)}else{alert('Commande introuvable')}
+  if(o){printTicket(o)}else{alert('Commande introuvable')}
   return
  }
  if(!o)return;
@@ -126,7 +136,7 @@ $('#list').onclick=async e=>{
 const api=(p,o={})=>fetch('/api/kitchen'+p,{...o,headers:{'x-kitchen-key':key,'content-type':'application/json'}})
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.wakeLock?.request('screen').catch(()=>{})})
 $('#test').onclick=()=>{ring()}
-$('#mute').onclick=e=>{muted=!muted;e.target.textContent=muted?'Réactiver l’alarme':'Couper l’alarme';alarm()}
+$('#mute').onclick=e=>{muted=!muted;e.target.textContent=muted?'Réactiver l\'alarme':'Couper l\'alarme';alarm()}
 $('#autoprint-btn').onclick=e=>{
  autoPrint=!autoPrint
  e.target.textContent=autoPrint?'🖨️ Auto-impression: ON':'🖨️ Auto-impression: OFF'
@@ -134,7 +144,7 @@ $('#autoprint-btn').onclick=e=>{
 }
 async function load(){try{const r=await api('');if(r.status===401){sessionStorage.removeItem('k');location.reload();return}
  const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();
- if(autoPrint){for(const o of orders.values()){if(o.status==='new'&&!printedSet.has(o.id)){printedSet.add(o.id);print(o)}}}
+ if(autoPrint){for(const o of orders.values()){if(o.status==='new'&&!printedSet.has(o.id)){printedSet.add(o.id);printQueue.push(o)}}; drainPrintQueue()}
  if(j.dbError){console.error('[Supabase Error]',j.dbError);$('#st').innerHTML=`<span style="color:var(--red);font-weight:700" title="${esc(j.dbError)}">⚠️ Base SQL : ${esc(j.dbError.slice(0,55))}</span>`}
  else{$('#st').textContent='en direct'+(j.persistent?' (Supabase)':' (mode mémoire)')+' · '+time(Date.now())}}catch{$('#st').textContent='connexion perdue, nouvel essai…'}}
 $('#f').onsubmit=async e=>{e.preventDefault();key=$('#pw').value
