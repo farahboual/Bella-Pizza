@@ -1,0 +1,356 @@
+#!/usr/bin/env node
+// pipeline.mjs — Full test pipeline for taco-pizza-order
+// Covers: build, legacy regression, promo codes, table/sur_place, manager API, manual closure
+import http from 'node:http'
+import crypto from 'node:crypto'
+import { spawn } from 'node:child_process'
+import { execSync } from 'node:child_process'
+
+const sleep = ms => new Promise(r => setTimeout(r, ms))
+const PORT = 3222
+const B = `http://localhost:${PORT}`
+const K = { 'x-kitchen-key': 'pw' }
+const MK = { 'x-kitchen-key': 'pw', 'content-type': 'application/json' }
+
+let totalFails = 0
+let totalPass = 0
+let sectionFails = 0
+let currentSection = ''
+
+const RESET = '\x1b[0m'
+const GREEN = '\x1b[32m'
+const RED = '\x1b[31m'
+const YELLOW = '\x1b[33m'
+const CYAN = '\x1b[36m'
+const BOLD = '\x1b[1m'
+
+function section(name) {
+  currentSection = name
+  sectionFails = 0
+  console.log(`\n${CYAN}${BOLD}── ${name} ${'─'.repeat(Math.max(0, 55 - name.length))}${RESET}`)
+}
+
+function ok(label, cond, detail = '') {
+  if (cond) {
+    totalPass++
+    console.log(`  ${GREEN}PASS${RESET}  ${label}`)
+  } else {
+    totalFails++
+    sectionFails++
+    console.log(`  ${RED}FAIL${RESET}  ${label}${detail ? `  →  ${RED}${detail}${RESET}` : ''}`)
+  }
+}
+
+const post = (p, o, h = {}) =>
+  fetch(B + p, { method: 'POST', headers: { 'content-type': 'application/json', ...h }, body: typeof o === 'string' ? o : JSON.stringify(o) })
+
+const get = (p, h = {}) => fetch(B + p, { headers: h })
+
+const kit = async () => (await (await get('/api/kitchen', K)).json()).orders
+
+const cust = { name: 'Test', phone: '0612345678', address: '1 rue X', postcode: '49400' }
+
+// ─── Section 1: Build ──────────────────────────────────────────────────────────
+section('1. Build (npm run build)')
+try {
+  execSync('npm run build', {
+    cwd: new URL('.', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1'),
+    stdio: 'pipe',
+    timeout: 60000,
+  })
+  ok('npm run build exits with code 0', true)
+} catch (e) {
+  ok('npm run build exits with code 0', false, e.stderr?.toString().slice(0, 200) || e.message)
+}
+
+// ─── Start test server ────────────────────────────────────────────────────────
+let got = null
+const mock = http.createServer((q, s) => {
+  let b = ''
+  q.on('data', c => b += c)
+  q.on('end', () => {
+    got = new URLSearchParams(b)
+    s.writeHead(200, { 'content-type': 'application/json' })
+    s.end(JSON.stringify({ id: 'cs_test_1', url: 'https://checkout.stripe.com/c/pay/cs_test_1' }))
+  })
+}).listen(5888)
+
+const env = {
+  ...process.env,
+  PORT: String(PORT),
+  ALWAYS_OPEN: '1',
+  STRIPE_SECRET_KEY: 'sk_test_x',
+  STRIPE_WEBHOOK_SECRET: 'whsec_test',
+  STRIPE_API_BASE: 'http://localhost:5888',
+  KITCHEN_PASSWORD: 'pw',
+}
+delete env.SUPABASE_URL
+delete env.SUPABASE_SERVICE_ROLE_KEY
+
+const srv = spawn('node', ['dev-server.js'], { env, stdio: 'ignore' })
+srv.on('error', e => { console.error('Server failed to start:', e.message); process.exit(1) })
+await sleep(1000)
+
+// ─── Section 2: Core regression (existing tests) ──────────────────────────────
+section('2. Core regression')
+
+let r, j
+
+// On-site order
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:senior', qty: 1, price: 1 }], customer: cust })
+j = await r.json()
+ok('On-site order created (201)', r.status === 201 && j.number === 1, `status=${r.status}`)
+
+// Unknown item
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'hack', qty: 1 }], customer: cust })
+ok('Unknown item rejected (400)', r.status === 400, `status=${r.status}`)
+
+// Delivery minimum
+r = await post('/api/orders', { type: 'livraison', payment: 'sur_place', items: [{ id: 'burgers:cheese', qty: 1 }], customer: cust })
+ok('Delivery min 25€ enforced (400)', r.status === 400, `status=${r.status}`)
+
+// Kitchen auth
+r = await get('/api/kitchen')
+ok('Kitchen without key = 401', r.status === 401, `status=${r.status}`)
+
+// Catalog pricing
+let L = await kit()
+ok('Kitchen sees order at catalog price (1400 cts)', L.length === 1 && L[0].total === 1400, `total=${L[0]?.total}`)
+
+// Online order + Stripe
+r = await post('/api/orders', { type: 'emporter', payment: 'online', items: [{ id: 'pizzas:regina:mega', qty: 1 }, { id: 'boissons:maxi-1-5l', qty: 1 }], customer: { ...cust, phone: '0699999999', email: 'a@b.fr' } })
+j = await r.json()
+ok('Online order returns Stripe URL (201)', r.status === 201 && j.url?.includes('stripe'), `status=${r.status}`)
+ok('Stripe amounts from catalog (1900 + 390)', got?.get('line_items[0][price_data][unit_amount]') === '1900' && got?.get('line_items[1][price_data][unit_amount]') === '390')
+
+// Unpaid hidden from kitchen
+ok('Unpaid order hidden from kitchen', (await kit()).length === 1)
+
+// Webhook
+const evt = a => JSON.stringify({ type: 'checkout.session.completed', data: { object: { metadata: { order_id: j.id }, payment_status: 'paid', amount_total: a, payment_intent: 'pi_1' } } })
+const sign = (raw, secret = 'whsec_test') => { const t = Math.floor(Date.now() / 1000); return `t=${t},v1=${crypto.createHmac('sha256', secret).update(`${t}.${raw}`).digest('hex')}` }
+
+let raw = evt(2290)
+r = await post('/api/stripe-webhook', raw, { 'stripe-signature': sign(raw, 'wrong') })
+ok('Bad webhook signature rejected (400)', r.status === 400, `status=${r.status}`)
+
+raw = evt(100)
+await post('/api/stripe-webhook', raw, { 'stripe-signature': sign(raw) })
+ok('Wrong amount not released', (await kit()).length === 1)
+
+raw = evt(2290)
+r = await post('/api/stripe-webhook', raw, { 'stripe-signature': sign(raw) })
+await post('/api/stripe-webhook', raw, { 'stripe-signature': sign(raw) }) // retry
+L = await kit()
+ok('Valid webhook releases order, retry harmless', r.status === 200 && L.length === 2 && L[1].paid === true)
+
+// Kitchen status flow
+const paid = L.find(o => o.paid)
+r = await post('/api/kitchen', { id: paid.id, status: 'ready' }, K)
+ok('Cannot skip step new→ready (400)', r.status === 400, `status=${r.status}`)
+r = await post('/api/kitchen', { id: paid.id, status: 'accepted' }, K)
+ok('Accept order works', (await r.json()).status === 'accepted')
+
+// Public order status
+r = await get('/api/order-status?id=' + j.id)
+ok('Public status fields minimal (id,number,paid,status)', Object.keys(await r.json()).sort().join() === 'id,number,paid,status')
+
+// Rate limiting
+for (let i = 0; i < 4; i++) r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'desserts:brownies', qty: 1 }], customer: { ...cust, phone: '0711111111' } })
+ok('4th order same phone 30 min → 429', r.status === 429, `status=${r.status}`)
+
+// Kitchen page served
+r = await get('/cuisine')
+ok('Kitchen page served', r.status === 200 && (await r.text()).includes('Écran cuisine'))
+
+// ─── Section 3: Order types ───────────────────────────────────────────────────
+section('3. Order types')
+
+// sur_place without address
+r = await post('/api/orders', { type: 'sur_place', payment: 'sur_place', items: [{ id: 'desserts:brownies', qty: 1 }], customer: { name: 'TableTest', phone: '0612345000' }, tableNumber: '7' })
+j = await r.json()
+ok('sur_place accepted (no address needed) (201)', r.status === 201, `status=${r.status} body=${JSON.stringify(j)}`)
+
+// Table number saved
+L = await kit()
+const tableOrder = L.find(o => o.customer?.address === 'Table 7')
+ok('Table number stored in kitchen order (Table 7)', !!tableOrder, `addresses=${L.map(o => o.customer?.address).join(', ')}`)
+
+// emporter accepted
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'desserts:brownies', qty: 1 }], customer: { name: 'Emporter', phone: '0612300000' } })
+ok('emporter order accepted (201)', r.status === 201, `status=${r.status}`)
+
+// livraison without address rejected
+r = await post('/api/orders', { type: 'livraison', payment: 'sur_place', items: [{ id: 'pizzas:regina:mega', qty: 3 }], customer: { name: 'Noadr', phone: '0612399999' } })
+ok('livraison without address → 400', r.status === 400, `status=${r.status}`)
+
+// invalid type
+r = await post('/api/orders', { type: 'unknown_type', payment: 'sur_place', items: [{ id: 'desserts:brownies', qty: 1 }], customer: cust })
+ok('Invalid order type → 400', r.status === 400, `status=${r.status}`)
+
+// ─── Section 4: Promo codes ───────────────────────────────────────────────────
+section('4. Promo codes')
+
+// Create a % promo via manager API
+r = await post('/api/manager', { action: 'savePromo', data: { code: 'TEST10', discountType: 'percent', discountValue: 10, active: true } }, K)
+ok('Manager: savePromo % promo (200)', r.status === 200, `status=${r.status}`)
+
+// Create a fixed promo
+r = await post('/api/manager', { action: 'savePromo', data: { code: 'FIXED5', discountType: 'fixed', discountValue: 500, active: true } }, K)
+ok('Manager: savePromo fixed promo (200)', r.status === 200, `status=${r.status}`)
+
+// Apply % promo — pizza regina mega = 1900 cts → 10% off = 1710
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:mega', qty: 1 }], customer: { name: 'PromoTest', phone: '0600000001' }, promoCode: 'TEST10' })
+j = await r.json()
+ok('% promo order created (201)', r.status === 201, `status=${r.status} body=${JSON.stringify(j)}`)
+L = await kit()
+const promoOrder = L.find(o => o.customer?.name === 'PromoTest')
+const expectedTotal = Math.round(1900 * 0.9)
+ok(`% promo: total = ${expectedTotal} cts (10% off 1900)`, promoOrder?.total === expectedTotal, `total=${promoOrder?.total}`)
+ok('% promo: discount recorded', promoOrder?.discount === Math.round(1900 * 0.1), `discount=${promoOrder?.discount}`)
+
+// Apply fixed promo — pizza 1900 cts - 500 cts = 1400
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:mega', qty: 1 }], customer: { name: 'FixedTest', phone: '0600000002' }, promoCode: 'FIXED5' })
+j = await r.json()
+ok('Fixed promo order created (201)', r.status === 201, `status=${r.status}`)
+L = await kit()
+const fixedOrder = L.find(o => o.customer?.name === 'FixedTest')
+ok('Fixed promo: total = 1400 cts (1900 - 500)', fixedOrder?.total === 1400, `total=${fixedOrder?.total}`)
+
+// Invalid promo code
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:mega', qty: 1 }], customer: { name: 'BadPromo', phone: '0600000003' }, promoCode: 'FAKE99' })
+ok('Invalid promo code → 400', r.status === 400, `status=${r.status}`)
+
+// Deactivate promo via savePromo active:false
+r = await post('/api/manager', { action: 'savePromo', data: { code: 'TEST10', discountType: 'percent', discountValue: 10, active: false } }, K)
+ok('Manager: deactivate promo (200)', r.status === 200, `status=${r.status}`)
+
+// Deactivated promo rejected
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:mega', qty: 1 }], customer: { name: 'DeadPromo', phone: '0600000004' }, promoCode: 'TEST10' })
+ok('Deactivated promo → 400', r.status === 400, `status=${r.status}`)
+
+// Delete promo
+r = await post('/api/manager', { action: 'deletePromo', data: { code: 'FIXED5' } }, K)
+j = await r.json()
+ok('Manager: deletePromo (200, code removed)', r.status === 200 && !j['FIXED5'], `status=${r.status} keys=${Object.keys(j).join(',')}`)
+
+// Deleted promo rejected
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:mega', qty: 1 }], customer: { name: 'DeletedPromo', phone: '0600000005' }, promoCode: 'FIXED5' })
+ok('Deleted promo → 400', r.status === 400, `status=${r.status}`)
+
+// ─── Section 5: Manager API ───────────────────────────────────────────────────
+section('5. Manager API (/api/manager)')
+
+// Unauthorized
+r = await get('/api/manager')
+ok('Manager GET without key → 401', r.status === 401, `status=${r.status}`)
+
+r = await post('/api/manager', { action: 'updateConfig', data: {} })
+ok('Manager POST without key → 401', r.status === 401, `status=${r.status}`)
+
+// Authorized GET
+r = await get('/api/manager', K)
+j = await r.json()
+ok('Manager GET returns config + overrides + promos + sales + catalog (200)', r.status === 200 && 'config' in j && 'overrides' in j && 'promos' in j && 'sales' in j && 'catalog' in j, `status=${r.status} keys=${Object.keys(j).join(',')}`)
+
+// updateConfig
+r = await post('/api/manager', { action: 'updateConfig', data: { ribIban: 'FR7612345678901234567890123', ribBic: 'BNPAFRPP', ribHolder: 'Taco Pizza SARL' } }, K)
+j = await r.json()
+ok('Manager: updateConfig saves RIB data', r.status === 200 && j.ribIban === 'FR7612345678901234567890123', `status=${r.status} iban=${j.ribIban}`)
+
+// saveOverride — change price
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:senior', price: 1299, outOfStock: false } }, K)
+ok('Manager: saveOverride price change (200)', r.status === 200, `status=${r.status}`)
+
+// Check overridden price applied in new order
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:senior', qty: 1 }], customer: { name: 'Override', phone: '0600111222' } })
+j = await r.json()
+ok('Overridden price applied in order (201)', r.status === 201, `status=${r.status}`)
+L = await kit()
+const overrideOrder = L.find(o => o.customer?.name === 'Override')
+ok('Menu override price 1299 cts used', overrideOrder?.total === 1299, `total=${overrideOrder?.total}`)
+
+// saveOverride — mark out of stock
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:mega', outOfStock: true } }, K)
+ok('Manager: mark item out of stock (200)', r.status === 200, `status=${r.status}`)
+
+// Out of stock item rejected
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'pizzas:regina:mega', qty: 1 }], customer: { name: 'OOS', phone: '0600111333' } })
+ok('Out-of-stock item → 400', r.status === 400, `status=${r.status}`)
+
+// Restore stock
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:mega', outOfStock: false } }, K)
+ok('Manager: restore stock (200)', r.status === 200, `status=${r.status}`)
+
+// getSalesReport action
+r = await post('/api/manager', { action: 'getSalesReport', data: { days: 1 } }, K)
+j = await r.json()
+ok('Manager: getSalesReport returns sales array', r.status === 200 && Array.isArray(j.sales), `status=${r.status} type=${typeof j.sales}`)
+
+// unknown action
+r = await post('/api/manager', { action: 'doSomethingWeird' }, K)
+ok('Manager: unknown action → 400', r.status === 400, `status=${r.status}`)
+
+// saveOverride with invalid item
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'not:real:item', price: 999 } }, K)
+ok('Manager: saveOverride invalid item id → 400', r.status === 400, `status=${r.status}`)
+
+// ─── Section 6: Manual closure ───────────────────────────────────────────────
+section('6. Manual closure')
+
+// Open a fresh restaurant (should already be open)
+r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: false, closedReason: '' } }, K)
+ok('Set restaurant to open (200)', r.status === 200, `status=${r.status}`)
+
+// Order accepted when open
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'desserts:brownies', qty: 1 }], customer: { name: 'BeforeClosed', phone: '0666000001' } })
+ok('Order accepted when open (201)', r.status === 201, `status=${r.status}`)
+
+// Close the restaurant
+r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: true, closedReason: 'Congés en cours' } }, K)
+ok('Manual closure set (200)', r.status === 200, `status=${r.status}`)
+
+// Order rejected when closed
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'desserts:brownies', qty: 1 }], customer: { name: 'AfterClosed', phone: '0666000002' } })
+j = await r.json()
+ok('Order rejected when manually closed (400)', r.status === 400, `status=${r.status}`)
+ok('Closed reason in error message', j.error?.includes('Congés'), `error="${j.error}"`)
+
+// getConfig reflects closed status (ALWAYS_OPEN=1 keeps open:true in test env, but manualClosed must be true)
+r = await get('/api/config')
+j = await r.json()
+ok('GET /api/config reports manualClosed:true when closed', j.manualClosed === true, `manualClosed=${j.manualClosed}`)
+
+// Re-open
+r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: false } }, K)
+ok('Re-open restaurant (200)', r.status === 200, `status=${r.status}`)
+
+// Order accepted again
+r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [{ id: 'desserts:brownies', qty: 1 }], customer: { name: 'AfterOpen', phone: '0666000003' } })
+ok('Order accepted after re-open (201)', r.status === 201, `status=${r.status}`)
+
+// ─── Section 7: Static pages ──────────────────────────────────────────────────
+section('7. Static pages')
+
+r = await get('/cuisine')
+ok('Kitchen screen served', r.status === 200 && (await r.text()).includes('Écran cuisine'))
+
+r = await get('/gerant')
+const gerantHtml = await r.text()
+ok('Gérant screen served', r.status === 200)
+ok('Gérant has password gate', gerantHtml.includes('password') || gerantHtml.includes('mot de passe') || gerantHtml.includes('Mot de passe'))
+
+// ─── Summary ──────────────────────────────────────────────────────────────────
+srv.kill()
+mock.close()
+
+const total = totalPass + totalFails
+console.log('\n' + '═'.repeat(60))
+if (totalFails === 0) {
+  console.log(`${GREEN}${BOLD}  ALL ${total} TESTS PASSED${RESET}`)
+} else {
+  console.log(`${RED}${BOLD}  ${totalFails} of ${total} TESTS FAILED${RESET}`)
+}
+console.log('═'.repeat(60))
+
+process.exit(totalFails ? 1 : 0)
