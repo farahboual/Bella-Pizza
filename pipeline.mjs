@@ -9,8 +9,8 @@ import { execSync } from 'node:child_process'
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const PORT = 3222
 const B = `http://localhost:${PORT}`
-const K = { 'x-kitchen-key': 'pw' }
-const MK = { 'x-kitchen-key': 'pw', 'content-type': 'application/json' }
+const K = { 'x-kitchen-key': 'kitchen-pw' }   // cuisine screen password
+const GK = { 'x-kitchen-key': 'gerant-pw' }    // gérant screen password
 
 let totalFails = 0
 let totalPass = 0
@@ -82,7 +82,8 @@ const env = {
   STRIPE_SECRET_KEY: 'sk_test_x',
   STRIPE_WEBHOOK_SECRET: 'whsec_test',
   STRIPE_API_BASE: 'http://localhost:5888',
-  KITCHEN_PASSWORD: 'pw',
+  KITCHEN_PASSWORD: 'kitchen-pw',
+  GERANT_PASSWORD: 'gerant-pw',
 }
 delete env.SUPABASE_URL
 delete env.SUPABASE_SERVICE_ROLE_KEY
@@ -192,11 +193,11 @@ ok('Invalid order type → 400', r.status === 400, `status=${r.status}`)
 section('4. Promo codes')
 
 // Create a % promo via manager API
-r = await post('/api/manager', { action: 'savePromo', data: { code: 'TEST10', discountType: 'percent', discountValue: 10, active: true } }, K)
+r = await post('/api/manager', { action: 'savePromo', data: { code: 'TEST10', discountType: 'percent', discountValue: 10, active: true } }, GK)
 ok('Manager: savePromo % promo (200)', r.status === 200, `status=${r.status}`)
 
 // Create a fixed promo
-r = await post('/api/manager', { action: 'savePromo', data: { code: 'FIXED5', discountType: 'fixed', discountValue: 500, active: true } }, K)
+r = await post('/api/manager', { action: 'savePromo', data: { code: 'FIXED5', discountType: 'fixed', discountValue: 500, active: true } }, GK)
 ok('Manager: savePromo fixed promo (200)', r.status === 200, `status=${r.status}`)
 
 // Apply % promo — pizza regina mega = 1900 cts → 10% off = 1710
@@ -222,7 +223,7 @@ r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [
 ok('Invalid promo code → 400', r.status === 400, `status=${r.status}`)
 
 // Deactivate promo via savePromo active:false
-r = await post('/api/manager', { action: 'savePromo', data: { code: 'TEST10', discountType: 'percent', discountValue: 10, active: false } }, K)
+r = await post('/api/manager', { action: 'savePromo', data: { code: 'TEST10', discountType: 'percent', discountValue: 10, active: false } }, GK)
 ok('Manager: deactivate promo (200)', r.status === 200, `status=${r.status}`)
 
 // Deactivated promo rejected
@@ -230,7 +231,7 @@ r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [
 ok('Deactivated promo → 400', r.status === 400, `status=${r.status}`)
 
 // Delete promo
-r = await post('/api/manager', { action: 'deletePromo', data: { code: 'FIXED5' } }, K)
+r = await post('/api/manager', { action: 'deletePromo', data: { code: 'FIXED5' } }, GK)
 j = await r.json()
 ok('Manager: deletePromo (200, code removed)', r.status === 200 && !j['FIXED5'], `status=${r.status} keys=${Object.keys(j).join(',')}`)
 
@@ -241,25 +242,32 @@ ok('Deleted promo → 400', r.status === 400, `status=${r.status}`)
 // ─── Section 5: Manager API ───────────────────────────────────────────────────
 section('5. Manager API (/api/manager)')
 
-// Unauthorized
+// Unauthorized — no key
 r = await get('/api/manager')
 ok('Manager GET without key → 401', r.status === 401, `status=${r.status}`)
 
 r = await post('/api/manager', { action: 'updateConfig', data: {} })
 ok('Manager POST without key → 401', r.status === 401, `status=${r.status}`)
 
-// Authorized GET
+// Cross-auth isolation: kitchen key must NOT open gérant, gérant key must NOT open kitchen
 r = await get('/api/manager', K)
+ok('Kitchen key rejected by gérant API → 401', r.status === 401, `status=${r.status}`)
+
+r = await get('/api/kitchen', GK)
+ok('Gérant key rejected by kitchen API → 401', r.status === 401, `status=${r.status}`)
+
+// Authorized GET with gérant key
+r = await get('/api/manager', GK)
 j = await r.json()
 ok('Manager GET returns config + overrides + promos + sales + catalog (200)', r.status === 200 && 'config' in j && 'overrides' in j && 'promos' in j && 'sales' in j && 'catalog' in j, `status=${r.status} keys=${Object.keys(j).join(',')}`)
 
 // updateConfig
-r = await post('/api/manager', { action: 'updateConfig', data: { ribIban: 'FR7612345678901234567890123', ribBic: 'BNPAFRPP', ribHolder: 'Taco Pizza SARL' } }, K)
+r = await post('/api/manager', { action: 'updateConfig', data: { ribIban: 'FR7612345678901234567890123', ribBic: 'BNPAFRPP', ribHolder: 'Taco Pizza SARL' } }, GK)
 j = await r.json()
 ok('Manager: updateConfig saves RIB data', r.status === 200 && j.ribIban === 'FR7612345678901234567890123', `status=${r.status} iban=${j.ribIban}`)
 
 // saveOverride — change price
-r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:senior', price: 1299, outOfStock: false } }, K)
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:senior', price: 1299, outOfStock: false } }, GK)
 ok('Manager: saveOverride price change (200)', r.status === 200, `status=${r.status}`)
 
 // Check overridden price applied in new order
@@ -271,7 +279,7 @@ const overrideOrder = L.find(o => o.customer?.name === 'Override')
 ok('Menu override price 1299 cts used', overrideOrder?.total === 1299, `total=${overrideOrder?.total}`)
 
 // saveOverride — mark out of stock
-r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:mega', outOfStock: true } }, K)
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:mega', outOfStock: true } }, GK)
 ok('Manager: mark item out of stock (200)', r.status === 200, `status=${r.status}`)
 
 // Out of stock item rejected
@@ -279,27 +287,27 @@ r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [
 ok('Out-of-stock item → 400', r.status === 400, `status=${r.status}`)
 
 // Restore stock
-r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:mega', outOfStock: false } }, K)
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'pizzas:regina:mega', outOfStock: false } }, GK)
 ok('Manager: restore stock (200)', r.status === 200, `status=${r.status}`)
 
 // getSalesReport action
-r = await post('/api/manager', { action: 'getSalesReport', data: { days: 1 } }, K)
+r = await post('/api/manager', { action: 'getSalesReport', data: { days: 1 } }, GK)
 j = await r.json()
 ok('Manager: getSalesReport returns sales array', r.status === 200 && Array.isArray(j.sales), `status=${r.status} type=${typeof j.sales}`)
 
 // unknown action
-r = await post('/api/manager', { action: 'doSomethingWeird' }, K)
+r = await post('/api/manager', { action: 'doSomethingWeird' }, GK)
 ok('Manager: unknown action → 400', r.status === 400, `status=${r.status}`)
 
 // saveOverride with invalid item
-r = await post('/api/manager', { action: 'saveOverride', data: { id: 'not:real:item', price: 999 } }, K)
+r = await post('/api/manager', { action: 'saveOverride', data: { id: 'not:real:item', price: 999 } }, GK)
 ok('Manager: saveOverride invalid item id → 400', r.status === 400, `status=${r.status}`)
 
 // ─── Section 6: Manual closure ───────────────────────────────────────────────
 section('6. Manual closure')
 
 // Open a fresh restaurant (should already be open)
-r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: false, closedReason: '' } }, K)
+r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: false, closedReason: '' } }, GK)
 ok('Set restaurant to open (200)', r.status === 200, `status=${r.status}`)
 
 // Order accepted when open
@@ -307,7 +315,7 @@ r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [
 ok('Order accepted when open (201)', r.status === 201, `status=${r.status}`)
 
 // Close the restaurant
-r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: true, closedReason: 'Congés en cours' } }, K)
+r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: true, closedReason: 'Congés en cours' } }, GK)
 ok('Manual closure set (200)', r.status === 200, `status=${r.status}`)
 
 // Order rejected when closed
@@ -322,7 +330,7 @@ j = await r.json()
 ok('GET /api/config reports manualClosed:true when closed', j.manualClosed === true, `manualClosed=${j.manualClosed}`)
 
 // Re-open
-r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: false } }, K)
+r = await post('/api/manager', { action: 'updateConfig', data: { manualClosed: false } }, GK)
 ok('Re-open restaurant (200)', r.status === 200, `status=${r.status}`)
 
 // Order accepted again
