@@ -353,6 +353,9 @@ ok('Gérant screen served', r.status === 200)
 ok('Gérant has password gate', gerantHtml.includes('password') || gerantHtml.includes('mot de passe') || gerantHtml.includes('Mot de passe'))
 ok('Gérant screen has QR chevalet and custom products form', gerantHtml.includes('new-prod-form') && gerantHtml.includes('chevalet'))
 ok('Gérant screen has NO "Superadmin" term', !gerantHtml.toLowerCase().includes('superadmin'))
+ok('Gérant screen uses "Rapport de caisse" label (not old "Rapport Z & Ventes")', gerantHtml.includes('Rapport de caisse') && !gerantHtml.includes('Rapport Z &amp; Ventes'))
+ok('Gérant screen has period selector buttons', gerantHtml.includes('period-btn') && gerantHtml.includes('data-days'))
+ok('Gérant screen has "rapport Z" explanation text', gerantHtml.includes('rapport Z') || gerantHtml.includes('rapport de caisse'))
 
 // ─── Section 8: Custom items (produits gérant) ────────────────────────────────
 section('8. Custom items (produits gérant)')
