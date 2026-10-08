@@ -21,9 +21,28 @@ export const SAUCES=(CATS.find(c=>c.id==='tacos')||{}).sauces||[]
 export const SUPP_CENTS=50
 export const OPT_CATS=['tacos','burgers','sandwichs']
 export const hasOpts=id=>OPT_CATS.includes(String(id).split(':')[0])
-export const cleanOpts=(id,o)=>hasOpts(id)?{sauce:SAUCES.includes(o&&o.sauce)?o.sauce:'',supp:!!(o&&o.supp)}:{sauce:'',supp:false}
+export const cleanOpts = (id, o) => hasOpts(id)
+  ? {
+      sauces: Array.isArray(o?.sauces)
+        ? o.sauces.filter(s => SAUCES.includes(s))
+        : [],
+      supp: !!o?.supp
+    }
+  : {
+      sauces: [],
+      supp: false
+    }
 export const optExtra=(id,o)=>cleanOpts(id,o).supp?SUPP_CENTS:0
-export const optLabel=(id,o)=>{const c=cleanOpts(id,o);return [c.sauce&&'sauce '+c.sauce,c.supp&&'supp. viande'].filter(Boolean).join(', ')}
+export const optLabel = (id, o) => {
+  const c = cleanOpts(id, o)
+
+  return [
+    c.sauces.length > 0 && `sauces : ${c.sauces.join(', ')}`,
+    c.supp && 'supp. viande'
+  ]
+    .filter(Boolean)
+    .join(', ')
+}
 // Offre : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère de chaque trio)
 export const isOfferPizza=id=>/^pizzas:[^:]+:(senior|mega)$/.test(String(id))
 export function pizzaOffer(lines){
