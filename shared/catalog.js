@@ -16,6 +16,22 @@ export function buildCatalog(){
  return m
 }
 export const CATALOG=buildCatalog()
+// Options choisies par le client (liste unique des sauces = celle du menu Tacos)
+export const SAUCES=(CATS.find(c=>c.id==='tacos')||{}).sauces||[]
+export const SUPP_CENTS=50
+export const OPT_CATS=['tacos','burgers','sandwichs']
+export const hasOpts=id=>OPT_CATS.includes(String(id).split(':')[0])
+export const cleanOpts=(id,o)=>hasOpts(id)?{sauce:SAUCES.includes(o&&o.sauce)?o.sauce:'',supp:!!(o&&o.supp)}:{sauce:'',supp:false}
+export const optExtra=(id,o)=>cleanOpts(id,o).supp?SUPP_CENTS:0
+export const optLabel=(id,o)=>{const c=cleanOpts(id,o);return [c.sauce&&'sauce '+c.sauce,c.supp&&'supp. viande'].filter(Boolean).join(', ')}
+// Offre : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère de chaque trio)
+export const isOfferPizza=id=>/^pizzas:[^:]+:(senior|mega)$/.test(String(id))
+export function pizzaOffer(lines){
+ const u=[];lines.filter(l=>isOfferPizza(l.id)).forEach(l=>{for(let i=0;i<l.qty;i++)u.push(l.price)})
+ u.sort((a,b)=>b-a)
+ let free=0;for(let i=2;i<u.length;i+=3)free+=u[i]
+ return free
+}
 // Business rules taken from the site/flyer text
 export const RULES={deliveryMin:2500,deliveryFree:2500,tz:'Europe/Paris'}
 export function isOpen(d=new Date()){

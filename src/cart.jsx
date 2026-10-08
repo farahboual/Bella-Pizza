@@ -1,5 +1,5 @@
 import {createContext,useContext,useEffect,useState} from 'react'
-import {CATALOG,RULES,eur} from '../shared/catalog.js'
+import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,hasOpts,optExtra,pizzaOffer} from '../shared/catalog.js'
 const Ctx=createContext(null)
 export const useCart=()=>useContext(Ctx)
 const KEY='tp-cart'
@@ -12,7 +12,7 @@ const getPrice=(id,cfg)=>{
 const isOut=(id,cfg)=>!!cfg?.overrides?.[id]?.outOfStock
 
 export function CartProvider({children}){
- const[lines,setLines]=useState(()=>{try{return(JSON.parse(localStorage.getItem(KEY))||[]).filter(l=>CATALOG[l.id]||l.id.startsWith('custom:'))}catch{return[]}})
+ const[lines,setLines]=useState(()=>{try{return(JSON.parse(localStorage.getItem(KEY))||[]).filter(l=>CATALOG[l.id]||l.id.startsWith('custom:')).map(l=>({...l,u:l.u||l.id,sauce:l.sauce||'',supp:!!l.supp}))}catch{return[]}})
  const[open,setOpen]=useState(false),[cfg,setCfg]=useState(null)
  useEffect(()=>{try{localStorage.setItem(KEY,JSON.stringify(lines))}catch{}},[lines])
  useEffect(()=>{fetch('/api/config').then(r=>r.ok?r.json():null).then(data=>{setCfg(data);if(data?.customItems){setLines(l=>l.filter(a=>CATALOG[a.id]||(a.id.startsWith('custom:')&&!!data.customItems[a.id])))}}).catch(()=>setCfg(null))},[])
@@ -20,12 +20,17 @@ export function CartProvider({children}){
 
  const add=id=>{
   if(isOut(id,cfg))return
-  setLines(l=>l.some(a=>a.id==id)?l.map(a=>a.id==id?{...a,qty:Math.min(a.qty+1,30)}:a):[...l,{id,qty:1,note:''}])
+  if(hasOpts(id)){const u=id+'#'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);setLines(l=>[...l,{u,id,qty:1,note:'',sauce:'',supp:false}]);return}
+  setLines(l=>l.some(a=>a.u==id)?l.map(a=>a.u==id?{...a,qty:Math.min(a.qty+1,30)}:a):[...l,{u:id,id,qty:1,note:'',sauce:'',supp:false}])
  }
- const setQty=(id,q)=>setLines(l=>q<1?l.filter(a=>a.id!=id):l.map(a=>a.id==id?{...a,qty:Math.min(q,30)}:a))
- const setNote=(id,note)=>setLines(l=>l.map(a=>a.id==id?{...a,note}:a))
- const total=lines.reduce((s,l)=>s+getPrice(l.id,cfg)*l.qty,0),count=lines.reduce((s,l)=>s+l.qty,0)
- return <Ctx.Provider value={{lines,add,setQty,setNote,clear:()=>setLines([]),total,count,open,setOpen,cfg,enabled:!!cfg,getPrice,isOut}}>{children}</Ctx.Provider>
+ const setQty=(u,q)=>setLines(l=>q<1?l.filter(a=>a.u!=u):l.map(a=>a.u==u?{...a,qty:Math.min(q,30)}:a))
+ const setNote=(u,note)=>setLines(l=>l.map(a=>a.u==u?{...a,note}:a))
+ const setOpt=(u,patch)=>setLines(l=>l.map(a=>a.u==u?{...a,...patch}:a))
+ const unit=l=>getPrice(l.id,cfg)+optExtra(l.id,l)
+ const subtotal=lines.reduce((s,l)=>s+unit(l)*l.qty,0),count=lines.reduce((s,l)=>s+l.qty,0)
+ const offer=pizzaOffer(lines.map(l=>({id:l.id,qty:l.qty,price:getPrice(l.id,cfg)})))
+ const total=subtotal-offer
+ return <Ctx.Provider value={{lines,add,setQty,setNote,setOpt,unit,subtotal,offer,clear:()=>setLines([]),total,count,open,setOpen,cfg,enabled:!!cfg,getPrice,isOut}}>{children}</Ctx.Provider>
 }
 
 export const AddBtn=({id})=>{
@@ -48,7 +53,7 @@ export const MobileBar=({tel})=>{const{enabled,count,total,setOpen}=useCart()
  return <div className="bar">{enabled?<button className="btn ink" onClick={()=>setOpen(true)}>{count?`Voir mon panier · ${eur(total)}`:'Commander en ligne'}</button>:<a className="btn ink" href={tel}>Appeler pour commander</a>}</div>}
 
 export function CartDrawer(){
- const{lines,setQty,setNote,clear,total,count,open,setOpen,cfg,getPrice}=useCart()
+ const{lines,setQty,setNote,setOpt,unit,subtotal,offer,clear,total,count,open,setOpen,cfg,getPrice}=useCart()
  const[type,setType]=useState('emporter'),[pay,setPay]=useState(''),[f,setF]=useState({name:'',phone:'',email:'',address:'',postcode:''}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
 
  useEffect(()=>{
@@ -63,7 +68,7 @@ export function CartDrawer(){
  if(!open||!cfg)return null
 
  const payment=pay||(cfg.online?'online':'sur_place'),upd=k=>e=>setF({...f,[k]:e.target.value})
- const short=type=='livraison'&&total<RULES.deliveryMin,closed=!cfg.open
+ const short=type=='livraison'&&subtotal<RULES.deliveryMin,closed=!cfg.open
 
  let discount=0
  if(appliedPromo){
@@ -89,7 +94,7 @@ export function CartDrawer(){
  }
 
  const submit=async e=>{e.preventDefault();setBusy(true);setErr('')
-  try{const r=await fetch('/api/orders',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type,payment,items:lines.map(({id,qty,note})=>({id,qty,note})),customer:f,note,tableNumber,promoCode:appliedPromo?.code||''})}),j=await r.json()
+  try{const r=await fetch('/api/orders',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type,payment,items:lines.map(({id,qty,note,sauce,supp})=>({id,qty,note,sauce,supp})),customer:f,note,tableNumber,promoCode:appliedPromo?.code||''})}),j=await r.json()
    if(!r.ok)throw new Error(j.error||'Erreur, réessayez.')
    if(j.url){location.href=j.url;return}
    clear();setDone(j.number)}catch(x){setErr(x.message)}finally{setBusy(false)}}
@@ -105,11 +110,16 @@ export function CartDrawer(){
   <button className="btn ink" onClick={close}>Fermer</button></div>
   :!count?<div className="cart-b"><p>Votre panier est vide. Ajoutez des plats avec le bouton <b>+</b> sur la carte.</p></div>
   :<form className="cart-b" onSubmit={submit}>
-   <ul className="cl">{lines.map(l=>{const c=CATALOG[l.id]||cfg?.customItems?.[l.id]||{name:'Article'},price=getPrice(l.id,cfg);return <li key={l.id}><div className="cl-t"><b>{c.name}</b><span>{eur(price*l.qty)}</span></div>
-    <div className="cl-q"><button type="button" onClick={()=>setQty(l.id,l.qty-1)} aria-label="Retirer un">−</button><span aria-live="polite">{l.qty}</span><button type="button" onClick={()=>setQty(l.id,l.qty+1)} aria-label="Ajouter un">+</button>
-    <input value={l.note} maxLength={120} onChange={e=>setNote(l.id,e.target.value)} placeholder="Précisions (sauces, boisson, sans oignon…)" aria-label={`Précisions pour ${c.name}`}/></div></li>})}</ul>
+   <ul className="cl">{lines.map(l=>{const c=CATALOG[l.id]||cfg?.customItems?.[l.id]||{name:'Article'},price=unit(l);return <li key={l.u}><div className="cl-t"><b>{c.name}</b><span>{eur(price*l.qty)}</span></div>
+    {hasOpts(l.id)&&<div className="cl-o" style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center',margin:'6px 0'}}>
+     <select value={l.sauce||''} onChange={e=>setOpt(l.u,{sauce:e.target.value})} aria-label={`Sauce pour ${c.name}`} style={{flex:'1 1 150px',padding:'8px 10px',borderRadius:10,border:'1px solid var(--line)',font:'inherit'}}><option value="">Sauce au choix…</option>{SAUCES.map(s=><option key={s} value={s}>{s}</option>)}</select>
+     <label style={{display:'flex',gap:6,alignItems:'center',fontSize:14,fontWeight:600}}><input type="checkbox" checked={!!l.supp} onChange={e=>setOpt(l.u,{supp:e.target.checked})}/>Supp. viande +{eur(SUPP_CENTS)}</label>
+    </div>}
+    <div className="cl-q"><button type="button" onClick={()=>setQty(l.u,l.qty-1)} aria-label="Retirer un">−</button><span aria-live="polite">{l.qty}</span><button type="button" onClick={()=>setQty(l.u,l.qty+1)} aria-label="Ajouter un">+</button>
+    <input value={l.note} maxLength={120} onChange={e=>setNote(l.u,e.target.value)} placeholder="Précisions (sans oignon…)" aria-label={`Précisions pour ${c.name}`}/></div></li>})}</ul>
+   {offer>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🍕 3ème pizza offerte : -{eur(offer)}</p>}
    <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
-   {short&&<p className="warn">Livraison à partir de {eur(RULES.deliveryMin)} de commande (il manque {eur(RULES.deliveryMin-total)}). Ou choisissez « À emporter » ou « Sur place ».</p>}
+   {short&&<p className="warn">Livraison à partir de {eur(RULES.deliveryMin)} de commande (il manque {eur(RULES.deliveryMin-subtotal)}). Ou choisissez « À emporter » ou « Sur place ».</p>}
    {type==='sur_place'&&<label>Numéro de Table<input placeholder="Ex: Table 4" value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/></label>}
    <label>Nom<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
    <label>Téléphone<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
@@ -132,7 +142,8 @@ export function CartDrawer(){
    {closed&&<p className="warn">{cfg.closedReason||'Nous sommes fermés pour le moment. Commandes ouvertes 11h–14h30 et 18h–23h (fermé dimanche midi).'}</p>}
    {err&&<p className="warn" role="alert">{err}</p>}
    <div className="cart-f">
-    {discount>0&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--mute)'}}><span>Sous-total</span><span>{eur(total)}</span></div>}
+    {(discount>0||offer>0)&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--mute)'}}><span>Sous-total</span><span>{eur(subtotal)}</span></div>}
+    {offer>0&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--green)'}}><span>3ème pizza offerte</span><span>-{eur(offer)}</span></div>}
     {discount>0&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--green)'}}><span>Réduction</span><span>-{eur(discount)}</span></div>}
     <div className="tot"><span>Total</span><b>{eur(finalTotal)}</b></div>
     <button className="btn ink" disabled={busy||short||closed}>{busy?'Envoi…':payment=='online'?`Payer ${eur(finalTotal)}`:'Envoyer la commande'}</button>

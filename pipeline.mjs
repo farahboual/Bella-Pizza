@@ -385,6 +385,38 @@ r = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items: [
 ok('Deleted custom item rejected in order (400)', r.status === 400, `status=${r.status}`)
 
 // ─── Summary ──────────────────────────────────────────────────────────────────
+section('9. Sauces, supplément viande, boisson 1 €, 3ème pizza offerte')
+const lastOrder = async () => { const l = await kit(); return l.sort((a, b) => b.number - a.number)[0] }
+let phoneN = 0
+const ord = async (items, extra = {}) => { const rr = await post('/api/orders', { type: 'emporter', payment: 'sur_place', items, customer: { ...cust, phone: '06' + String(70000000 + ++phoneN) }, ...extra }); return { rr, o: await lastOrder() } }
+let x = await ord([{ id: 'tacos:kebab', qty: 1, sauce: 'Harissa', supp: true }])
+ok('Tacos + sauce + supp viande = 850 + 50 (201)', x.rr.status === 201 && x.o.total === 900, `total=${x.o?.total}`)
+ok('Sauce + supp visibles dans le nom (cuisine/ticket)', /Harissa/.test(x.o.items[0].name) && /supp\. viande/.test(x.o.items[0].name), x.o?.items?.[0]?.name)
+x = await ord([{ id: 'tacos:kebab', qty: 2, sauce: 'Harissa', supp: true }])
+ok('Supplément multiplié par la quantité (2 × 9,00 €)', x.o.total === 1800, `total=${x.o?.total}`)
+x = await ord([{ id: 'burgers:cheese', qty: 1, supp: true }])
+ok('Burger + supp viande = 650 + 50', x.o.total === 700, `total=${x.o?.total}`)
+x = await ord([{ id: 'sandwichs:kebab', qty: 1, sauce: 'Samouraï', supp: true }])
+ok('Sandwich + supp viande = 800 + 50', x.o.total === 850, `total=${x.o?.total}`)
+x = await ord([{ id: 'tacos:kebab', qty: 1, sauce: 'Sauce inventée', supp: false }])
+ok('Sauce inconnue ignorée, prix inchangé', x.o.total === 850 && !/inventée/.test(x.o.items[0].name), `total=${x.o?.total}`)
+x = await ord([{ id: 'paninis:jambon', qty: 1, supp: true, sauce: 'Harissa' }])
+ok('Supp ignoré sur une catégorie sans option (panini 600)', x.o.total === 600, `total=${x.o?.total}`)
+x = await ord([{ id: 'boissons:canettes-33cl', qty: 1 }])
+ok('Canette 33cl = 1,00 €', x.o.total === 100, `total=${x.o?.total}`)
+x = await ord([{ id: 'pizzas:miami:senior', qty: 3 }])
+ok('3 pizzas Sénior : la 3ème offerte (2 × 14 €)', x.o.total === 2800 && x.o.discount === 1400, `total=${x.o?.total} disc=${x.o?.discount}`)
+x = await ord([{ id: 'pizzas:miami:senior', qty: 2 }])
+ok('2 pizzas Sénior : pas de réduction', x.o.total === 2800 && !x.o.discount, `total=${x.o?.total}`)
+x = await ord([{ id: 'pizzas:miami:senior', qty: 2 }, { id: 'pizzas:classica:mega', qty: 1 }])
+ok('Mix Sénior+Méga : la moins chère offerte (Sénior 14 €)', x.o.total === 3300 && x.o.discount === 1400, `total=${x.o?.total} disc=${x.o?.discount}`)
+x = await ord([{ id: 'pizzas:regina:junior', qty: 3 }])
+ok('Pizzas Junior non concernées par l’offre', x.o.total === 2700 && !x.o.discount, `total=${x.o?.total}`)
+x = await ord([{ id: 'pizzas:regina:mega', qty: 6 }])
+ok('6 pizzas Méga : 2 offertes (4 × 19 €)', x.o.total === 7600 && x.o.discount === 3800, `total=${x.o?.total}`)
+r = await post('/api/orders', { type: 'emporter', payment: 'online', items: [{ id: 'pizzas:miami:senior', qty: 3 }], customer: { ...cust, phone: '0699990001', email: 'a@b.fr' } })
+ok('Commande en ligne avec 3ème offerte → coupon Stripe créé', r.status === 201 && got?.get('discounts[0][coupon]') === 'cs_test_1', `status=${r.status} coupon=${got?.get('discounts[0][coupon]')}`)
+
 srv.kill()
 mock.close()
 
