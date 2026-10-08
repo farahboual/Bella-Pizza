@@ -223,7 +223,7 @@ function PromoBanner(){
           <div>
             <span className="promo-label">Le bon plan !</span>
             <h2>Menu Duo<strong>À partir de 25 €</strong></h2>
-            <p className="promo-desc">1 Pizza Méga + 10 Wings + 1 Maxi Coca<br/>Offre à emporter · valable en commande en ligne</p>
+            <p className="promo-desc">1 Pizza Méga + 8 Wings + 1 Maxi Coca<br/>Offre à emporter · valable en commande en ligne</p>
             <OrderBtn className="btn lime">Commander maintenant →</OrderBtn>
           </div>
           <img className="promo-img" src={pizzaImg} alt="Menu Duo Taco Pizza"/>
