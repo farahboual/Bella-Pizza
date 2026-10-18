@@ -5,6 +5,7 @@ import path from 'node:path'
 import {fileURLToPath} from 'node:url'
 import {getConfig,orderStatus,createOrder,stripeWebhook,kitchen,managerApi} from './lib/handlers.js'
 import {persistent} from './lib/store.js'
+process.env.ALWAYS_OPEN = process.env.ALWAYS_OPEN || '1'
 const ROOT=path.dirname(fileURLToPath(import.meta.url)),PORT=+process.env.PORT||3000
 const API={'/api/config':getConfig,'/api/order-status':orderStatus,'/api/orders':createOrder,'/api/stripe-webhook':stripeWebhook,'/api/kitchen':kitchen,'/api/manager':managerApi}
 const MIME={'.html':'text/html;charset=utf-8','.js':'text/javascript','.css':'text/css','.webp':'image/webp','.svg':'image/svg+xml','.png':'image/png'}

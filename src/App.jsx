@@ -21,9 +21,9 @@ function useStatus(){
   const[s,set]=useState({o:null,t:'Horaires'})
   useEffect(()=>{
     const p=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date())
-    const g=k=>p.find(x=>x.type==k).value,m=(+g('hour')%24)*60+ +g('minute'),sun=g('weekday').startsWith('dim')
-    const lunch=!sun&&m>=660&&m<870,eve=m>=1080&&m<1380,o=lunch||eve
-    set({o,t:o?(lunch?'Ouvert · jusqu\u2019\u00e0 14h30':'Ouvert · jusqu\u2019\u00e0 23h'):(sun&&m<870?'Ferm\u00e9 · dimanche midi':m<660?'Ferm\u00e9 · ouvre \u00e0 11h':m<1080?(m<870?'Ferm\u00e9':'Ferm\u00e9 · ouvre \u00e0 18h'):'Ferm\u00e9 · ouvre demain \u00e0 11h')})
+    const g=k=>p.find(x=>x.type==k).value,m=(+g('hour')%24)*60+ +g('minute')
+    const lunch=m>=660&&m<870,eve=m>=1080&&m<1380,o=lunch||eve
+    set({o,t:o?(lunch?'Ouvert · jusqu’à 14h30':'Ouvert · jusqu’à 23h'):(m<660?'Fermé · ouvre à 11h':m<1080?(m<870?'Fermé':'Fermé · ouvre à 18h'):'Fermé · ouvre demain à 11h')})
   },[])
   return s
 }
@@ -77,7 +77,7 @@ function Header(){
       </nav>
       <div className="mn-f">
         <p>15 rue de Rouen<br/>49400 Saumur</p>
-        <p className="mn-h" style={{fontStyle:'italic',marginTop:10,color:'var(--mute)'}}>Ouvert 7j/7 · 11h à 14h30 et 18h à 23h<br/>Fermé dimanche midi</p>
+        <p className="mn-h" style={{fontStyle:'italic',marginTop:10,color:'var(--mute)'}}>Ouvert 7j/7 · 11h à 14h30 et 18h à 23h</p>
       </div>
     </div>
   </>)
@@ -383,7 +383,7 @@ const Location=()=>(
       <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:.1}}>
         <div className="hrs">
           <div><span>Ouvert 7j/7</span><span>11h à 14h30 et 18h à 23h</span></div>
-          <div className="today"><span style={{color:'var(--red)'}}>Fermé</span><span>Dimanche midi</span></div>
+          <div className="today"><span style={{color:'var(--lime)'}}>Ouvert</span><span>Dimanche midi & soir</span></div>
         </div>
         <p className="lnote">Pâte fraîche maison.</p>
       </motion.div>
