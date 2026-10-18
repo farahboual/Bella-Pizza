@@ -58,7 +58,7 @@ li i{display:block;font:600 13px var(--font);color:#b25;margin-top:4px;font-styl
 .tag.sp{background:#e0e7ff;color:#3730a3}
 </style></head><body>
 <div id="gate"><form id="f"><h1>Taco<span>Pizza</span></h1><p><b>Écran cuisine</b><br>Entrez le mot de passe, touchez pour activer le son et mettez le volume au maximum.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red">Se connecter et activer le son</button></form></div>
-<header><div><h1>Taco<span>Pizza</span> Cuisine</h1><div class="st" id="st">connexion…</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn ghost" id="autoprint-btn">🖨️ Auto-impression: OFF</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
+<header><div><h1>Taco<span>Pizza</span> Cuisine</h1><div class="st" id="st">connexion…</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn ghost" id="autoprint-btn">🖨️ Auto-impression: OFF</button> <button class="btn ink" id="mute">Couper l’alarme</button><a href="/gerant/index.html" class="btn ghost" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">⚙️ Administration ↗</a></div></header>
 <main id="list"></main>
 <div id="ticket"></div>
 <script>
@@ -141,7 +141,7 @@ $('#autoprint-btn').onclick=e=>{
  e.target.textContent=autoPrint?'🖨️ Auto-impression: ON':'🖨️ Auto-impression: OFF'
  e.target.className='btn '+(autoPrint?'ok':'ghost')
 }
-async function load(){try{const r=await api('');if(r.status===401){sessionStorage.removeItem('k');location.reload();return}
+async function load(){try{const r=await api('');if(r.status===401){localStorage.removeItem('tp_cuisine_key');sessionStorage.removeItem('k');location.reload();return}
  const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();
  if(autoPrint){for(const o of orders.values()){if(o.status==='new'&&!printedSet.has(o.id)){printedSet.add(o.id);printQueue.push(o)}}; drainPrintQueue()}
  if(j.dbError){console.error('[Database Error]',j.dbError);$('#st').innerHTML=`<span style="color:var(--red);font-weight:700">⚠️ Erreur réseau</span>`}
@@ -149,5 +149,12 @@ async function load(){try{const r=await api('');if(r.status===401){sessionStorag
 $('#f').onsubmit=async e=>{e.preventDefault();key=$('#pw').value
  ctx=new(window.AudioContext||window.webkitAudioContext)();ring()
  const r=await api('');if(r.status===401){$('#er').textContent='Mot de passe incorrect';return}
- sessionStorage.setItem('k',key);$('#gate').remove();navigator.wakeLock?.request('screen').catch(()=>{});load();setInterval(load,3000)}
+ localStorage.setItem('tp_cuisine_key',key);sessionStorage.setItem('k',key);$('#gate').remove();navigator.wakeLock?.request('screen').catch(()=>{});load();setInterval(load,3000)}
+
+const urlTok=new URLSearchParams(location.search).get('token')
+const savedKey=urlTok||localStorage.getItem('tp_cuisine_key')||sessionStorage.getItem('k')
+if(savedKey){
+ key=savedKey;localStorage.setItem('tp_cuisine_key',key);if(urlTok)history.replaceState(null,'',location.pathname)
+ $('#gate')?.remove();navigator.wakeLock?.request('screen').catch(()=>{});load();setInterval(load,3000)
+}
 </script></body></html>

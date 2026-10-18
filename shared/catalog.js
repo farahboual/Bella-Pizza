@@ -77,21 +77,63 @@ export function canetteDeal(lines){
 }
 // Business rules taken from the site/flyer text
 export const RULES={deliveryMin:2500,deliveryFree:2500,tz:'Europe/Paris'}
-export function isOpen(d=new Date(), hours=null){
- const p=new Intl.DateTimeFormat('fr-FR',{timeZone:RULES.tz,weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d)
- const g=k=>p.find(x=>x.type==k).value,m=(+g('hour')%24)*60+ +g('minute')
- if(hours && hours.lunchStart && hours.lunchEnd){
-  const [lh1,lm1]=hours.lunchStart.split(':').map(Number)
-  const [lh2,lm2]=hours.lunchEnd.split(':').map(Number)
+export function isOpen(d=new Date(), schedule=null){
+ const p=new Intl.DateTimeFormat('fr-FR',{timeZone:RULES.tz,weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d)
+ const g=k=>p.find(x=>x.type==k).value
+ const hour=+g('hour')%24
+ const minute=+g('minute')
+ const m=hour*60+minute
+ const dateStr=`${g('year')}-${g('month')}-${g('day')}`
+ const dayPart=g('weekday').toLowerCase().slice(0,3)
+
+ // 1. Check Date Exceptions first (highest priority)
+ if(schedule && Array.isArray(schedule.exceptions)){
+  const exc=schedule.exceptions.find(e=>e.date===dateStr)
+  if(exc){
+   if(exc.type==='closed') return false
+   if(exc.type==='open'){
+    const [h1,m1]=(exc.start||'00:00').split(':').map(Number)
+    const [h2,m2]=(exc.end||'23:59').split(':').map(Number)
+    return m >= (h1*60+m1) && m < (h2*60+m2)
+   }
+  }
+ }
+
+ // 2. Check Weekly Schedule
+ if(schedule && schedule.weekly){
+  const dayConf=schedule.weekly[dayPart]
+  if(dayConf){
+   if(dayConf.open===false) return false
+   let inLunch=false, inEve=false
+   if(dayConf.lunchStart && dayConf.lunchEnd){
+    const [lh1,lm1]=dayConf.lunchStart.split(':').map(Number)
+    const [lh2,lm2]=dayConf.lunchEnd.split(':').map(Number)
+    inLunch = m >= (lh1*60+lm1) && m < (lh2*60+lm2)
+   }
+   if(dayConf.eveStart && dayConf.eveEnd){
+    const [eh1,em1]=dayConf.eveStart.split(':').map(Number)
+    const [eh2,em2]=dayConf.eveEnd.split(':').map(Number)
+    inEve = m >= (eh1*60+em1) && m < (eh2*60+em2)
+   }
+   return inLunch || inEve
+  }
+ }
+
+ // 3. Fallback for legacy schedule.hours
+ if(schedule && schedule.lunchStart && schedule.lunchEnd){
+  const [lh1,lm1]=schedule.lunchStart.split(':').map(Number)
+  const [lh2,lm2]=schedule.lunchEnd.split(':').map(Number)
   const inLunch = m >= (lh1*60+lm1) && m < (lh2*60+lm2)
   let inEve = false
-  if(hours.eveStart && hours.eveEnd){
-   const [eh1,em1]=hours.eveStart.split(':').map(Number)
-   const [eh2,em2]=hours.eveEnd.split(':').map(Number)
+  if(schedule.eveStart && schedule.eveEnd){
+   const [eh1,em1]=schedule.eveStart.split(':').map(Number)
+   const [eh2,em2]=schedule.eveEnd.split(':').map(Number)
    inEve = m >= (eh1*60+em1) && m < (eh2*60+em2)
   }
   return inLunch || inEve
  }
+
+ // Default standard schedule: 11h-14h30 & 18h-23h
  return (m>=660&&m<870)||(m>=1080&&m<1380)
 }
 export function totalOf(lines){return lines.reduce((s,l)=>s+CATALOG[l.id].price*l.qty,0)}
