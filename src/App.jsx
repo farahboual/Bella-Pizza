@@ -19,12 +19,38 @@ const CAT_IMG={pizzas:pizzaImg,tacos:tacosImg,burgers:burgersImg,sandwichs:sandw
 
 function useStatus(){
   const[s,set]=useState({o:null,t:'Horaires'})
+  const { cfg } = useCart()
   useEffect(()=>{
+    if(cfg){
+      if(cfg.forcedOpen){
+        set({o:true,t:'Ouvert · Service continu'})
+        return
+      }
+      if(cfg.manualClosed){
+        set({o:false,t:cfg.closedReason||'Fermé temporairement'})
+        return
+      }
+    }
     const p=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date())
     const g=k=>p.find(x=>x.type==k).value,m=(+g('hour')%24)*60+ +g('minute')
-    const lunch=m>=660&&m<870,eve=m>=1080&&m<1380,o=lunch||eve
-    set({o,t:o?(lunch?'Ouvert · jusqu’à 14h30':'Ouvert · jusqu’à 23h'):(m<660?'Fermé · ouvre à 11h':m<1080?(m<870?'Fermé':'Fermé · ouvre à 18h'):'Fermé · ouvre demain à 11h')})
-  },[])
+    const h=cfg?.hours
+    let lunch=m>=660&&m<870,eve=m>=1080&&m<1380
+    let lEnd='14h30',eEnd='23h'
+    if(h&&h.lunchStart&&h.lunchEnd){
+      const [lh1,lm1]=h.lunchStart.split(':').map(Number)
+      const [lh2,lm2]=h.lunchEnd.split(':').map(Number)
+      lunch=m>=(lh1*60+lm1)&&m<(lh2*60+lm2)
+      lEnd=h.lunchEnd.replace(':','h')
+    }
+    if(h&&h.eveStart&&h.eveEnd){
+      const [eh1,em1]=h.eveStart.split(':').map(Number)
+      const [eh2,em2]=h.eveEnd.split(':').map(Number)
+      eve=m>=(eh1*60+em1)&&m<(eh2*60+em2)
+      eEnd=h.eveEnd.replace(':','h')
+    }
+    const o=lunch||eve
+    set({o,t:o?(lunch?`Ouvert · jusqu’à ${lEnd}`:`Ouvert · jusqu’à ${eEnd}`):(m<660?'Fermé · ouvre à 11h':m<1080?(m<870?'Fermé':'Fermé · ouvre à 18h'):'Fermé · ouvre demain à 11h')})
+  },[cfg])
   return s
 }
 
