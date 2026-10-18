@@ -109,6 +109,7 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
    <b>Taco<span>Pizza</span></b>
   </a>
   <span class="badge-admin">Gérant</span>
+   <span id="db-indicator" style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;background:#e5e7eb;color:#374151">BD : Vérification…</span>
  </div>
  <div style="display:flex;gap:12px;align-items:center">
   <a href="/cuisine/index.html" id="open-cuisine-btn" class="btn ghost" target="_blank">👨‍🍳 Ouvrir Écran Cuisine ↗</a>
@@ -419,6 +420,15 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
     </div>
 
     <button id="save-passwords-btn" class="btn ink">Enregistrer les nouveaux mots de passe</button>
+
+    <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--line)">
+     <h3 style="font-size:17px;font-weight:800;margin-bottom:6px">État de la base de données (Supabase)</h3>
+     <p style="font-size:13px;color:var(--mute);margin-bottom:14px">Vérifiez la connexion et l'accès à la table des commandes et configurations.</p>
+     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <button id="test-db-btn" class="btn ghost" type="button">Tester la connexion Supabase</button>
+      <span id="db-test-result" style="font-size:13px;font-weight:700"></span>
+     </div>
+    </div>
    </div>
   </div>
 </div>
@@ -484,6 +494,27 @@ async function loadData(){
   sales=j.sales||[]
   kitchenKey=j.kitchenKey||''
   if(j.gerantKey)localStorage.setItem('tp_gerant_key',key)
+  const ind=$('#db-indicator')
+  if(ind&&j.dbStatus){
+   if(j.dbStatus.persistent){
+    if(j.dbStatus.error){
+     ind.style.background='#fee2e2'
+     ind.style.color='#991b1b'
+     ind.title=j.dbStatus.error
+     ind.textContent='⚠️ Erreur BD: '+(j.dbStatus.error.length>25?j.dbStatus.error.slice(0,25)+'…':j.dbStatus.error)
+    }else{
+     ind.style.background='#dcfce7'
+     ind.style.color='#166534'
+     ind.title='Supabase connecté et opérationnel'
+     ind.textContent='BD : Connectée'
+    }
+   }else{
+    ind.style.background='#fef3c7'
+    ind.style.color='#92400e'
+    ind.title='Mode mémoire temporaire'
+    ind.textContent='BD : Mémoire locale'
+   }
+  }
   renderSecurity()
   renderStatus()
   renderMenu()
@@ -1052,5 +1083,32 @@ $('#f').onsubmit=async e=>{
  const r=await api()
  if(r.status===401){$('#er').textContent='Mot de passe incorrect';return}
  localStorage.setItem('tp_gerant_key',key);sessionStorage.setItem('k',key);$('#gate').remove();loadData()
+}
+
+const testDbBtn = $('#test-db-btn');
+if(testDbBtn){
+ testDbBtn.onclick = async () => {
+  const resEl = $('#db-test-result');
+  testDbBtn.disabled = true;
+  resEl.textContent = 'Test en cours…';
+  resEl.style.color = 'var(--mute)';
+  try {
+   const r = await api('', { method: 'POST', body: JSON.stringify({ action: 'testDb' }) });
+   const j = await r.json();
+   if (j.ok) {
+    resEl.textContent = '✅ Supabase connecté et accessible !';
+    resEl.style.color = '#166534';
+   } else {
+    resEl.textContent = '❌ ' + (j.dbStatus?.error || 'Erreur inconnue');
+    resEl.style.color = 'var(--red)';
+   }
+  } catch(err) {
+   resEl.textContent = '❌ Erreur réseau : ' + err.message;
+   resEl.style.color = 'var(--red)';
+  } finally {
+   testDbBtn.disabled = false;
+   loadData();
+  }
+ };
 }
 </script></body></html>

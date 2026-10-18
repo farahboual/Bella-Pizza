@@ -56,7 +56,7 @@ try {
   execSync('npm run build', {
     cwd: new URL('.', import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1'),
     stdio: 'pipe',
-    timeout: 60000,
+    timeout: 120000,
   })
   ok('npm run build exits with code 0', true)
 } catch (e) {

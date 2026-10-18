@@ -144,7 +144,7 @@ $('#autoprint-btn').onclick=e=>{
 async function load(){try{const r=await api('');if(r.status===401){localStorage.removeItem('tp_cuisine_key');sessionStorage.removeItem('k');location.reload();return}
  const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();
  if(autoPrint){for(const o of orders.values()){if(o.status==='new'&&!printedSet.has(o.id)){printedSet.add(o.id);printQueue.push(o)}}; drainPrintQueue()}
- if(j.dbError){console.error('[Database Error]',j.dbError);$('#st').innerHTML=`<span style="color:var(--red);font-weight:700">⚠️ Erreur réseau</span>`}
+ if(j.dbError){console.error('[Database Error]',j.dbError);$('#st').innerHTML=`<span style="color:var(--red);font-weight:700" title="${esc(j.dbError)}">⚠️ BD : ${esc(j.dbError)}</span>`}
  else{$('#st').textContent='Connecté · '+time(Date.now())}}catch{$('#st').textContent='connexion perdue, nouvel essai…'}}
 $('#f').onsubmit=async e=>{e.preventDefault();key=$('#pw').value
  ctx=new(window.AudioContext||window.webkitAudioContext)();ring()

@@ -403,19 +403,21 @@ export function OrderBanner(){
 
   const poll=async()=>{
    try{
-    const o=await(await fetch('/api/order-status?id='+id)).json()
-
-    if(o.status!='pending'&&o.status!='cancelled'){
-     clear()
-     setM({k:'ok',t:`Merci ! Commande n° ${o.number} payée et envoyée au restaurant.`})
-     return
+    const res=await fetch('/api/order-status?id='+id)
+    if(res.ok){
+     const o=await res.json()
+     if(o&&o.number&&o.status&&o.status!='pending'&&o.status!='cancelled'){
+      clear()
+      setM({k:'ok',t:`Merci ! Commande n° ${o.number} payée et envoyée au restaurant.`})
+      return
+     }
     }
    }catch{}
 
-   if(!stop&&++n<20)
+   if(!stop&&++n<30)
     setTimeout(poll,1500)
    else
-    setM({k:'ok',t:'Paiement reçu. Si vous ne recevez pas d’appel, contactez-nous au 02 41 03 57 87.'})
+    setM({k:'ok',t:'Paiement reçu. Confirmation en cours par le restaurant. En cas de question, contactez-nous au 02 41 03 57 87.'})
   }
 
   poll()
