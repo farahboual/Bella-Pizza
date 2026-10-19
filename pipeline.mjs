@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 // pipeline.mjs — Full test pipeline for taco-pizza-order
 // Covers: build, legacy regression, promo codes, table/sur_place, manager API, manual closure
 import http from 'node:http'
@@ -438,6 +438,10 @@ ok('6 pizzas Méga : 2 offertes (4 × 19 €)', x.o.total === 7600 && x.o.discou
 r = await post('/api/orders', { type: 'emporter', payment: 'online', items: [{ id: 'pizzas:miami:senior', qty: 3 }], customer: { ...cust, phone: '0699990001', email: 'a@b.fr' } })
 ok('Commande en ligne avec 3ème offerte → coupon Stripe créé', r.status === 201 && got?.get('discounts[0][coupon]') === 'cs_test_1', `status=${r.status} coupon=${got?.get('discounts[0][coupon]')}`)
 
+x = await ord([{ id: 'pizzas:miami:senior', qty: 3 }], { type: 'livraison', customer: { ...cust, address: '10 rue de la paix', postcode: '49400' } })
+ok('3 pizzas Sénior en livraison : pas de 3ème offerte (42 €)', x.o.total === 4200 && !x.o.discount, `total=${x.o?.total}`)
+x = await ord([{ id: 'pizzas:miami:senior', qty: 3 }], { type: 'sur_place', tableNumber: '5' })
+ok('3 pizzas Sénior sur place : pas de 3ème offerte (42 €)', x.o.total === 4200 && !x.o.discount, `total=${x.o?.total}`)
 srv.kill()
 mock.close()
 

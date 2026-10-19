@@ -1,4 +1,4 @@
-import {useEffect,useRef,useState} from 'react'
+﻿import {useEffect,useRef,useState} from 'react'
 import {motion,AnimatePresence,MotionConfig,useReducedMotion} from 'framer-motion'
 import {pz,tom,cre,T,C,SZ,CATS} from './data.js'
 import pizzaImg from './assets/pizza.webp'
@@ -306,7 +306,7 @@ function Pizzas({size,setSize}){
   </>
   return(<>
     <div className="ph"><h3>Nos pizzas</h3></div>
-    <p className="note">🍕 Offre : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère), appliquée automatiquement dans le panier.</p>
+    <p className="note">🍕 Offre à emporter : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère), valable uniquement à emporter.</p>
     <div className="sizes" role="radiogroup" aria-label="Taille de la pizza">
       {SZ.map((s,i)=>(
         <button key={s[0]} className="sz" role="radio" aria-checked={i==size} onClick={()=>setSize(i)}>

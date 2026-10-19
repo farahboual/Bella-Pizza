@@ -124,7 +124,7 @@ export const MobileBar=({tel})=>{const{enabled,count,total,setOpen}=useCart()
 }
 
 export function CartDrawer(){
- const{lines,setQty,setNote,setOpt,unit,subtotal,offer,drinkDeal,canetteAlone,clear,total,count,open,setOpen,cfg,getPrice}=useCart()
+ const{lines,setQty,setNote,setOpt,unit,subtotal,offer:baseOffer,drinkDeal,canetteAlone,clear,total,count,open,setOpen,cfg,getPrice}=useCart()
  const[type,setType]=useState('emporter'),[pay,setPay]=useState(''),[f,setF]=useState({name:'',phone:'',email:'',address:'',postcode:''}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
 
  useEffect(()=>{
@@ -139,18 +139,20 @@ export function CartDrawer(){
  if(!open||!cfg)return null
 
  const payment=pay||'online',upd=k=>e=>setF({...f,[k]:e.target.value})
+ const offer=type==='emporter'?baseOffer:0
+ const currentTotal=subtotal-offer-drinkDeal
  const short=type=='livraison'&&subtotal<RULES.deliveryMin,closed=!cfg.open
 
  let discount=0
  if(appliedPromo){
   if(appliedPromo.discountType==='percent'){
-   discount=Math.round(total*(appliedPromo.discountValue/100))
+   discount=Math.round(currentTotal*(appliedPromo.discountValue/100))
   }else if(appliedPromo.discountType==='fixed'){
-   discount=Math.min(total,appliedPromo.discountValue)
+   discount=Math.min(currentTotal,appliedPromo.discountValue)
   }
  }
 
- const finalTotal=Math.max(0,total-discount)
+ const finalTotal=Math.max(0,currentTotal-discount)
 
  const applyPromo=()=>{
   setPromoErr('')
@@ -326,6 +328,7 @@ export function CartDrawer(){
    </ul>
 
    {offer>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🍕 3ème pizza offerte : -{eur(offer)}</p>}
+   {type!=='emporter'&&baseOffer>0&&<p className="note" style={{color:'var(--mute)'}}>ℹ️ L’offre 3ème pizza offerte est réservée aux commandes à emporter.</p>}
    {drinkDeal>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🥤 Canette à 1 € avec votre plat : -{eur(drinkDeal)}</p>}
    {canetteAlone&&<p className="note">🥤 Canette seule : 1,50 €. Ajoutez un plat et elle passe à 1 €.</p>}
 

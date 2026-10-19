@@ -1,4 +1,4 @@
-// Single source of truth for orderable items + prices (in cents).
+﻿// Single source of truth for orderable items + prices (in cents).
 // The server recomputes every total from this file; the browser never decides the price.
 import {pz,tom,cre,T,C,SZ,CATS} from './menuData.js'
 const cents=s=>s?Math.round(parseFloat(s.replace(/[^\d,]/g,'').replace(',','.'))*100):null
@@ -59,7 +59,8 @@ export const optLabel = (id, o) => {
 }
 // Offre : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère de chaque trio)
 export const isOfferPizza=id=>/^pizzas:[^:]+:(senior|mega)$/.test(String(id))
-export function pizzaOffer(lines){
+export function pizzaOffer(lines, type = 'emporter'){
+ if(type && type !== 'emporter') return 0
  const u=[];lines.filter(l=>isOfferPizza(l.id)).forEach(l=>{for(let i=0;i<l.qty;i++)u.push(l.price)})
  u.sort((a,b)=>b-a)
  let free=0;for(let i=2;i<u.length;i+=3)free+=u[i]
