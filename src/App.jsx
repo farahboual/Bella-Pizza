@@ -31,25 +31,46 @@ function useStatus(){
         return
       }
     }
-    const p=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date())
-    const g=k=>p.find(x=>x.type==k).value,m=(+g('hour')%24)*60+ +g('minute')
-    const h=cfg?.hours
-    let lunch=m>=660&&m<870,eve=m>=1080&&m<1380
-    let lEnd='14h30',eEnd='23h'
-    if(h&&h.lunchStart&&h.lunchEnd){
-      const [lh1,lm1]=h.lunchStart.split(':').map(Number)
-      const [lh2,lm2]=h.lunchEnd.split(':').map(Number)
-      lunch=m>=(lh1*60+lm1)&&m<(lh2*60+lm2)
-      lEnd=h.lunchEnd.replace(':','h')
+    const p=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Paris',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date())
+    const g=k=>(p.find(x=>x.type===k)||{}).value||''
+    const m=(+g('hour')%24)*60+ +g('minute')
+    const rawWd=g('weekday').toLowerCase().slice(0,3)
+    const DAY_MAP={mon:'lun',tue:'mar',wed:'mer',thu:'jeu',fri:'ven',sat:'sam',sun:'dim',lun:'lun',mar:'mar',mer:'mer',jeu:'jeu',ven:'ven',sam:'sam',dim:'dim'}
+    const dayPart=DAY_MAP[rawWd]||rawWd
+
+    const weekly=cfg?.schedule?.weekly
+    const dayConf=weekly?weekly[dayPart]:null
+    if(dayConf && dayConf.open===false){
+      set({o:false,t:cfg?.closedReason||'Fermé aujourd’hui'})
+      return
     }
-    if(h&&h.eveStart&&h.eveEnd){
-      const [eh1,em1]=h.eveStart.split(':').map(Number)
-      const [eh2,em2]=h.eveEnd.split(':').map(Number)
-      eve=m>=(eh1*60+em1)&&m<(eh2*60+em2)
-      eEnd=h.eveEnd.replace(':','h')
+
+    let lStart='11:00', lEnd='14:30', eStart='18:00', eEnd='23:00'
+    if(dayConf){
+      lStart=dayConf.lunchStart||lStart
+      lEnd=dayConf.lunchEnd||lEnd
+      eStart=dayConf.eveStart||eStart
+      eEnd=dayConf.eveEnd||eEnd
+    } else if(dayPart==='mer'||dayPart==='dim'){
+      set({o:false,t:cfg?.closedReason||'Fermé aujourd’hui'})
+      return
+    } else if(dayPart==='ven'){
+      eEnd='23:30'
+    } else if(dayPart==='sam'){
+      lEnd='15:00'; eEnd='23:30'
     }
+
+    const [lh1,lm1]=lStart.split(':').map(Number)
+    const [lh2,lm2]=lEnd.split(':').map(Number)
+    const [eh1,em1]=eStart.split(':').map(Number)
+    const [eh2,em2]=eEnd.split(':').map(Number)
+
+    const lunch=m>=(lh1*60+lm1)&&m<(lh2*60+lm2)
+    const eve=m>=(eh1*60+em1)&&m<(eh2*60+em2)
     const o=lunch||eve
-    set({o,t:o?(lunch?`Ouvert · jusqu’à ${lEnd}`:`Ouvert · jusqu’à ${eEnd}`):(m<660?'Fermé · ouvre à 11h':m<1080?(m<870?'Fermé':'Fermé · ouvre à 18h'):'Fermé · ouvre demain à 11h')})
+    const lEndStr=lEnd.replace(':','h')
+    const eEndStr=eEnd.replace(':','h')
+    set({o,t:o?(lunch?`Ouvert · jusqu’à ${lEndStr}`:`Ouvert · jusqu’à ${eEndStr}`):(m<(lh1*60+lm1)?`Fermé · ouvre à ${lStart.replace(':','h')}`:m<(eh1*60+em1)?(m<(lh2*60+lm2)?'Fermé':`Fermé · ouvre à ${eStart.replace(':','h')}`):'Fermé · ouvre demain')})
   },[cfg])
   return s
 }

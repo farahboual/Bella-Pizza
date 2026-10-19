@@ -77,18 +77,39 @@ export function canetteDeal(lines){
 }
 // Business rules taken from the site/flyer text
 export const RULES={deliveryMin:2500,deliveryFree:2500,tz:'Europe/Paris'}
-export function isOpen(d=new Date(), schedule=null){
- const p=new Intl.DateTimeFormat('fr-FR',{timeZone:RULES.tz,weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d)
- const g=k=>p.find(x=>x.type==k).value
+export const DEFAULT_SCHEDULE = {
+ weekly: {
+  lun: { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' },
+  mar: { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' },
+  mer: { open: false, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' },
+  jeu: { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' },
+  ven: { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:30' },
+  sam: { open: true, lunchStart: '11:00', lunchEnd: '15:00', eveStart: '18:00', eveEnd: '23:30' },
+  dim: { open: false, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' }
+ },
+ exceptions: []
+}
+
+export function getParisTime(d=new Date()){
+ const p=new Intl.DateTimeFormat('en-US',{timeZone:RULES.tz,weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d)
+ const g=k=>(p.find(x=>x.type===k)||{}).value||''
  const hour=+g('hour')%24
  const minute=+g('minute')
  const m=hour*60+minute
  const dateStr=`${g('year')}-${g('month')}-${g('day')}`
- const dayPart=g('weekday').toLowerCase().slice(0,3)
+ const rawWd=g('weekday').toLowerCase().slice(0,3)
+ const DAY_MAP={mon:'lun',tue:'mar',wed:'mer',thu:'jeu',fri:'ven',sat:'sam',sun:'dim',lun:'lun',mar:'mar',mer:'mer',jeu:'jeu',ven:'ven',sam:'sam',dim:'dim'}
+ const dayPart=DAY_MAP[rawWd]||rawWd
+ return { hour, minute, m, dateStr, dayPart }
+}
+
+export function isOpen(d=new Date(), schedule=null){
+ const { m, dateStr, dayPart } = getParisTime(d)
+ const activeSched = (schedule && schedule.weekly) ? schedule : DEFAULT_SCHEDULE
 
  // 1. Check Date Exceptions first (highest priority)
- if(schedule && Array.isArray(schedule.exceptions)){
-  const exc=schedule.exceptions.find(e=>e.date===dateStr)
+ if(activeSched && Array.isArray(activeSched.exceptions)){
+  const exc=activeSched.exceptions.find(e=>e.date===dateStr)
   if(exc){
    if(exc.type==='closed') return false
    if(exc.type==='open'){
@@ -100,8 +121,8 @@ export function isOpen(d=new Date(), schedule=null){
  }
 
  // 2. Check Weekly Schedule
- if(schedule && schedule.weekly){
-  const dayConf=schedule.weekly[dayPart]
+ if(activeSched && activeSched.weekly){
+  const dayConf=activeSched.weekly[dayPart]
   if(dayConf){
    if(dayConf.open===false) return false
    let inLunch=false, inEve=false
@@ -133,7 +154,6 @@ export function isOpen(d=new Date(), schedule=null){
   return inLunch || inEve
  }
 
- // Default standard schedule: 11h-14h30 & 18h-23h
- return (m>=660&&m<870)||(m>=1080&&m<1380)
+ return false
 }
 export function totalOf(lines){return lines.reduce((s,l)=>s+CATALOG[l.id].price*l.qty,0)}
