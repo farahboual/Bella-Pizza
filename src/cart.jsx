@@ -1,4 +1,4 @@
-import {createContext,useContext,useEffect,useState} from 'react'
+﻿import {createContext,useContext,useEffect,useState} from 'react'
 import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,SUPP_MAX,MEATS,cleanSupp,hasOpts,optExtra,pizzaOffer,canetteDeal,hasFood,CANETTE_ID} from '../shared/catalog.js'
 const Ctx=createContext(null)
 export const useCart=()=>useContext(Ctx)
@@ -138,7 +138,7 @@ export function CartDrawer(){
 
  if(!open||!cfg)return null
 
- const payment=pay||(cfg.online?'online':'sur_place'),upd=k=>e=>setF({...f,[k]:e.target.value})
+ const payment=pay||'online',upd=k=>e=>setF({...f,[k]:e.target.value})
  const short=type=='livraison'&&subtotal<RULES.deliveryMin,closed=!cfg.open
 
  let discount=0
@@ -360,7 +360,6 @@ export function CartDrawer(){
 
    <fieldset className="seg"><legend>Paiement</legend>
     {cfg.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>Carte en ligne</label>}
-    <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?'À la livraison':'Sur place'}</label>
    </fieldset>
 
    {closed&&<p className="warn">{cfg.closedReason||'Nous sommes fermés pour le moment. Commandes ouvertes 11h–14h30 et 18h–23h (fermé dimanche midi).'}</p>}
