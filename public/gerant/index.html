@@ -169,6 +169,32 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
  #chevalet-print-area{display:block!important;position:absolute;top:0;left:0;width:100%;padding:40px;text-align:center;background:#fff}
 }
 #chevalet-print-area{display:none}
+/* ── week-row: new clean list layout ── */
+.week-row{display:flex;flex-direction:column;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.week-row:last-child{border-bottom:none}
+.week-row-day{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.week-day-name{font-size:15px;font-weight:800;color:var(--dark);min-width:88px}
+/* toggle switch */
+.day-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.day-toggle input{position:absolute;opacity:0;width:0;height:0}
+.day-toggle-track{position:relative;width:42px;height:24px;background:#d1d5db;border-radius:999px;transition:background .2s;flex-shrink:0}
+.day-toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.day-open-chk:checked ~ .day-toggle-track{background:var(--red)}
+.day-open-chk:checked ~ .day-toggle-track .day-toggle-thumb{transform:translateX(18px)}
+.day-toggle-label{font-size:13px;font-weight:700;color:var(--mute);min-width:40px}
+.day-open-chk:checked + .day-toggle-track + .day-toggle-label{color:var(--red)}
+/* time groups */
+.week-row-times{display:flex;gap:16px;flex-wrap:wrap;padding-left:0;transition:opacity .2s}
+.time-group{display:flex;align-items:center;gap:6px}
+.time-label{font-size:12px;font-weight:700;color:var(--mute);min-width:30px;text-transform:uppercase;letter-spacing:.04em}
+.time-sep{font-size:14px;color:var(--mute)}
+.time-in{padding:6px 10px;font-size:13px;font-family:inherit;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--dark);width:100px}
+@media(max-width:520px){
+ .week-row-times{gap:10px}
+ .time-group{flex-wrap:wrap;gap:4px}
+ .time-in{width:85px;font-size:12px}
+}
+/* ── end week-row ── */
 </style></head><body>
 
 <!-- PASSWORD GATE -->
@@ -260,23 +286,14 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
 
     <!-- 2. HORAIRES RÉGULIERS DE LA SEMAINE -->
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px">
-        <div>
-          <h2>🗓️ Horaires d'ouverture habituels</h2>
-          <p style="font-size:14px;color:var(--mute);margin-top:2px">Créneaux appliqués lorsque le restaurant est en mode <b>Automatique</b>.</p>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" id="btn-default-week" class="btn ghost" style="padding:8px 14px;font-size:12px">Horaires classiques (11h–14h30 / 18h–23h)</button>
-          <button type="button" id="btn-continuous-week" class="btn ghost" style="padding:8px 14px;font-size:12px">Service continu (11h–23h)</button>
-        </div>
+      <div style="margin-bottom:20px">
+        <h2 style="margin-bottom:4px">Horaires d'ouverture</h2>
+        <p style="font-size:14px;color:var(--mute)">Créneaux appliqués lorsque le restaurant est en mode <b>Automatique</b>.</p>
       </div>
 
-      <div id="week-schedule-grid" style="display:grid;gap:10px;margin-bottom:20px"></div>
+      <div id="week-schedule-grid" style="margin-bottom:24px"></div>
 
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:18px;border-top:1px solid var(--line)">
-        <button id="save-week-btn" type="button" class="btn ink" style="padding:14px 28px">💾 Enregistrer les horaires de la semaine</button>
-        <span style="font-size:13px;color:var(--mute)">Modifiez les heures ou activez/désactivez un jour, puis cliquez sur Enregistrer.</span>
-      </div>
+      <button id="save-week-btn" type="button" class="btn ink" style="width:100%;padding:16px;font-size:15px;font-weight:800">Enregistrer les horaires</button>
     </div>
 
     <!-- 3. FERMETURES & OUVERTURES EXCEPTIONNELLES PAR DATE -->
@@ -606,25 +623,29 @@ function renderWeeklySchedule(){
  grid.innerHTML = DAYS_DEF.map(d => {
   const c = weekly[d.id] || { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' }
   const isOpen = c.open !== false
+  const dis = !isOpen ? 'opacity:0.35;pointer-events:none' : ''
   return `<div class="week-row" data-day="${d.id}">
-   <div style="display:flex;justify-content:space-between;align-items:center">
-    <b style="font-size:15px;color:var(--dark)">${d.name}</b>
-    <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:700;font-size:13px">
-     <input type="checkbox" class="day-open-chk" ${isOpen ? 'checked' : ''}> Ouvert
+   <div class="week-row-day">
+    <span class="week-day-name">${d.name}</span>
+    <label class="day-toggle" title="Ouvert / Fermé">
+     <input type="checkbox" class="day-open-chk" ${isOpen ? 'checked' : ''}>
+     <span class="day-toggle-track"><span class="day-toggle-thumb"></span></span>
+     <span class="day-toggle-label">${isOpen ? 'Ouvert' : 'Fermé'}</span>
     </label>
    </div>
-   <div></div>
-   <div class="week-row-times" style="${!isOpen?'opacity:0.35;pointer-events:none':''}">
-    <span style="font-size:12px;color:var(--mute);font-weight:700">☀️ Midi :</span>
-    <input type="time" class="time-in lunch-start" value="${c.lunchStart||'11:00'}" style="padding:6px 8px;font-size:13px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg)">
-    <span>–</span>
-    <input type="time" class="time-in lunch-end" value="${c.lunchEnd||'14:30'}" style="padding:6px 8px;font-size:13px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg)">
-   </div>
-   <div class="week-row-times" style="${!isOpen?'opacity:0.35;pointer-events:none':''}">
-    <span style="font-size:12px;color:var(--mute);font-weight:700">🌙 Soir :</span>
-    <input type="time" class="time-in eve-start" value="${c.eveStart||'18:00'}" style="padding:6px 8px;font-size:13px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg)">
-    <span>–</span>
-    <input type="time" class="time-in eve-end" value="${c.eveEnd||'23:00'}" style="padding:6px 8px;font-size:13px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg)">
+   <div class="week-row-times" style="${dis}">
+    <div class="time-group">
+     <span class="time-label">Midi</span>
+     <input type="time" class="time-in lunch-start" value="${c.lunchStart||'11:00'}">
+     <span class="time-sep">–</span>
+     <input type="time" class="time-in lunch-end" value="${c.lunchEnd||'14:30'}">
+    </div>
+    <div class="time-group">
+     <span class="time-label">Soir</span>
+     <input type="time" class="time-in eve-start" value="${c.eveStart||'18:00'}">
+     <span class="time-sep">–</span>
+     <input type="time" class="time-in eve-end" value="${c.eveEnd||'23:00'}">
+    </div>
    </div>
   </div>`
  }).join('')
@@ -632,11 +653,12 @@ function renderWeeklySchedule(){
  grid.querySelectorAll('.day-open-chk').forEach(chk => {
   chk.onchange = e => {
    const row = e.target.closest('.week-row')
-   const timeWraps = row.querySelectorAll('.week-row-times')
-   timeWraps.forEach(w => {
-    w.style.opacity = e.target.checked ? '1' : '0.35'
-    w.style.pointerEvents = e.target.checked ? 'auto' : 'none'
-   })
+   const timesDiv = row.querySelector('.week-row-times')
+   const label = row.querySelector('.day-toggle-label')
+   const open = e.target.checked
+   timesDiv.style.opacity = open ? '1' : '0.35'
+   timesDiv.style.pointerEvents = open ? 'auto' : 'none'
+   if(label) label.textContent = open ? 'Ouvert' : 'Fermé'
   }
  })
 }
@@ -791,41 +813,6 @@ function renderStatus(){
   })
   showToast(config.manualClosed ? 'Restaurant fermé !' : 'Restaurant réouvert !')
  }
-}
-
-// Preset week buttons
-if($('#btn-default-week')) $('#btn-default-week').onclick = () => {
- DAYS_DEF.forEach(d => {
-  const row = document.querySelector(`.week-row[data-day="${d.id}"]`)
-  if(row){
-   row.querySelector('.day-open-chk').checked = true
-   row.querySelector('.lunch-start').value = '11:00'
-   row.querySelector('.lunch-end').value = '14:30'
-   row.querySelector('.eve-start').value = '18:00'
-   row.querySelector('.eve-end').value = '23:00'
-   row.querySelectorAll('.week-row-times').forEach(w => {
-    w.style.opacity = '1'; w.style.pointerEvents = 'auto'
-   })
-  }
- })
- showToast('Horaires classiques appliqués aux champs !')
-}
-
-if($('#btn-continuous-week')) $('#btn-continuous-week').onclick = () => {
- DAYS_DEF.forEach(d => {
-  const row = document.querySelector(`.week-row[data-day="${d.id}"]`)
-  if(row){
-   row.querySelector('.day-open-chk').checked = true
-   row.querySelector('.lunch-start').value = '11:00'
-   row.querySelector('.lunch-end').value = '23:00'
-   row.querySelector('.eve-start').value = '18:00'
-   row.querySelector('.eve-end').value = '23:00'
-   row.querySelectorAll('.week-row-times').forEach(w => {
-    w.style.opacity = '1'; w.style.pointerEvents = 'auto'
-   })
-  }
- })
- showToast('Service continu appliqué aux champs !')
 }
 
 // Save week schedule button
