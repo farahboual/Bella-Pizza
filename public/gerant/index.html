@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Espace GÃ©rant â€” Taco Pizza</title>
+<title>Espace Gérant — Taco Pizza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -207,27 +207,27 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#C41E17"/><path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/><circle cx="15" cy="20" r="3.2" fill="#fff"/><circle cx="29" cy="32" r="3.2" fill="#fff"/></svg>
    <b>Taco<span>Pizza</span></b>
   </div>
-  <h1>Espace GÃ©rant</h1>
-  <p>AccÃ¨s gÃ©rant du restaurant. Veuillez vous identifier.</p>
-  <input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe gÃ©rant" required>
+  <h1>Espace Gérant</h1>
+  <p>Accès gérant du restaurant. Veuillez vous identifier.</p>
+  <input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe gérant" required>
   <div id="er"></div>
-  <button id="go" class="btn red" style="width:100%;padding:16px;font-size:16px">AccÃ©der au tableau de bord</button>
+  <button id="go" class="btn red" style="width:100%;padding:16px;font-size:16px">Accéder au tableau de bord</button>
  </form>
 </div>
 
 <!-- HEADER -->
 <header>
  <div style="display:flex;gap:12px;align-items:center">
-  <a class="logo" href="#top" aria-label="Taco Pizza GÃ©rant">
+  <a class="logo" href="#top" aria-label="Taco Pizza Gérant">
    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#C41E17"/><path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/><circle cx="15" cy="20" r="3.2" fill="#fff"/><circle cx="29" cy="32" r="3.2" fill="#fff"/></svg>
    <b>Taco<span>Pizza</span></b>
   </a>
-  <span class="badge-admin">GÃ©rant</span>
+  <span class="badge-admin">Gérant</span>
    <span id="db-indicator" style="display:none"></span>
  </div>
  <div style="display:flex;gap:12px;align-items:center">
-  <a href="/cuisine/index.html" id="open-cuisine-btn" class="btn ghost" target="_blank">ðŸ‘¨â€ðŸ³ Ouvrir Ã‰cran Cuisine â†—</a>
-  <button id="logout-btn" class="btn ghost">DÃ©connexion</button>
+  <a href="/cuisine/index.html" id="open-cuisine-btn" class="btn ghost" target="_blank">👨‍🍳 Ouvrir Écran Cuisine ↗</a>
+  <button id="logout-btn" class="btn ghost">Déconnexion</button>
  </div>
 </header>
 
@@ -261,7 +261,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
    </button>
    <button type="button" class="tab" data-tab="security" role="tab">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="1.5"/><line x1="12" y1="12.5" x2="12" y2="15"/></svg>
-    <span>SÃ©curitÃ© &amp; Mot de passe</span>
+    <span>Sécurité &amp; Mot de passe</span>
    </button>
   </nav>
  </aside>
@@ -277,7 +277,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
       </div>
       <div>
         <div class="sh-page-title">Tableau de bord</div>
-        <div class="sh-page-sub">Vue d'ensemble de l'activitÃ© du restaurant et raccourcis rapides.</div>
+        <div class="sh-page-sub">Vue d'ensemble de l'activité du restaurant et raccourcis rapides.</div>
       </div>
     </div>
 
@@ -289,8 +289,8 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
           <span class="dash-stat-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
         </div>
         <div id="db-quick-status" class="dash-stat-val">Ouvert</div>
-        <div class="dash-stat-sub">Commandes en ligne autorisÃ©es</div>
-        <button type="button" class="dash-stat-link" onclick="switchTab('status')">GÃ©rer les horaires â†’</button>
+        <div class="dash-stat-sub">Commandes en ligne autorisées</div>
+        <button type="button" class="dash-stat-link" onclick="switchTab('status')">Gérer les horaires →</button>
       </div>
 
       <div class="dash-stat-card">
@@ -298,9 +298,9 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
           <span class="dash-stat-label">Ventes du jour</span>
           <span class="dash-stat-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
         </div>
-        <div id="db-today-ca" class="dash-stat-val">0,00 â‚¬</div>
+        <div id="db-today-ca" class="dash-stat-val">0,00 €</div>
         <div id="db-today-orders" class="dash-stat-sub">0 commande aujourd'hui</div>
-        <button type="button" class="dash-stat-link" onclick="switchTab('sales')">Voir le rapport de caisse â†’</button>
+        <button type="button" class="dash-stat-link" onclick="switchTab('sales')">Voir le rapport de caisse →</button>
       </div>
 
       <div class="dash-stat-card">
@@ -310,7 +310,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
         </div>
         <div id="db-prods-count" class="dash-stat-val">--</div>
         <div class="dash-stat-sub">Plats au menu</div>
-        <button type="button" class="dash-stat-link" onclick="switchTab('menu')">Modifier la carte â†’</button>
+        <button type="button" class="dash-stat-link" onclick="switchTab('menu')">Modifier la carte →</button>
       </div>
 
       <div class="dash-stat-card">
@@ -320,9 +320,10 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
         </div>
         <div id="db-promos-count" class="dash-stat-val">--</div>
         <div class="dash-stat-sub">Codes promo actifs</div>
-        <button type="button" class="dash-stat-link" onclick="switchTab('promos')">GÃ©rer les codes promo â†’</button>
+        <button type="button" class="dash-stat-link" onclick="switchTab('promos')">Gérer les codes promo →</button>
       </div>
     </div>
+
   </div>
 
  <!-- TAB 1: STATUS -->
@@ -335,7 +336,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
       </div>
       <div>
         <div class="sh-page-title">Statut &amp; Horaires</div>
-        <div class="sh-page-sub">GÃ©rez les horaires et la disponibilitÃ© de votre restaurant.</div>
+        <div class="sh-page-sub">Gérez les horaires et la disponibilité de votre restaurant.</div>
       </div>
     </div>
 
@@ -345,7 +346,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
         <span class="sh-status-dot" id="status-dot"></span>
         <div>
           <div id="status-pill" class="sh-status-title">Restaurant ouvert</div>
-          <div id="status-sub" class="sh-status-sub">Les commandes en ligne sont actuellement autorisÃ©es.</div>
+          <div id="status-sub" class="sh-status-sub">Les commandes en ligne sont actuellement autorisées.</div>
         </div>
       </div>
       <button id="toggle-closed-btn" type="button" class="btn red sh-close-btn">
@@ -370,7 +371,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
           </div>
           <div>
             <div class="sh-section-title">Horaires d'ouverture</div>
-            <div class="sh-section-sub">DÃ©finissez les horaires habituels pour chaque jour.</div>
+            <div class="sh-section-sub">Définissez les horaires habituels pour chaque jour.</div>
           </div>
         </div>
         <button type="button" id="copy-hours-btn" class="btn ghost sh-copy-btn">
@@ -390,13 +391,13 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
           </div>
           <div>
             <div class="sh-section-title">Ouvertures et fermetures exceptionnelles</div>
-            <div class="sh-section-sub">GÃ©rez les jours fÃ©riÃ©s et les horaires spÃ©ciaux.</div>
+            <div class="sh-section-sub">Gérez les jours fériés et les horaires spéciaux.</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
           <button type="button" class="btn red sh-acc-action-btn" onclick="event.stopPropagation();toggleAccordion('acc-exceptions')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-            GÃ©rer les exceptions
+            Gérer les exceptions
           </button>
           <span class="sh-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
         </div>
@@ -404,20 +405,20 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
       <div class="sh-acc-body">
         <div style="background:var(--bg);border-radius:16px;padding:20px;border:1px solid var(--line);margin-bottom:16px">
           <div class="exc-form-grid">
-            <div class="form-group" style="margin:0"><label style="font-size:12px">Date concernÃ©e</label><input type="date" id="new-exc-date"></div>
+            <div class="form-group" style="margin:0"><label style="font-size:12px">Date concernée</label><input type="date" id="new-exc-date"></div>
             <div class="form-group" style="margin:0"><label style="font-size:12px">Type d'exception</label>
               <select id="new-exc-type">
-                <option value="closed">FermÃ© toute la journÃ©e</option>
+                <option value="closed">Fermé toute la journée</option>
                 <option value="open">Ouvert exceptionnellement</option>
               </select>
             </div>
             <div id="exc-time-box" style="display:none">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <div class="form-group" style="margin:0"><label style="font-size:12px">DÃ©but</label><input type="time" id="new-exc-start" value="11:00"></div>
+                <div class="form-group" style="margin:0"><label style="font-size:12px">Début</label><input type="time" id="new-exc-start" value="11:00"></div>
                 <div class="form-group" style="margin:0"><label style="font-size:12px">Fin</label><input type="time" id="new-exc-end" value="23:00"></div>
               </div>
             </div>
-            <div class="form-group" style="margin:0"><label style="font-size:12px">Motif (optionnel)</label><input type="text" id="new-exc-note" placeholder="Ex: Jour fÃ©riÃ©"></div>
+            <div class="form-group" style="margin:0"><label style="font-size:12px">Motif (optionnel)</label><input type="text" id="new-exc-note" placeholder="Ex: Jour férié"></div>
             <div><button type="button" id="add-exc-btn" class="btn red" style="width:100%;padding:14px">Ajouter</button></div>
           </div>
         </div>
@@ -433,7 +434,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
           </div>
           <div>
-            <div class="sh-section-title">Message affichÃ© aux clients en cas de fermeture</div>
+            <div class="sh-section-title">Message affiché aux clients en cas de fermeture</div>
             <div class="sh-section-sub" id="msg-preview">"Notre restaurant est actuellement ouvert."</div>
           </div>
         </div>
@@ -447,7 +448,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
       </div>
       <div class="sh-acc-body">
         <div class="form-group" style="margin-bottom:16px">
-          <textarea id="closed-reason" rows="3" placeholder="Exemple : Nous sommes fermÃ©s pour le moment. Commandes ouvertes de 11h Ã  14h30 et de 18h Ã  23h."></textarea>
+          <textarea id="closed-reason" rows="3" placeholder="Exemple : Nous sommes fermés pour le moment. Commandes ouvertes de 11h à 14h30 et de 18h à 23h."></textarea>
         </div>
         <button id="save-reason-btn" type="button" class="btn ink">Enregistrer le message</button>
       </div>
@@ -459,7 +460,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13"/><polyline points="7 3 7 8 15 8"/></svg>
         Enregistrer les horaires
       </button>
-      <p class="sh-save-note">Vos horaires habituels ne sont pas modifiÃ©s par les exceptions dÃ©jÃ  programmÃ©es.</p>
+      <p class="sh-save-note">Vos horaires habituels ne sont pas modifiés par les exceptions déjà programmées.</p>
     </div>
     <button id="save-status-btn" type="button" style="display:none"></button>
 
@@ -470,15 +471,15 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
   <div class="card">
    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px">
     <h2>Gestion de la carte &amp; des produits</h2>
-    <button id="toggle-new-prod-btn" class="btn red">âž• Ajouter un nouveau produit</button>
+    <button id="toggle-new-prod-btn" class="btn red">➕ Ajouter un nouveau produit</button>
    </div>
 
    <!-- FORMULAIRE AJOUT PRODUIT -->
    <div id="new-prod-box" style="display:none;background:var(--bg);padding:24px;border-radius:20px;border:1.5px solid var(--line);margin-bottom:24px">
-    <h3 style="font-size:18px;font-weight:900;margin-bottom:16px">Nouveau produit Ã  la carte</h3>
+    <h3 style="font-size:18px;font-weight:900;margin-bottom:16px">Nouveau produit à la carte</h3>
     <form id="new-prod-form" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
      <div class="form-group" style="margin:0"><label>Nom du produit *</label><input type="text" id="np-name" required placeholder="Ex: Burger Bacon BBQ"></div>
-     <div class="form-group" style="margin:0"><label>CatÃ©gorie</label>
+     <div class="form-group" style="margin:0"><label>Catégorie</label>
       <select id="np-cat">
        <option value="Pizzas">Pizzas</option>
        <option value="Tacos">Tacos</option>
@@ -491,8 +492,8 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
        <option value="Divers">Divers</option>
       </select>
      </div>
-     <div class="form-group" style="margin:0"><label>Prix (â‚¬) *</label><input type="number" id="np-price" step="0.50" min="0.5" required placeholder="10.50"></div>
-     <div class="form-group" style="margin:0"><label>Description / IngrÃ©dients</label><input type="text" id="np-desc" placeholder="Sauce maison, cheddar affinÃ©, steak 150g..."></div>
+     <div class="form-group" style="margin:0"><label>Prix (€) *</label><input type="number" id="np-price" step="0.50" min="0.5" required placeholder="10.50"></div>
+     <div class="form-group" style="margin:0"><label>Description / Ingrédients</label><input type="text" id="np-desc" placeholder="Sauce maison, cheddar affiné, steak 150g..."></div>
      <div style="grid-column:1/-1;display:flex;gap:10px;margin-top:8px">
       <button type="submit" class="btn ink">Enregistrer le produit</button>
       <button type="button" id="cancel-new-prod" class="btn ghost">Annuler</button>
@@ -500,7 +501,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
     </form>
    </div>
 
-   <input type="text" id="search-item" class="search-box" placeholder="Rechercher un plat, pizza, burger, produit personnalisÃ©...">
+   <input type="text" id="search-item" class="search-box" placeholder="Rechercher un plat, pizza, burger, produit personnalisé...">
    <div id="items-list" class="items-table">Chargement de la carte...</div>
   </div>
  </div>
@@ -508,12 +509,12 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
  <!-- TAB 3: CODES PROMO -->
  <div id="tab-promos" class="tab-content" style="display:none" role="tabpanel">
   <div class="card">
-   <h2>CrÃ©er un Code Promo</h2>
+   <h2>Créer un Code Promo</h2>
    <form id="promo-form" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:24px">
     <div class="form-group" style="margin:0"><label>Code (ex: WELCOME10)</label><input type="text" id="p-code" required placeholder="BIENVENUE10" style="text-transform:uppercase"></div>
-    <div class="form-group" style="margin:0"><label>Type</label><select id="p-type"><option value="percent">Pourcentage (%)</option><option value="fixed">Montant fixe (â‚¬)</option></select></div>
-    <div class="form-group" style="margin:0"><label>Valeur (ex: 10% ou 5â‚¬)</label><input type="number" id="p-val" step="1" min="1" required placeholder="10"></div>
-    <button type="submit" class="btn red">CrÃ©er le code</button>
+    <div class="form-group" style="margin:0"><label>Type</label><select id="p-type"><option value="percent">Pourcentage (%)</option><option value="fixed">Montant fixe (€)</option></select></div>
+    <div class="form-group" style="margin:0"><label>Valeur (ex: 10% ou 5€)</label><input type="number" id="p-val" step="1" min="1" required placeholder="10"></div>
+    <button type="submit" class="btn red">Créer le code</button>
    </form>
    <h2>Codes Promo Actifs</h2>
    <div id="promos-list" class="items-table">Chargement des codes...</div>
@@ -523,10 +524,10 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
  <!-- TAB 4: QR CODES TABLES -->
  <div id="tab-qr" class="tab-content" style="display:none" role="tabpanel">
   <div class="card">
-   <h2>GÃ©nÃ©rateur &amp; Impression de QR Codes pour Tables</h2>
-   <p style="color:var(--mute);margin-bottom:16px;line-height:1.5">GÃ©nÃ©rez un QR Code avec son <b>chevalet de table imprimable</b> pour vos clients sur place. Lorsqu'ils le scannent avec leur tÃ©lÃ©phone, ils accÃ¨dent directement Ã  votre carte avec le mode Â« Sur place Â» et le numÃ©ro de table prÃ©-rempli !</p>
+   <h2>Générateur &amp; Impression de QR Codes pour Tables</h2>
+   <p style="color:var(--mute);margin-bottom:16px;line-height:1.5">Générez un QR Code avec son <b>chevalet de table imprimable</b> pour vos clients sur place. Lorsqu'ils le scannent avec leur téléphone, ils accèdent directement à votre carte avec le mode « Sur place » et le numéro de table pré-rempli !</p>
 
-   <label style="font-weight:700;font-size:14px;display:block;margin-bottom:6px">SÃ©lection rapide de table :</label>
+   <label style="font-weight:700;font-size:14px;display:block;margin-bottom:6px">Sélection rapide de table :</label>
    <div class="quick-tbls">
     <button class="quick-tbl-btn on" data-num="1">Table 1</button>
     <button class="quick-tbl-btn" data-num="2">Table 2</button>
@@ -541,8 +542,8 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
    </div>
 
    <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
-    <label style="font-weight:700;font-size:14px">Ou numÃ©ro personnalisÃ© :</label>
-    <input type="number" id="table-num-input" class="search-box" min="1" max="99" value="1" style="width:120px;margin:0" placeholder="NÂ°">
+    <label style="font-weight:700;font-size:14px">Ou numéro personnalisé :</label>
+    <input type="number" id="table-num-input" class="search-box" min="1" max="99" value="1" style="width:120px;margin:0" placeholder="N°">
     <button id="gen-qr-btn" class="btn ink">Afficher</button>
    </div>
 
@@ -552,12 +553,12 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
      <div style="margin-top:12px;font-weight:800;font-size:13px;color:var(--mute)">Scannable par smartphone</div>
     </div>
     <div>
-     <h3 id="qr-table-title" style="font-size:24px;font-weight:900;margin-bottom:8px">Table nÂ° 1</h3>
+     <h3 id="qr-table-title" style="font-size:24px;font-weight:900;margin-bottom:8px">Table n° 1</h3>
      <p style="color:var(--mute);margin-bottom:16px;font-size:14px">Lien direct : <a id="qr-link-url" href="#" target="_blank" style="word-break:break-all">...</a></p>
      <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button id="print-chevalet-btn" class="btn red">ðŸ–¨ï¸ Imprimer le chevalet de table</button>
-      <button id="download-qr-btn" class="btn ghost">ðŸ’¾ TÃ©lÃ©charger l'image QR</button>
-      <button id="copy-qr-btn" class="btn ghost">ðŸ“‹ Copier le lien</button>
+      <button id="print-chevalet-btn" class="btn red">🖨️ Imprimer le chevalet de table</button>
+      <button id="download-qr-btn" class="btn ghost">💾 Télécharger l'image QR</button>
+      <button id="copy-qr-btn" class="btn ghost">📋 Copier le lien</button>
      </div>
     </div>
    </div>
@@ -569,7 +570,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
   <div class="card">
    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px">
     <div><h2>Rapport de caisse</h2><p class="sub" style="margin-top:2px">Consultez les ventes et le rapport de caisse (rapport Z).</p></div>
-    <button id="export-csv-btn" class="btn ghost">ðŸ“¥ Exporter en CSV</button>
+    <button id="export-csv-btn" class="btn ghost">📥 Exporter en CSV</button>
    </div>
 
    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
@@ -578,37 +579,37 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
     <button class="btn ghost period-btn" data-days="30">30 derniers jours</button>
    </div>
    <div class="stat-grid">
-    <div class="stat-card"><h3>Chiffre d'Affaires du jour</h3><div id="stat-ca" class="val">0,00 â‚¬</div></div>
+    <div class="stat-card"><h3>Chiffre d'Affaires du jour</h3><div id="stat-ca" class="val">0,00 €</div></div>
     <div class="stat-card"><h3>Nombre de commandes</h3><div id="stat-count" class="val">0</div></div>
     <div class="stat-card"><h3>Livraisons</h3><div id="stat-deliv" class="val">0</div></div>
-    <div class="stat-card"><h3>Ã€ Emporter / Sur Place</h3><div id="stat-take" class="val">0</div></div>
+    <div class="stat-card"><h3>À Emporter / Sur Place</h3><div id="stat-take" class="val">0</div></div>
    </div>
-   <h2>DÃ©tail des derniÃ¨res commandes</h2>
+   <h2>Détail des dernières commandes</h2>
    <div id="sales-list" class="items-table">Chargement...</div>
   </div>
  </div>
 
- <!-- TAB 7: SÃ‰CURITÃ‰ & MOTS DE PASSE -->
+ <!-- TAB 7: SÉCURITÉ & MOTS DE PASSE -->
   <div id="tab-security" class="tab-content" style="display:none" role="tabpanel">
    <div class="card">
-    <h2>SÃ©curitÃ© &amp; Mots de passe</h2>
-    <p style="color:var(--mute);margin-bottom:24px">Modifiez en toute autonomie vos mots de passe pour l'Espace GÃ©rant et l'Ã‰cran Cuisine.</p>
+    <h2>Sécurité &amp; Mots de passe</h2>
+    <p style="color:var(--mute);margin-bottom:24px">Modifiez en toute autonomie vos mots de passe pour l'Espace Gérant et l'Écran Cuisine.</p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:24px">
-     <!-- Mot de passe GÃ©rant -->
+     <!-- Mot de passe Gérant -->
      <div style="background:var(--bg);padding:24px;border-radius:20px;border:1px solid var(--line)">
-      <b style="display:block;margin-bottom:6px;font-size:16px;color:var(--dark)">ðŸ”‘ Mot de passe GÃ©rant</b>
-      <p style="font-size:13px;color:var(--mute);margin-bottom:14px">ProtÃ¨ge cet espace de gestion, les prix et la comptabilitÃ©.</p>
+      <b style="display:block;margin-bottom:6px;font-size:16px;color:var(--dark)">🔑 Mot de passe Gérant</b>
+      <p style="font-size:13px;color:var(--mute);margin-bottom:14px">Protège cet espace de gestion, les prix et la comptabilité.</p>
       <div class="form-group" style="margin:0">
-       <label style="font-size:12px">Nouveau mot de passe GÃ©rant</label>
+       <label style="font-size:12px">Nouveau mot de passe Gérant</label>
        <input type="text" id="pw-gerant" placeholder="Entrez un nouveau mot de passe">
       </div>
      </div>
 
      <!-- Mot de passe Cuisine -->
      <div style="background:var(--bg);padding:24px;border-radius:20px;border:1px solid var(--line)">
-      <b style="display:block;margin-bottom:6px;font-size:16px;color:var(--dark)">ðŸ³ Mot de passe Cuisine</b>
-      <p style="font-size:13px;color:var(--mute);margin-bottom:14px">UtilisÃ© sur la tablette ou l'Ã©cran des cuisiniers.</p>
+      <b style="display:block;margin-bottom:6px;font-size:16px;color:var(--dark)">🍳 Mot de passe Cuisine</b>
+      <p style="font-size:13px;color:var(--mute);margin-bottom:14px">Utilisé sur la tablette ou l'écran des cuisiniers.</p>
       <div class="form-group" style="margin:0">
        <label style="font-size:12px">Nouveau mot de passe Cuisine</label>
        <input type="text" id="pw-kitchen" placeholder="Entrez un nouveau mot de passe">
@@ -619,8 +620,8 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
     <button id="save-passwords-btn" class="btn ink">Enregistrer les nouveaux mots de passe</button>
 
     <div style="display:none;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)">
-     <h3 style="font-size:17px;font-weight:800;margin-bottom:6px">Ã‰tat de la base de donnÃ©es (Supabase)</h3>
-     <p style="font-size:13px;color:var(--mute);margin-bottom:14px">VÃ©rifiez la connexion et l'accÃ¨s Ã  la table des commandes et configurations.</p>
+     <h3 style="font-size:17px;font-weight:800;margin-bottom:6px">État de la base de données (Supabase)</h3>
+     <p style="font-size:13px;color:var(--mute);margin-bottom:14px">Vérifiez la connexion et l'accès à la table des commandes et configurations.</p>
      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
       <button id="test-db-btn" class="btn ghost" type="button">Tester la connexion Supabase</button>
       <span id="db-test-result" style="font-size:13px;font-weight:700"></span>
@@ -637,7 +638,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
   <h1 style="font-size:28px;font-weight:900;color:#C41E17;margin-bottom:4px">TACO PIZZA</h1>
   <p style="font-size:14px;color:#6B6560;font-weight:700;margin-bottom:20px">15 rue de Rouen, 49400 Saumur</p>
   <div style="background:#F7F3EE;padding:12px;border-radius:16px;display:inline-block;margin-bottom:20px">
-   <h2 id="print-tbl-title" style="font-size:32px;font-weight:900;color:#1A1511">TABLE NÂ° 1</h2>
+   <h2 id="print-tbl-title" style="font-size:32px;font-weight:900;color:#1A1511">TABLE N° 1</h2>
   </div>
   <div style="margin:16px 0">
    <img id="print-qr-img" src="" alt="QR" style="width:240px;height:240px;display:block;margin:0 auto">
@@ -647,7 +648,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
  </div>
 </div>
 
-<div id="toast" class="toast">Modifications enregistrÃ©es !</div>
+<div id="toast" class="toast">Modifications enregistrées !</div>
 
 <script>
 const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'}),esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
@@ -675,7 +676,7 @@ const DEFAULT_SCHEDULE = {
  exceptions: []
 }
 
-function showToast(msg='Modifications enregistrÃ©es !'){
+function showToast(msg='Modifications enregistrées !'){
  const t=$('#toast');t.textContent=msg;t.style.display='block'
  setTimeout(()=>t.style.display='none',2500)
 }
@@ -726,7 +727,7 @@ if(savePwBtn){
     localStorage.setItem('tp_cuisine_key', kitchenKey)
    }
    renderSecurity()
-   showToast('Mots de passe mis Ã  jour avec succÃ¨s !')
+   showToast('Mots de passe mis à jour avec succès !')
   }
  }
 }
@@ -735,18 +736,18 @@ function updateDashboardMetrics(){
  const quickStat = $('#db-quick-status')
  if(quickStat){
   const openMode = config.openMode || (config.manualClosed ? 'closed' : (config.forcedOpen ? 'forced_open' : 'auto'))
-  quickStat.textContent = openMode === 'closed' ? 'FermÃ©' : (openMode === 'forced_open' ? 'ForcÃ© Ouvert' : 'Ouvert')
+  quickStat.textContent = openMode === 'closed' ? 'Fermé' : (openMode === 'forced_open' ? 'Forcé Ouvert' : 'Ouvert')
   quickStat.style.color = openMode === 'closed' ? 'var(--red)' : '#166534'
  }
  const todayCA = $('#db-today-ca')
  const todayOrders = $('#db-today-orders')
  if(todayCA && Array.isArray(sales)){
   const todayStr = new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date())
-   const todaySales = sales.filter(s => {
-    if(!s.createdAt) return false
-    const d = new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date(s.createdAt))
-    return d === todayStr && s.paid
-   })
+  const todaySales = sales.filter(s => {
+   if(!s.createdAt) return false
+   const sd = new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date(s.createdAt))
+   return sd === todayStr && s.paid
+  })
   const totalCents = todaySales.reduce((acc, s) => acc + (s.total||0), 0)
   todayCA.textContent = eur(totalCents)
   if(todayOrders) todayOrders.textContent = todaySales.length + ' commande' + (todaySales.length > 1 ? 's' : '') + ' aujourd\'hui'
@@ -782,7 +783,7 @@ function renderMenu(query=''){
   return !q||(item.name||'').toLowerCase().includes(q)||(item.cat||'').toLowerCase().includes(q)
  })
 
- if(!keys.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucun produit trouvÃ©</p>';return}
+ if(!keys.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucun produit trouvé</p>';return}
 
  list.innerHTML=keys.map(id=>{
   const item=allItems[id]
@@ -792,14 +793,14 @@ function renderMenu(query=''){
   const isOut=!!ov.outOfStock
   return `<div class="item-row" data-id="${id}">
    <div>
-    <div class="item-name">${item.name} ${isCustom?'<span class="badge-custom">CrÃ©Ã© par vous</span>':''}</div>
-    <div class="item-cat">${item.cat||'Divers'}${item.desc?` Â· <i>${item.desc}</i>`:''}</div>
+    <div class="item-name">${item.name} ${isCustom?'<span class="badge-custom">Créé par vous</span>':''}</div>
+    <div class="item-cat">${item.cat||'Divers'}${item.desc?` · <i>${item.desc}</i>`:''}</div>
    </div>
-   <div class="price-input-wrap"><input type="number" step="0.50" min="0" class="price-input" value="${(currentPrice/100).toFixed(2)}"> â‚¬</div>
+   <div class="price-input-wrap"><input type="number" step="0.50" min="0" class="price-input" value="${(currentPrice/100).toFixed(2)}"> €</div>
    <div><button class="btn ${isOut?'warn':'ghost'}" data-act="stock">${isOut?'Rupture':'En stock'}</button></div>
    <div style="display:flex;gap:6px">
     <button class="btn ink" data-act="save">Enregistrer</button>
-    ${isCustom?'<button class="btn warn" data-act="del-custom" title="Supprimer ce produit" style="padding:10px 14px">ðŸ—‘ï¸</button>':''}
+    ${isCustom?'<button class="btn warn" data-act="del-custom" title="Supprimer ce produit" style="padding:10px 14px">🗑️</button>':''}
    </div>
   </div>`
  }).join('')
@@ -856,7 +857,7 @@ function renderWeeklySchedule(){
      <input type="checkbox" class="day-open-chk" ${isOpen ? 'checked' : ''}>
      <span class="sh-toggle-track"><span class="sh-toggle-thumb"></span></span>
     </label>
-    <span class="sh-open-badge ${isOpen ? 'open' : 'closed'}">${isOpen ? 'Ouvert' : 'FermÃ©'}</span>
+    <span class="sh-open-badge ${isOpen ? 'open' : 'closed'}">${isOpen ? 'Ouvert' : 'Fermé'}</span>
    </div>
    <div class="sh-day-times" style="${timeDis}">
     <div class="sh-slot">
@@ -864,7 +865,7 @@ function renderWeeklySchedule(){
      <div class="sh-slot-row">
       <span class="sh-clock-icon">${clk}</span>
       <input type="time" class="sh-time-in lunch-start" value="${c.lunchStart||'11:00'}">
-      <span class="sh-arr">â†’</span>
+      <span class="sh-arr">→</span>
       <span class="sh-clock-icon">${clk}</span>
       <input type="time" class="sh-time-in lunch-end" value="${c.lunchEnd||'14:30'}">
      </div>
@@ -874,14 +875,14 @@ function renderWeeklySchedule(){
      <div class="sh-slot-row">
       <span class="sh-clock-icon">${clk}</span>
       <input type="time" class="sh-time-in eve-start" value="${c.eveStart||'18:00'}">
-      <span class="sh-arr">â†’</span>
+      <span class="sh-arr">→</span>
       <span class="sh-clock-icon">${clk}</span>
       <input type="time" class="sh-time-in eve-end" value="${c.eveEnd||'23:00'}">
      </div>
     </div>
    </div>
    <div class="sh-day-actions">
-    <button type="button" class="sh-add-slot-btn">+ Ajouter un crÃ©neau</button>
+    <button type="button" class="sh-add-slot-btn">+ Ajouter un créneau</button>
     <span class="sh-day-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
    </div>
   </div>`
@@ -895,12 +896,12 @@ function renderWeeklySchedule(){
    const open = e.target.checked
    timesDiv.style.opacity = open ? '1' : '0.4'
    timesDiv.style.pointerEvents = open ? 'auto' : 'none'
-   if(badge){ badge.textContent = open ? 'Ouvert' : 'FermÃ©'; badge.className = 'sh-open-badge ' + (open ? 'open' : 'closed') }
+   if(badge){ badge.textContent = open ? 'Ouvert' : 'Fermé'; badge.className = 'sh-open-badge ' + (open ? 'open' : 'closed') }
   }
  })
 
  grid.querySelectorAll('.sh-add-slot-btn').forEach(btn => {
-  btn.onclick = () => showToast('FonctionnalitÃ© Ã  venir : crÃ©neaux multiples par jour.')
+  btn.onclick = () => showToast('Fonctionnalité à venir : créneaux multiples par jour.')
  })
 }
 
@@ -909,18 +910,18 @@ function renderExceptions(){
  const list = $('#exceptions-list')
  if(!list) return
  if(!exceptions.length){
-  list.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Aucune exception programmÃ©e pour le moment.</p>'
+  list.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Aucune exception programmée pour le moment.</p>'
   return
  }
  list.innerHTML = exceptions.map((e, idx) => {
   const isOp = e.type === 'open'
   return `<div style="display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px 18px;border-radius:14px;border:1px solid var(--line);margin-bottom:8px;flex-wrap:wrap;gap:8px">
    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <span style="font-weight:800;font-size:14px;color:var(--dark)">ðŸ“… ${e.date}</span>
-    <span class="status-pill ${isOp?'open':'closed'}" style="font-size:12px;padding:4px 12px">${isOp ? 'ðŸŸ¢ Ouvert '+e.start+' Ã  '+e.end : 'ðŸ”´ FermÃ© toute la journÃ©e'}</span>
+    <span style="font-weight:800;font-size:14px;color:var(--dark)">📅 ${e.date}</span>
+    <span class="status-pill ${isOp?'open':'closed'}" style="font-size:12px;padding:4px 12px">${isOp ? '🟢 Ouvert '+e.start+' à '+e.end : '🔴 Fermé toute la journée'}</span>
     ${e.note ? `<span style="font-size:13px;color:var(--mute)">(${esc(e.note)})</span>` : ''}
    </div>
-   <button type="button" class="btn ghost del-exc-btn" data-idx="${idx}" style="color:var(--red);padding:6px 12px;font-size:12px">ðŸ—‘ï¸ Supprimer</button>
+   <button type="button" class="btn ghost del-exc-btn" data-idx="${idx}" style="color:var(--red);padding:6px 12px;font-size:12px">🗑️ Supprimer</button>
   </div>`
  }).join('')
 
@@ -932,7 +933,7 @@ function renderExceptions(){
    config.schedule = s
    await saveConfigFast({ schedule: s })
    renderExceptions()
-   showToast('Exception supprimÃ©e !')
+   showToast('Exception supprimée !')
   }
  })
 }
@@ -1001,36 +1002,36 @@ function renderStatus(){
     manualClosed: m === 'closed',
     forcedOpen: m === 'forced_open'
    })
-   showToast('Mode mis Ã  jour : ' + (m === 'auto' ? 'Automatique' : m === 'forced_open' ? 'ForcÃ© Ouvert' : 'FermÃ©'))
+   showToast('Mode mis à jour : ' + (m === 'auto' ? 'Automatique' : m === 'forced_open' ? 'Forcé Ouvert' : 'Fermé'))
   }
  })
 
  const dot = $('#status-dot')
  if(isClosed){
-  pill.textContent = 'Restaurant fermÃ©'
+  pill.textContent = 'Restaurant fermé'
   if(dot){ dot.style.background='var(--red)'; dot.style.boxShadow='0 0 0 4px rgba(196,30,23,.15)' }
   if(hero){ hero.style.borderColor='rgba(196,30,23,.25)'; hero.style.background='#fffafa' }
-  sub.textContent = 'Les commandes en ligne sont bloquÃ©es.'
-  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> RÃ©ouvrir le restaurant'
+  sub.textContent = 'Les commandes en ligne sont bloquées.'
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Réouvrir le restaurant'
   btn.className = 'btn ok sh-close-btn'
  }else if(isForced){
   pill.textContent = 'Ouvert en continu'
   if(dot){ dot.style.background='#f59e0b'; dot.style.boxShadow='0 0 0 4px rgba(245,158,11,.15)' }
   if(hero){ hero.style.borderColor='rgba(245,158,11,.2)'; hero.style.background='#fffdf7' }
-  sub.textContent = 'Service continu â€” horaires ignorÃ©s.'
+  sub.textContent = 'Service continu — horaires ignorés.'
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg> Fermer temporairement'
   btn.className = 'btn red sh-close-btn'
  }else{
   pill.textContent = 'Restaurant ouvert'
   if(dot){ dot.style.background='#22c55e'; dot.style.boxShadow='0 0 0 4px rgba(34,197,94,.15)' }
   if(hero){ hero.style.borderColor='rgba(34,197,94,.2)'; hero.style.background='#fff' }
-  sub.textContent = 'Les commandes en ligne sont actuellement autorisÃ©es.'
+  sub.textContent = 'Les commandes en ligne sont actuellement autorisées.'
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg> Fermer temporairement'
   btn.className = 'btn red sh-close-btn'
  }
 
  const crEl = $('#closed-reason'); if(crEl) crEl.value = config.closedReason || ''
- const prev = $('#msg-preview'); if(prev) prev.textContent = config.closedReason ? `"${config.closedReason.slice(0,60)}${config.closedReason.length>60?'â€¦':''}"` : '"Notre restaurant est actuellement ouvert."'
+ const prev = $('#msg-preview'); if(prev) prev.textContent = config.closedReason ? `"${config.closedReason.slice(0,60)}${config.closedReason.length>60?'…':''}"` : '"Notre restaurant est actuellement ouvert."'
 
  renderWeeklySchedule()
  renderExceptions()
@@ -1050,7 +1051,7 @@ function renderStatus(){
    forcedOpen: false
   })
   btn.disabled = false
-  showToast(nextClosed ? 'Restaurant fermÃ© !' : 'Restaurant rÃ©ouvert !')
+  showToast(nextClosed ? 'Restaurant fermé !' : 'Restaurant réouvert !')
  }
 }
 
@@ -1061,7 +1062,7 @@ function toggleAccordion(id){
  el.classList.toggle('sh-acc-open')
 }
 
-// Copy hours button â€” copies Monday times to all other days
+// Copy hours button — copies Monday times to all other days
 const copyHoursBtn = $('#copy-hours-btn')
 if(copyHoursBtn) copyHoursBtn.onclick = () => {
  const monRow = document.querySelector('.sh-day-row[data-day="lun"]')
@@ -1080,7 +1081,7 @@ if(copyHoursBtn) copyHoursBtn.onclick = () => {
    row.querySelector('.eve-end').value = ee
   }
  })
- showToast('Horaires du lundi copiÃ©s sur tous les jours.')
+ showToast('Horaires du lundi copiés sur tous les jours.')
 }
 
 // Save week schedule button
@@ -1090,7 +1091,7 @@ if(saveWeekBtn) saveWeekBtn.onclick = async () => {
  s.weekly = collectWeeklySchedule()
  config.schedule = s
  await saveConfigFast({ schedule: s })
- showToast('Horaires de la semaine enregistrÃ©s !')
+ showToast('Horaires de la semaine enregistrés !')
 }
 
 // Save closed reason message button
@@ -1099,7 +1100,7 @@ if(saveReasonBtn) saveReasonBtn.onclick = async () => {
  const reason = $('#closed-reason').value.trim()
  config.closedReason = reason
  await saveConfigFast({ closedReason: reason })
- showToast('Message client enregistrÃ© !')
+ showToast('Message client enregistré !')
 }
 
 // Exception add logic
@@ -1111,7 +1112,7 @@ if(excTypeSelect) excTypeSelect.onchange = e => {
 const addExcBtn = $('#add-exc-btn')
 if(addExcBtn) addExcBtn.onclick = async () => {
  const date = $('#new-exc-date').value
- if(!date){ alert('Veuillez sÃ©lectionner une date'); return }
+ if(!date){ alert('Veuillez sélectionner une date'); return }
  const type = $('#new-exc-type').value
  const note = $('#new-exc-note').value.trim()
  const exc = { date, type, note }
@@ -1128,7 +1129,7 @@ if(addExcBtn) addExcBtn.onclick = async () => {
  $('#new-exc-note').value = ''
  await saveConfigFast({ schedule: s })
  renderExceptions()
- showToast('Exception ajoutÃ©e !')
+ showToast('Exception ajoutée !')
 }
 
 // NEW PRODUCT CREATION & CANCEL
@@ -1154,7 +1155,7 @@ if($('#new-prod-form')) $('#new-prod-form').onsubmit=async e=>{
   $('#new-prod-form').reset()
   const box=$('#new-prod-box')
   if(box) box.style.display='none'
-  showToast('Nouveau produit ajoutÃ© Ã  la carte !')
+  showToast('Nouveau produit ajouté à la carte !')
  }
 }
 
@@ -1178,24 +1179,24 @@ if($('#items-list')) $('#items-list').onclick=async e=>{
   if(res.ok){
    overrides=await res.json()
    renderMenu($('#search-item') ? $('#search-item').value : '')
-   showToast(newOut?'MarquÃ© en rupture de stock':'Remis en stock')
+   showToast(newOut?'Marqué en rupture de stock':'Remis en stock')
   }
  }
  if(btn.dataset.act==='save'){
   const res=await api({action:'saveOverride',data:{id,price:priceVal,outOfStock:!!ov.outOfStock}})
   if(res.ok){
    overrides=await res.json()
-   showToast('Nouveau prix enregistrÃ©')
+   showToast('Nouveau prix enregistré')
   }
  }
  if(btn.dataset.act==='del-custom'){
-  if(!confirm('Voulez-vous vraiment supprimer dÃ©finitivement ce produit de la carte ?'))return
+  if(!confirm('Voulez-vous vraiment supprimer définitivement ce produit de la carte ?'))return
   const res=await api({action:'deleteCustomItem',data:{id}})
   if(res.ok){
    customItems=await res.json()
    renderMenu($('#search-item') ? $('#search-item').value : '')
    updateDashboardMetrics()
-   showToast('Produit supprimÃ© de la carte')
+   showToast('Produit supprimé de la carte')
   }
  }
 }
@@ -1222,7 +1223,7 @@ $('#promo-form').onsubmit=async e=>{
  let val=+($('#p-val').value)
  if(type==='fixed')val=val*100
  const res=await api({action:'savePromo',data:{code,discountType:type,discountValue:val,active:true}})
- if(res.ok){promos=await res.json();renderPromos();$('#p-code').value='';showToast('Code promo crÃ©Ã© !')}
+ if(res.ok){promos=await res.json();renderPromos();$('#p-code').value='';showToast('Code promo créé !')}
 }
 
 $('#promos-list').onclick=async e=>{
@@ -1237,7 +1238,7 @@ $('#promos-list').onclick=async e=>{
  }
  if(btn.dataset.act==='del-promo'){
   const res=await api({action:'deletePromo',data:{code}})
-  if(res.ok){promos=await res.json();renderPromos();showToast('Code promo supprimÃ©')}
+  if(res.ok){promos=await res.json();renderPromos();showToast('Code promo supprimé')}
  }
 }
 
@@ -1247,11 +1248,11 @@ function updateQrView(num){
  $('#table-num-input').value=n
  const url=`${location.origin}/?table=${n}`
  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(url)}`
- $('#qr-table-title').textContent=`Table nÂ° ${n}`
+ $('#qr-table-title').textContent=`Table n° ${n}`
  $('#qr-link-url').textContent=url
  $('#qr-link-url').href=url
  $('#qr-img').src=qrUrl
- $('#print-tbl-title').textContent=`TABLE NÂ° ${n}`
+ $('#print-tbl-title').textContent=`TABLE N° ${n}`
  $('#print-qr-img').src=qrUrl
 
  document.querySelectorAll('.quick-tbl-btn').forEach(b=>{
@@ -1267,7 +1268,7 @@ $('#gen-qr-btn').onclick=()=>updateQrView($('#table-num-input').value)
 $('#copy-qr-btn').onclick=()=>{
  const url=$('#qr-link-url').href
  navigator.clipboard?.writeText(url)
- showToast('Lien copiÃ© dans le presse-papier !')
+ showToast('Lien copié dans le presse-papier !')
 }
 
 $('#download-qr-btn').onclick=()=>{
@@ -1291,12 +1292,12 @@ function renderSales(){
  $('#stat-take').textContent=sales.filter(o=>o.type!=='livraison').length
 
  const list=$('#sales-list')
- if(!sales.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucune commande enregistrÃ©e aujourd\'hui</p>';return}
+ if(!sales.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucune commande enregistrée aujourd\'hui</p>';return}
  list.innerHTML=sales.map(o=>`
   <div class="item-row">
-   <div><div class="item-name">#${o.number} Â· ${o.customer?.name||'Client'} (${o.type.toUpperCase()})</div><div class="item-cat">${new Date(o.createdAt).toLocaleTimeString('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'})}</div></div>
+   <div><div class="item-name">#${o.number} · ${o.customer?.name||'Client'} (${o.type.toUpperCase()})</div><div class="item-cat">${new Date(o.createdAt).toLocaleTimeString('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'})}</div></div>
    <div><b>${eur(o.total)}</b></div>
-   <div><span class="status-pill ${o.paid?'open':'closed'}">${o.paid?'PayÃ© en ligne':'Ã€ encaisser'}</span></div>
+   <div><span class="status-pill ${o.paid?'open':'closed'}">${o.paid?'Payé en ligne':'À encaisser'}</span></div>
   </div>
  `).join('')
 }
@@ -1314,28 +1315,28 @@ document.querySelectorAll('.period-btn').forEach(b=>{
 })
 
 $('#export-csv-btn').onclick=()=>{
- if(!sales.length){alert('Aucune vente Ã  exporter');return}
+ if(!sales.length){alert('Aucune vente à exporter');return}
  const today=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris'}).format(new Date())
  const ca=sales.reduce((s,o)=>s+o.total,0)
  const eur2=v=>(v/100).toFixed(2).replace('.',',')
- const typeLabel=t=>t==='livraison'?'Livraison':t==='emporter'?'Ã€ emporter':'Sur place'
- const payLabel=o=>o.paid?'PayÃ© en ligne':'Ã€ encaisser'
+ const typeLabel=t=>t==='livraison'?'Livraison':t==='emporter'?'À emporter':'Sur place'
+ const payLabel=o=>o.paid?'Payé en ligne':'À encaisser'
  const fmtItems=o=>(o.items||[]).map(i=>`${i.qty}x ${i.name}`).join(' | ')
  const periodLabel=currentPeriodDays===1?"Aujourd'hui":currentPeriodDays===7?'7 derniers jours':'30 derniers jours'
- const statusLabel=s=>s==='cancelled'?'AnnulÃ©e':s==='ready'?'PrÃªte':s==='accepted'?'En prÃ©paration':'Nouvelle'
+ const statusLabel=s=>s==='cancelled'?'Annulée':s==='ready'?'Prête':s==='accepted'?'En préparation':'Nouvelle'
 
  const headerLines=[
-  '"TACO PIZZA â€“ Rapport de caisse"',
-  `"PÃ©riode :","","${periodLabel}"`,
+  '"TACO PIZZA – Rapport de caisse"',
+  `"Période :","","${periodLabel}"`,
   `"Date d'export :","","${today}"`,
-  `"CA Total :","${eur2(ca)} â‚¬"`,
+  `"CA Total :","${eur2(ca)} €"`,
   `"Nombre de commandes :","${sales.length}"`,
   `"Livraisons :","${sales.filter(o=>o.type==='livraison').length}"`,
-  `"Ã€ emporter / Sur place :","${sales.filter(o=>o.type!=='livraison').length}"`,
+  `"À emporter / Sur place :","${sales.filter(o=>o.type!=='livraison').length}"`,
   ''
  ]
 
- const cols=['NÂ° Commande','Date','Heure','Mode','Table','Client','TÃ©lÃ©phone','Adresse','Code Postal','Articles','Sous-total (â‚¬)','Code Promo','RÃ©duction (â‚¬)','TOTAL (â‚¬)','Paiement','Statut']
+ const cols=['N° Commande','Date','Heure','Mode','Table','Client','Téléphone','Adresse','Code Postal','Articles','Sous-total (€)','Code Promo','Réduction (€)','TOTAL (€)','Paiement','Statut']
  const dataRows=sales.map(o=>{
   const d=new Date(o.createdAt)
   const subtotal=o.total+(o.discount||0)
@@ -1391,20 +1392,20 @@ if(testDbBtn){
  testDbBtn.onclick = async () => {
   const resEl = $('#db-test-result');
   testDbBtn.disabled = true;
-  resEl.textContent = 'Test en coursâ€¦';
+  resEl.textContent = 'Test en cours…';
   resEl.style.color = 'var(--mute)';
   try {
    const r = await api({ action: 'testDb' });
    const j = await r.json();
    if (j.ok) {
-    resEl.textContent = 'âœ… Supabase connectÃ© et accessible !';
+    resEl.textContent = '✅ Supabase connecté et accessible !';
     resEl.style.color = '#166534';
    } else {
-    resEl.textContent = 'âŒ ' + (j.dbStatus?.error || 'Erreur inconnue');
+    resEl.textContent = '❌ ' + (j.dbStatus?.error || 'Erreur inconnue');
     resEl.style.color = 'var(--red)';
    }
   } catch(err) {
-   resEl.textContent = 'âŒ Erreur rÃ©seau : ' + err.message;
+   resEl.textContent = '❌ Erreur réseau : ' + err.message;
    resEl.style.color = 'var(--red)';
   } finally {
    testDbBtn.disabled = false;
@@ -1413,4 +1414,3 @@ if(testDbBtn){
  };
 }
 </script></body></html>
-
