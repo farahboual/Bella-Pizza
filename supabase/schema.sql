@@ -73,7 +73,7 @@ create table if not exists public.custom_items(
  name text not null,
  cat text not null default 'Divers',
  price int not null,
- desc text default ''
+ "desc" text default ''
 );
 alter table public.custom_items enable row level security;
 grant all on table public.custom_items to postgres, service_role, anon, authenticated;
