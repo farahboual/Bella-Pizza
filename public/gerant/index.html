@@ -691,7 +691,7 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
 <div id="toast" class="toast">Modifications enregistrées !</div>
 
 <script>
-const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
+const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'}),esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
 let key='',config={},overrides={},promos={},catalog={},customItems={},sales=[],kitchenKey=''
 const DAYS_DEF=[
  {id:'lun',name:'Lundi'},
@@ -734,6 +734,43 @@ function switchTab(name){
 document.querySelectorAll('.tab').forEach(b=>{
  b.onclick=()=>switchTab(b.dataset.tab)
 })
+
+function renderSecurity(){
+ const pg = $('#pw-gerant')
+ const pk = $('#pw-kitchen')
+ if(pg) pg.value = config.gerantPassword || ''
+ if(pk) pk.value = config.kitchenPassword || kitchenKey || ''
+}
+
+const savePwBtn = $('#save-passwords-btn')
+if(savePwBtn){
+ savePwBtn.onclick = async () => {
+  const pg = $('#pw-gerant')
+  const pk = $('#pw-kitchen')
+  const newGerant = pg ? pg.value.trim() : ''
+  const newKitchen = pk ? pk.value.trim() : ''
+  const res = await api({
+   action: 'updateConfig',
+   data: {
+    gerantPassword: newGerant,
+    kitchenPassword: newKitchen
+   }
+  })
+  if(res.ok){
+   config = await res.json()
+   if(newGerant){
+    key = newGerant
+    localStorage.setItem('tp_gerant_key', key)
+   }
+   if(newKitchen){
+    kitchenKey = newKitchen
+    localStorage.setItem('tp_cuisine_key', kitchenKey)
+   }
+   renderSecurity()
+   showToast('Mots de passe mis à jour avec succès !')
+  }
+ }
+}
 
 function updateDashboardMetrics(){
  const quickStat = $('#db-quick-status')
@@ -808,7 +845,12 @@ function renderMenu(query=''){
 async function loadData(){
  try{
   const r=await api()
-  if(r.status===401){sessionStorage.removeItem('k');location.reload();return}
+  if(r.status===401){
+   sessionStorage.removeItem('k')
+   localStorage.removeItem('tp_gerant_key')
+   location.reload()
+   return
+  }
   const j=await r.json()
   config=j.config||{}
   overrides=j.overrides||{}
@@ -818,14 +860,14 @@ async function loadData(){
   sales=j.sales||[]
   kitchenKey=j.kitchenKey||''
   if(j.gerantKey)localStorage.setItem('tp_gerant_key',key)
-  renderSecurity()
-  renderStatus()
-  renderMenu()
-  renderPromos()
-  renderSales()
-  updateQrView(1)
-  updateDashboardMetrics()
- }catch(e){console.error(e)}
+  try{renderSecurity()}catch(e){console.error('renderSecurity',e)}
+  try{renderStatus()}catch(e){console.error('renderStatus',e)}
+  try{renderMenu()}catch(e){console.error('renderMenu',e)}
+  try{renderPromos()}catch(e){console.error('renderPromos',e)}
+  try{renderSales()}catch(e){console.error('renderSales',e)}
+  try{updateQrView(1)}catch(e){console.error('updateQrView',e)}
+  try{updateDashboardMetrics()}catch(e){console.error('updateDashboardMetrics',e)}
+ }catch(e){console.error('loadData fatal',e)}
 }
 
 function getActiveSchedule(){

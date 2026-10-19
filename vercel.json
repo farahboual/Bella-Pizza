@@ -1,7 +1,7 @@
 {
  "functions":{"api/*.js":{"maxDuration":15}},
  "headers":[
-  {"source":"/cuisine/(.*)","headers":[{"key":"Cache-Control","value":"no-store"},{"key":"X-Robots-Tag","value":"noindex"}]},
-  {"source":"/gerant/(.*)","headers":[{"key":"Cache-Control","value":"no-store"},{"key":"X-Robots-Tag","value":"noindex"}]}
+  {"source":"/cuisine(.*)","headers":[{"key":"Cache-Control","value":"no-store"},{"key":"X-Robots-Tag","value":"noindex"}]},
+  {"source":"/gerant(.*)","headers":[{"key":"Cache-Control","value":"no-store"},{"key":"X-Robots-Tag","value":"noindex"}]}
  ]
 }
