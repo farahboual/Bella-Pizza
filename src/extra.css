@@ -1,4 +1,4 @@
-/* ---- online ordering overlay ---- */
+﻿/* ---- online ordering overlay ---- */
 .row .pcol { grid-column: 2; grid-row: 1/3; display: flex; align-items: center; gap: 12px }
 .row .pcol .pr { grid-column: auto; grid-row: auto }
 
@@ -47,6 +47,8 @@
 .cl li { background: #fff; border-radius: 16px; padding: 12px 14px }
 .cl-t { display: flex; justify-content: space-between; gap: 10px }
 .cl-t span { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--red) }
+.cl-del { transition: color .15s }
+.cl-del:hover { color: var(--red) !important }
 .cl-q { display: flex; align-items: center; gap: 8px; margin-top: 8px }
 .cl-q > button { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--dark); background: none; font-size: 18px; cursor: pointer }
 .cl-q > span { min-width: 22px; text-align: center; font-weight: 700 }

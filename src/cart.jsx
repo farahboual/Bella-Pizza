@@ -211,7 +211,7 @@ export function CartDrawer(){
  const close=()=>{setOpen(false);setDone(null)}
 
  return <div className="cart-ov" onClick={close}><aside className="cart" role="dialog" aria-modal="true" aria-label="Votre commande" onClick={e=>e.stopPropagation()}>
-  <div className="cart-h"><h2>{done?'Merci !':'Votre commande'}</h2><button className="x" onClick={close} aria-label="Fermer">×</button></div>
+  <div className="cart-h"><h2>{done?'Merci !':'Votre commande'}</h2><div style={{display:'flex',gap:12,alignItems:'center'}}>{count>0&&!done&&<button type="button" onClick={clear} style={{background:'none',border:'none',color:'var(--mute)',fontSize:12,cursor:'pointer',textDecoration:'underline',padding:'4px 6px'}} title="Vider tout le panier">Vider</button>}<button className="x" onClick={close} aria-label="Fermer">×</button></div></div>
 
   {done?<div className="cart-b">
    <p className="big">Commande n° {done} envoyée.</p>
@@ -234,7 +234,7 @@ export function CartDrawer(){
      const c=CATALOG[l.id]||cfg?.customItems?.[l.id]||{name:'Article'},price=unit(l)
 
      return <li key={l.u}>
-      <div className="cl-t"><b>{c.name}</b><span>{eur(price*l.qty)}</span></div>
+      <div className="cl-t"><b>{c.name}</b><div style={{display:'flex',alignItems:'center',gap:8}}><span>{eur(price*l.qty)}</span><button type="button" className="cl-del" onClick={()=>setQty(l.u,0)} aria-label={`Supprimer ${c.name} du panier`} title="Supprimer cet article" style={{background:'none',border:'none',cursor:'pointer',padding:'4px',color:'var(--mute)',display:'inline-flex',alignItems:'center',justifyContent:'center',borderRadius:6}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button></div></div>
 
       {hasOpts(l.id)&&
        <div className="cl-o" style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center',margin:'6px 0'}}>
