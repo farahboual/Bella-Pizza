@@ -1,5 +1,6 @@
-﻿import {createContext,useContext,useEffect,useState} from 'react'
+import {createContext,useContext,useEffect,useState} from 'react'
 import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,SUPP_MAX,MEATS,cleanSupp,hasOpts,optExtra,pizzaOffer,canetteDeal,hasFood,CANETTE_ID} from '../shared/catalog.js'
+import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
 const Ctx=createContext(null)
 export const useCart=()=>useContext(Ctx)
 const KEY='tp-cart'
@@ -215,11 +216,11 @@ export function CartDrawer(){
 
   {done?<div className="cart-b">
    <p className="big">Commande n° {done} envoyée.</p>
-   <p>Le restaurant l’a reçue. {type=='livraison'?'Le livreur arrive dès que votre commande est prête.':type=='sur_place'?(tableNumber?`Votre commande sera servie à la Table n° ${tableNumber}.`:'Votre commande sera servie à votre table / comptoir.'):'Vous pouvez venir la récupérer au 15 rue de Rouen.'} Pensez à régler {type=='livraison'?'à la livraison':'sur place'}.</p>
+   <p>Le restaurant l’a reçue. {type=='livraison'?'Le livreur arrive dès que votre commande est prête.':type=='sur_place'?(tableNumber?`Votre commande sera servie à la Table n° ${tableNumber}.`:'Votre commande sera servie à votre table / comptoir.'):`Vous pouvez venir la récupérer au ${RESTAURANT_CONFIG?.contact?.address?.full || 'restaurant'}.`} Pensez à régler {type=='livraison'?'à la livraison':'sur place'}.</p>
 
    <div style={{background:'var(--bg)',padding:16,borderRadius:16,border:'1px solid var(--line)',margin:'12px 0',textAlign:'center'}}>
     <p style={{fontWeight:700,marginBottom:8}}>⭐ Satisfait de votre repas ?</p>
-    <a href="https://www.google.com/maps/search/?api=1&query=Taco+Pizza+15+rue+de+Rouen+49400+Saumur" target="_blank" rel="noopener noreferrer" className="btn red" style={{fontSize:13,padding:'10px 16px',width:'100%'}}>Laissez-nous 5 étoiles sur Google Maps →</a>
+    <a href={RESTAURANT_CONFIG?.contact?.mapsUrl || '#'} target="_blank" rel="noopener noreferrer" className="btn red" style={{fontSize:13,padding:'10px 16px',width:'100%'}}>Laissez-nous 5 étoiles sur Google Maps →</a>
    </div>
 
    <button className="btn ink" onClick={close}>Fermer</button>
@@ -332,7 +333,7 @@ export function CartDrawer(){
    {drinkDeal>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🥤 Canette à 1 € avec votre plat : -{eur(drinkDeal)}</p>}
    {canetteAlone&&<p className="note">🥤 Canette seule : 1,50 €. Ajoutez un plat et elle passe à 1 €.</p>}
 
-   <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
+   <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
 
    {short&&<p className="warn">Livraison à partir de {eur(RULES.deliveryMin)} de commande (il manque {eur(RULES.deliveryMin-subtotal)}). Ou choisissez « À emporter » ou « Sur place ».</p>}
 

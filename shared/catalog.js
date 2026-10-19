@@ -1,6 +1,7 @@
-﻿// Single source of truth for orderable items + prices (in cents).
+// Single source of truth for orderable items + prices (in cents).
 // The server recomputes every total from this file; the browser never decides the price.
 import {pz,tom,cre,T,C,SZ,CATS} from './menuData.js'
+import {RESTAURANT_CONFIG} from './restaurant.config.js'
 const cents=s=>s?Math.round(parseFloat(s.replace(/[^\d,]/g,'').replace(',','.'))*100):null
 export const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')
 export const eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
@@ -60,6 +61,7 @@ export const optLabel = (id, o) => {
 // Offre : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère de chaque trio)
 export const isOfferPizza=id=>/^pizzas:[^:]+:(senior|mega)$/.test(String(id))
 export function pizzaOffer(lines, type = 'emporter'){
+ if(RESTAURANT_CONFIG?.features?.pizzaDeals === false) return 0
  if(type && type !== 'emporter') return 0
  const u=[];lines.filter(l=>isOfferPizza(l.id)).forEach(l=>{for(let i=0;i<l.qty;i++)u.push(l.price)})
  u.sort((a,b)=>b-a)
@@ -73,12 +75,17 @@ const isDrinkLine=l=>String(l.id).startsWith('boissons:')||String(l.cat||'').toL
 export const hasFood=lines=>lines.some(l=>!isDrinkLine(l))
 // lines : [{id,qty,price,cat?}] -> remise totale en centimes
 export function canetteDeal(lines){
+ if(RESTAURANT_CONFIG?.features?.drinkDeals === false) return 0;
  if(!hasFood(lines))return 0
  return lines.filter(l=>l.id===CANETTE_ID).reduce((s,l)=>s+Math.max(0,l.price-CANETTE_WITH_FOOD_CENTS)*l.qty,0)
 }
 // Business rules taken from the site/flyer text
-export const RULES={deliveryMin:2500,deliveryFree:2500,tz:'Europe/Paris'}
-export const DEFAULT_SCHEDULE = {
+export const RULES={
+ deliveryMin: RESTAURANT_CONFIG?.delivery?.minOrderCents ?? 2500,
+ deliveryFree: RESTAURANT_CONFIG?.delivery?.freeDeliveryAboveCents ?? 2500,
+ tz: 'Europe/Paris'
+}
+export const DEFAULT_SCHEDULE = RESTAURANT_CONFIG?.schedule || {
  weekly: {
   lun: { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' },
   mar: { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' },

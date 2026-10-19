@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cuisine — Taco Pizza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,6 +65,21 @@ li i{display:block;font:600 13px var(--font);color:#b25;margin-top:4px;font-styl
 const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))
 let orders=new Map(),ctx,muted=false,autoPrint=false,timer,key='',printedSet=new Set(),printQueue=[]
+let restaurantName='Restaurant'
+fetch('/api/config').then(r=>r.ok?r.json():null).then(d=>{
+ if(d?.restaurant?.brand?.name){
+  restaurantName=d.restaurant.brand.name
+  document.title='Cuisine — '+restaurantName
+  const hGate=$('#f h1');if(hGate)hGate.textContent=restaurantName
+  const hHead=$('header h1');if(hHead)hHead.textContent=restaurantName+' Cuisine'
+ }
+ if(d?.restaurant?.theme?.primaryColor){
+  document.documentElement.style.setProperty('--red',d.restaurant.theme.primaryColor)
+ }
+ if(d?.restaurant?.theme?.primaryHover){
+  document.documentElement.style.setProperty('--red2',d.restaurant.theme.primaryHover)
+ }
+}).catch(()=>{})
 const time=t=>{try{const d=new Date(t);return isNaN(d.getTime())?'--:--':d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Paris'})}catch{return '--:--'}}
 // ----- Restaurant service bell / counter bell chime ("Ding! Ding!") -----
 function chime(t,freq=2093,vol=.8){
@@ -92,7 +107,7 @@ function printTicket(o){
   if(!o)return
   const {items,cust}=getOrderData(o)
   const lines=items.map(l=>`<div class="l big"><span>${l.qty||1} × ${esc(l.name)}</span><span>${eur((l.price||0)*(l.qty||1))}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
-  $('#ticket').innerHTML=`<h2>TACO PIZZA</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${typeLabel(o)}${o.tableNumber?`<br>TABLE N° ${esc(o.tableNumber)}`:''}</div><hr>${lines}<hr>${o.discount>0?`<div class="l"><span>Réduction</span><span>-${eur(o.discount)}</span></div>`:''}<div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+typeLabel(o)+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}<hr><div class="c">⭐ Merci de votre commande !<br>Laissez-nous 5★ sur Google Maps !</div>`
+  $('#ticket').innerHTML=`<h2>${esc(restaurantName.toUpperCase())}</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${typeLabel(o)}${o.tableNumber?`<br>TABLE N° ${esc(o.tableNumber)}`:''}</div><hr>${lines}<hr>${o.discount>0?`<div class="l"><span>Réduction</span><span>-${eur(o.discount)}</span></div>`:''}<div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+typeLabel(o)+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}<hr><div class="c">⭐ Merci de votre commande !<br>Laissez-nous 5★ sur Google Maps !</div>`
   window.print()
  }catch(err){
   console.error('[Print Error]',err)

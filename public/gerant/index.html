@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Espace Gérant — Taco Pizza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -683,6 +683,22 @@ function showToast(msg='Modifications enregistrées !'){
 
 const api=async(body)=>fetch('/api/manager',{method:body?'POST':'GET',headers:{'x-kitchen-key':key,'content-type':'application/json'},body:body?JSON.stringify(body):undefined})
 
+let restaurantName='Restaurant'
+fetch('/api/config').then(r=>r.ok?r.json():null).then(d=>{
+ if(d?.restaurant?.brand?.name){
+  restaurantName=d.restaurant.brand.name
+  document.title='Espace Gérant — '+restaurantName
+  const hGate=$('#f h1');if(hGate)hGate.textContent=restaurantName
+  const hLogo=$('header .logo b');if(hLogo)hLogo.innerHTML=`${esc(restaurantName)} <span>ESPACE GÉRANT</span>`
+ }
+ if(d?.restaurant?.theme?.primaryColor){
+  document.documentElement.style.setProperty('--red',d.restaurant.theme.primaryColor)
+ }
+ if(d?.restaurant?.theme?.primaryHover){
+  document.documentElement.style.setProperty('--red2',d.restaurant.theme.primaryHover)
+ }
+}).catch(()=>{})
+
 // Tabs navigation & helper
 function switchTab(name){
  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x.dataset.tab === name))
@@ -1326,7 +1342,7 @@ $('#export-csv-btn').onclick=()=>{
  const statusLabel=s=>s==='cancelled'?'Annulée':s==='ready'?'Prête':s==='accepted'?'En préparation':'Nouvelle'
 
  const headerLines=[
-  '"TACO PIZZA – Rapport de caisse"',
+  `"${restaurantName.toUpperCase()} – Rapport de caisse"`,
   `"Période :","","${periodLabel}"`,
   `"Date d'export :","","${today}"`,
   `"CA Total :","${eur2(ca)} €"`,
@@ -1364,7 +1380,8 @@ $('#export-csv-btn').onclick=()=>{
  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'})
  const link=document.createElement('a')
  link.href=URL.createObjectURL(blob)
- link.download=`Rapport_TacoPizza_${new Intl.DateTimeFormat('fr-CA',{timeZone:'Europe/Paris'}).format(new Date())}.csv`
+ const safeName = restaurantName.replace(/[^\w-]/g,'_')
+ link.download=`Rapport_${safeName}_${new Intl.DateTimeFormat('fr-CA',{timeZone:'Europe/Paris'}).format(new Date())}.csv`
  link.click()
 }
 

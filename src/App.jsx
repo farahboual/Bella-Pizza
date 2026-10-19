@@ -1,4 +1,4 @@
-﻿import {useEffect,useRef,useState} from 'react'
+import {useEffect,useRef,useState} from 'react'
 import {motion,AnimatePresence,MotionConfig,useReducedMotion} from 'framer-motion'
 import {pz,tom,cre,T,C,SZ,CATS} from './data.js'
 import pizzaImg from './assets/pizza.webp'
@@ -8,10 +8,22 @@ import sandwichsImg from './assets/sandwichs.webp'
 import saladesImg from './assets/salades.webp'
 import {CartProvider,CartButton,CartDrawer,AddBtn,OrderBtn,MobileBar,OrderBanner,useCart} from './cart.jsx'
 import {slug,CATALOG,eur} from '../shared/catalog.js'
+import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
 
-const TEL='tel:+33241035787'
-const MAPS='https://www.google.com/maps/search/?api=1&query=Taco+Pizza+15+rue+de+Rouen+49400+Saumur'
-const NAV=[['offres','Offres'],['carte','La carte'],['livraison','Livraison'],['restaurant','Restaurant']]
+const cfgB = RESTAURANT_CONFIG.brand
+const cfgC = RESTAURANT_CONFIG.contact
+const cfgF = RESTAURANT_CONFIG.features
+const cfgD = RESTAURANT_CONFIG.delivery
+const cfgS = RESTAURANT_CONFIG.schedule
+
+const TEL = 'tel:' + cfgC.phoneRaw
+const MAPS = cfgC.mapsUrl
+const NAV = [
+  ['offres','Offres'],
+  ['carte','La carte'],
+  ...(cfgF.delivery ? [['livraison','Livraison']] : []),
+  ['restaurant','Restaurant']
+]
 const ease=[.2,.7,.2,1]
 
 // Category images mapped by id
@@ -81,18 +93,18 @@ const Status=({id,style,light})=>{const s=useStatus();return(
   </div>
 )}
 
-// SVG logo
+// Logo
 const Logo=()=>(
   <>
-    <svg viewBox="0 0 48 48" aria-hidden="true">
-      <circle cx="24" cy="24" r="22" fill="#C41E17"/>
+    <svg viewBox="0 0 48 48" aria-hidden="true" style={{width:40,height:40,flex:'none'}}>
+      <circle cx="24" cy="24" r="22" fill="var(--red)"/>
       <path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/>
       <circle cx="15" cy="20" r="3.2" fill="#fff"/>
       <circle cx="29" cy="32" r="3.2" fill="#fff"/>
       <circle cx="14" cy="32" r="2.6" fill="rgba(255,255,255,.6)"/>
       <circle cx="33" cy="22" r="2.6" fill="rgba(255,255,255,.6)"/>
     </svg>
-    <b>Taco<span>Pizza</span></b>
+    <b>{cfgB.name}</b>
   </>
 )
 
@@ -110,11 +122,11 @@ function Header(){
   useEffect(()=>{document.body.classList.toggle('menu-open',open)},[open])
   return(<>
     <header id="hd" style={on?{boxShadow:'0 4px 24px rgba(0,0,0,.12)'}:{}}>
-      <a className="logo" href="#top" aria-label="Taco Pizza — accueil"><Logo/></a>
+      <a className="logo" href="#top" aria-label={`${cfgB.name} — accueil`}><Logo/></a>
       <nav className="top" aria-label="Navigation">
         {NAV.map(([id,l])=><a key={id} href={'#'+id} className={act==id?'act':''}>{l}</a>)}
       </nav>
-      <a className="btn red hd-call" href={TEL}>02 41 03 57 87</a>
+      <a className="btn red hd-call" href={TEL}>{cfgC.phone}</a>
       <CartButton/>
       <button className="burger" aria-label="Menu" aria-expanded={open} onClick={()=>setOpen(!open)}><i/><i/></button>
     </header>
@@ -123,8 +135,8 @@ function Header(){
         {NAV.map(([id,l])=><a key={id} href={'#'+id}>{l}</a>)}
       </nav>
       <div className="mn-f">
-        <p>15 rue de Rouen<br/>49400 Saumur</p>
-        <p className="mn-h" style={{fontStyle:'italic',marginTop:10,color:'var(--mute)'}}>Ouvert 7j/7 · 11h à 14h30 et 18h à 23h</p>
+        <p>{cfgC.address.street}<br/>{cfgC.address.postalCode} {cfgC.address.city}</p>
+        <p className="mn-h" style={{fontStyle:'italic',marginTop:10,color:'var(--mute)'}}>{cfgS.displayText}</p>
       </div>
     </div>
   </>)
@@ -136,18 +148,28 @@ function Hero(){
     <div className="hero" id="top">
       <motion.div className="hero-left" initial={{opacity:0,x:-32}} animate={{opacity:1,x:0}} transition={{duration:.9,ease}}>
         <Status/>
-        <p className="hero-tag">🍕 Fait maison chaque jour</p>
-        <h1>Le goût du<em>fait maison !</em></h1>
-        <p className="hero-desc">Des produits frais, des recettes généreuses et une équipe : vous régaler.</p>
+        <p className="hero-tag">{cfgB.heroBadge}</p>
+        <h1>{cfgB.heroTitle}<em>{cfgB.heroHighlight}</em></h1>
+        <p className="hero-desc">{cfgB.subTagline}</p>
         <div className="hero-badges">
-          <span className="hero-badge">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            Livraison à domicile
-          </span>
-          <span className="hero-badge">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18M3 15h18M12 3v18"/></svg>
-            À emporter
-          </span>
+          {cfgF.delivery && (
+            <span className="hero-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              Livraison à domicile
+            </span>
+          )}
+          {cfgF.takeaway && (
+            <span className="hero-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18M3 15h18M12 3v18"/></svg>
+              À emporter
+            </span>
+          )}
+          {cfgF.dineIn && (
+            <span className="hero-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Sur place
+            </span>
+          )}
         </div>
         <div className="hero-ctas">
           <OrderBtn className="btn red">Commander maintenant →</OrderBtn>
@@ -156,11 +178,13 @@ function Hero(){
       </motion.div>
 
       <motion.div className="hero-right" initial={{opacity:0,scale:1.04}} animate={{opacity:1,scale:1}} transition={{duration:1.1,ease}}>
-        <img src={pizzaImg} alt="Pizza Taco Pizza fraîche" fetchpriority="high"/>
-        <div className="hero-badge-float">
-          <span>Livraison gratuite</span>
-          dès 25 €
-        </div>
+        <img src={pizzaImg} alt={cfgB.name} fetchpriority="high"/>
+        {cfgB.badgeFloat && (
+          <div className="hero-badge-float">
+            <span>{cfgB.badgeFloat.title}</span>
+            {cfgB.badgeFloat.subtitle}
+          </div>
+        )}
       </motion.div>
     </div>
   )
@@ -306,7 +330,7 @@ function Pizzas({size,setSize}){
   </>
   return(<>
     <div className="ph"><h3>Nos pizzas</h3></div>
-    <p className="note">🍕 Offre à emporter : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère), valable uniquement à emporter.</p>
+    {cfgF.pizzaDeals && <p className="note">🍕 Offre à emporter : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère), valable uniquement à emporter.</p>}
     <div className="sizes" role="radiogroup" aria-label="Taille de la pizza">
       {SZ.map((s,i)=>(
         <button key={s[0]} className="sz" role="radio" aria-checked={i==size} onClick={()=>setSize(i)}>
@@ -391,37 +415,40 @@ function Menu(){
   )
 }
 
-const Delivery=()=>(
-  <section className="deliv" id="livraison">
-    <div className="wrap">
-      <div className="dcard">
-        <h2>Livraison <span>gratuite dès 25&nbsp;€</span></h2>
-        <motion.div className="dgrid" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
-          <div><h4>À domicile &amp; au bureau</h4><p>Dès 25 € de commande</p></div>
-          <div><h4>Zone limitée</h4><p>Minimum 25 €</p></div>
-          <div><h4>Paiement</h4><p>CB, Mastercard, Visa<br/>Chèques déjeuner, tickets restaurant</p></div>
-          <div><h4>Halal</h4><p>Logo affiché sur la carte</p></div>
-        </motion.div>
-        <details className="more">
-          <summary>Conditions de livraison</summary>
-          <p>Livraison gratuite à domicile et au bureau, à partir de 25 € de commande. Zone de livraison limitée. Minimum de commande 25 €. Paiement sur place à partir de 10 € (CB, Mastercard, Visa), carte acceptée en livraison à signaler à la commande. Par mesure de sécurité, nos livreurs n'ont pas plus de 15 € sur eux, merci de faire l'appoint.</p>
-        </details>
-        <div className="ctas" style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:32}}>
-          <OrderBtn className="btn lime"/>
-          <a className="btn ghost" style={{color:'#fff',borderColor:'rgba(255,255,255,.4)'}} href={TEL}>Appeler pour commander</a>
+const Delivery=()=>{
+  if(!cfgF.delivery) return null
+  return(
+    <section className="deliv" id="livraison">
+      <div className="wrap">
+        <div className="dcard">
+          <h2>Livraison <span>{cfgB.badgeFloat ? `${cfgB.badgeFloat.title} ${cfgB.badgeFloat.subtitle}` : 'à domicile'}</span></h2>
+          <motion.div className="dgrid" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
+            <div><h4>À domicile &amp; au bureau</h4><p>Dès {eur(cfgD.minOrderCents)} de commande</p></div>
+            <div><h4>Zone limitée</h4><p>Minimum {eur(cfgD.minOrderCents)}</p></div>
+            <div><h4>Paiement</h4><p>CB, Mastercard, Visa<br/>Chèques déjeuner, tickets restaurant</p></div>
+            {cfgF.halalBadge && <div><h4>Halal</h4><p>Viandes certifiées</p></div>}
+          </motion.div>
+          <details className="more">
+            <summary>Conditions de livraison</summary>
+            <p>{cfgD.conditionText}</p>
+          </details>
+          <div className="ctas" style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:32}}>
+            <OrderBtn className="btn lime"/>
+            <a className="btn ghost" style={{color:'#fff',borderColor:'rgba(255,255,255,.4)'}} href={TEL}>Appeler pour commander</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-)
+    </section>
+  )
+}
 
 const Location=()=>(
   <section className="loc" id="restaurant">
     <div className="wrap lgrid">
       <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
         <Status id="status"/>
-        <p className="addr">15 rue<br/>de Rouen<br/><span>49400 Saumur</span></p>
-        <a className="tel" href={TEL}>02 41 03 57 87</a>
+        <p className="addr">{cfgC.address.street}<br/><span>{cfgC.address.postalCode} {cfgC.address.city}</span></p>
+        <a className="tel" href={TEL}>{cfgC.phone}</a>
         <div className="ctas" style={{display:'flex',gap:12,flexWrap:'wrap'}}>
           <a className="btn red" href={MAPS} target="_blank" rel="noopener">Ouvrir dans Google Maps</a>
           <a className="btn outline" href={TEL}>Appeler</a>
@@ -429,42 +456,56 @@ const Location=()=>(
       </motion.div>
       <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:.1}}>
         <div className="hrs">
-          <div><span>Ouvert 7j/7</span><span>11h à 14h30 et 18h à 23h</span></div>
-          <div className="today"><span style={{color:'var(--lime)'}}>Ouvert</span><span>Dimanche midi & soir</span></div>
+          <div><span>Horaires</span><span>{cfgS.displayText}</span></div>
+          <div className="today"><span style={{color:'var(--lime)'}}>Service</span><span>Sur place &amp; À emporter</span></div>
         </div>
-        <p className="lnote">Pâte fraîche maison.</p>
+        <p className="lnote">{cfgB.footerNote}</p>
       </motion.div>
     </div>
   </section>
 )
 
-export default function App(){return(
-  <CartProvider>
-    <MotionConfig reducedMotion="user">
-      <a href="#carte" className="skip">Aller à la carte</a>
-      <Header/>
-      <main id="top">
-        <Hero/>
-        <Strip/>
-        <Categories/>
-        <Bestsellers/>
-        <PromoBanner/>
-        <Menu/>
-        <Delivery/>
-        <Location/>
-      </main>
-      <footer>
-        <div className="fi">
-          <div className="logo"><Logo/></div>
-          <p>Taco Pizza · 15 rue de Rouen, 49400 Saumur · 02 41 03 57 87</p>
-          <details className="more">
-            <summary>Mentions</summary>
-            <p>Tarifs sous réserve d'erreurs typographiques ou de modifications ultérieures. Promotions valables jusqu'à l'édition d'un nouveau prospectus. Offres non cumulables. RCS Anger en cours. Ne pas jeter sur la voie publique. Photos non contractuelles. www.mangerbouger.fr — pour votre santé, pratiquez une activité physique régulière.</p>
-          </details>
-        </div>
-      </footer>
-      <MobileBar tel={TEL}/>
-      <CartDrawer/><OrderBanner/>
-    </MotionConfig>
-  </CartProvider>
-)}
+export default function App(){
+  useEffect(()=>{
+    if(RESTAURANT_CONFIG?.theme?.primaryColor){
+      document.documentElement.style.setProperty('--red', RESTAURANT_CONFIG.theme.primaryColor)
+    }
+    if(RESTAURANT_CONFIG?.theme?.primaryHover){
+      document.documentElement.style.setProperty('--red2', RESTAURANT_CONFIG.theme.primaryHover)
+    }
+    if(RESTAURANT_CONFIG?.brand?.name){
+      document.title = `${RESTAURANT_CONFIG.brand.name} — ${RESTAURANT_CONFIG.brand.tagline || ''}`
+    }
+  },[])
+
+  return(
+    <CartProvider>
+      <MotionConfig reducedMotion="user">
+        <a href="#carte" className="skip">Aller à la carte</a>
+        <Header/>
+        <main id="top">
+          <Hero/>
+          <Strip/>
+          <Categories/>
+          {cfgF.bestsellers && <Bestsellers/>}
+          {cfgF.promoBanner && <PromoBanner/>}
+          <Menu/>
+          <Delivery/>
+          <Location/>
+        </main>
+        <footer>
+          <div className="fi">
+            <div className="logo"><Logo/></div>
+            <p>{cfgB.name} · {cfgC.address.full} · {cfgC.phone}</p>
+            <details className="more">
+              <summary>Mentions</summary>
+              <p>{cfgB.mentions}</p>
+            </details>
+          </div>
+        </footer>
+        <MobileBar tel={TEL}/>
+        <CartDrawer/><OrderBanner/>
+      </MotionConfig>
+    </CartProvider>
+  )
+}

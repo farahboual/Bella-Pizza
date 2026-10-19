@@ -1,26 +1,107 @@
-# Taco Pizza — site + commande en ligne (Vercel + Supabase + Stripe)
+# Resto General — Plateforme Restaurant & Commande en Ligne (White-Label)
 
-## Architecture
-- Site : React/Vite (build → `dist/`). Prix : `shared/menuData.js` (source unique, le serveur recalcule tous les totaux).
-- API : fonctions Vercel dans `api/` (logique dans `lib/`). Base de commandes : Supabase. Paiement : Stripe Checkout.
-- Écran cuisine : `/cuisine` (page statique `public/cuisine/`, protégée par mot de passe côté API).
+Plateforme moderne de commande en ligne pour restaurants, pizzerias, snacks, bistrots et fast-food. Conçue pour être déployée clé en main en **15 minutes** par client.
 
-## Mise en ligne (ordre conseillé)
-1. **Supabase** : créer un projet, ouvrir SQL Editor, exécuter `supabase/schema.sql`. Noter `Project URL` et la clé **service_role** (Settings > API).
-2. **Vercel** : importer le repo (preset Vite détecté). Ajouter les variables de `.env.example` (Settings > Environment Variables), puis redéployer.
-3. **Stripe** (mode test d'abord) : Developers > Webhooks > Add endpoint
-   - URL : `https://VOTRE-DOMAINE/api/stripe-webhook`
-   - Événements : `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.expired`
-   - Copier le *Signing secret* (`whsec_...`) dans `STRIPE_WEBHOOK_SECRET`, redéployer.
-   - Test : carte `4242 4242 4242 4242`, date future, CVC au choix.
-4. **Passage en réel** : compte Stripe du restaurant vérifié (SIRET, IBAN), remplacer par `sk_live_...` et créer le webhook en mode Live (nouveau `whsec_...`).
-5. Activer dans Stripe les reçus e-mail clients (Settings > Emails) et Apple Pay / Google Pay (Settings > Payment methods).
-6. Vercel > Firewall : ajouter une règle de limitation de débit sur `/api/orders` (ex. 10 requêtes/minute/IP).
+- **0 % de commission** (alternative directe aux 30% d'UberEats / Deliveroo)
+- **Coût d'hébergement quasi nul** (Vercel Serverless + Supabase tier gratuit + Stripe Checkout)
+- **Écran cuisine temps réel (`/cuisine`)** avec carillon sonore et impression directe de tickets 80 mm (ESC/POS)
+- **Espace gérant (`/gerant`)** : gestion des stocks/ruptures, fermeture exceptionnelle, codes promo, générateur de QR codes tables, et rapport de caisse (Rapport Z)
 
-## Écran cuisine
-- Tablette : ouvrir `https://VOTRE-DOMAINE/cuisine`, mot de passe = `KITCHEN_PASSWORD`, toucher « Se connecter et activer le son ».
-- Laisser l'onglet **ouvert au premier plan**, volume au maximum. Mise à jour toutes les 3 s. L'alarme sonne tant qu'une commande est « nouvelle ».
-- 🖨 Imprimer : ticket 80 mm. Sans fenêtre d'impression : Chrome lancé avec `--kiosk-printing`, imprimante thermique par défaut.
+---
 
-## Développement local
-`npm install` · `npm run build` · `npm start` (http://localhost:3000, base en mémoire si Supabase non configuré) · `npm run test:server` (16 vérifications).
+## ⚡ Configuration White-Label en 1 Fichier
+
+Pour configurer la plateforme pour un nouveau restaurant client, modifiez uniquement :
+`shared/restaurant.config.js`
+
+```js
+export const RESTAURANT_CONFIG = {
+  brand: {
+    name: "Nom du Restaurant",
+    tagline: "Cuisine authentique & produits frais",
+    heroTitle: "Le goût du",
+    heroHighlight: "fait maison !",
+    // ...
+  },
+  theme: {
+    primaryColor: "#059669", // Change la couleur d'accent de tout le site, boutons et dashboards
+    primaryHover: "#047857"
+  },
+  contact: {
+    phone: "01 23 45 67 89",
+    phoneRaw: "+33123456789",
+    address: { full: "10 rue de Paris, 75001 Paris" },
+    mapsUrl: "https://maps.google.com/?q=..."
+  },
+  features: {
+    takeaway: true,      // Click & Collect
+    delivery: true,      // Livraison
+    dineIn: true,        // Commande sur place avec QR Code Table
+    pizzaDeals: false,   // Offre 3ème pizza offerte (activer pour pizzerias)
+    drinkDeals: true     // Remise boisson avec plat
+  },
+  delivery: {
+    minOrderCents: 2500, // 25.00 € minimum
+    allowedPostcodes: ["75001", "75002"] // [] = toutes zones
+  }
+}
+```
+
+---
+
+## 🏗️ Architecture
+
+- **Client** : React 18 + Vite + Framer Motion. Theming dynamique via variables CSS injectées depuis `restaurant.config.js`.
+- **API & Sécurité** : Fonctions Vercel Serverless (`api/` et `lib/handlers.js`). Calcul des prix autoritaire côté serveur pour empêcher toute falsification de prix.
+- **Base de données** : Supabase PostgreSQL (commandes, configuration, ruptures de stock, codes promo, articles personnalisés).
+- **Paiements** : Stripe Checkout (Cartes, Apple Pay, Google Pay).
+- **Écran Cuisine (`/cuisine`)** : Polling 3s, réveil écran (`navigator.wakeLock`), alarme sonore synchrone (`AudioContext`), impression thermique 80 mm.
+- **Espace Gérant (`/gerant`)** : Interface d'administration protégée par mot de passe.
+
+---
+
+## 🚀 Déploiement d'un nouveau client (15 min)
+
+1. **GitHub** :
+   Pousser le code sur le repository :
+   ```bash
+   git remote add origin https://github.com/mounirhsairi/resto_general.git
+   git push -u origin main
+   ```
+
+2. **Supabase** :
+   - Créer un projet Supabase gratuit.
+   - Aller dans **SQL Editor** et exécuter le contenu de `supabase/schema.sql`.
+   - Récupérer l'URL du projet et la clé `service_role` (Settings > API).
+
+3. **Vercel** :
+   - Importer le dépôt GitHub sur Vercel.
+   - Renseigner les variables d'environnement (voir `.env.example`) :
+     - `SUPABASE_URL`
+     - `SUPABASE_SERVICE_ROLE_KEY`
+     - `KITCHEN_PASSWORD` (mot de passe d'accès pour `/cuisine` et `/gerant`)
+     - `STRIPE_SECRET_KEY`
+     - `STRIPE_WEBHOOK_SECRET`
+     - `PUBLIC_URL`
+
+4. **Stripe (Mode Réel)** :
+   - Connecter le compte Stripe du client (IBAN + SIRET).
+   - Ajouter l'endpoint Webhook : `https://VOTRE-DOMAINE/api/stripe-webhook` avec les événements `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.expired`.
+   - Copier le signing secret dans `STRIPE_WEBHOOK_SECRET`.
+
+---
+
+## 💻 Développement local
+
+```bash
+# Installation des dépendances
+npm install
+
+# Lancement en local (serveur complet avec API + DB mémoire si Supabase non configuré)
+npm run build
+npm start
+# -> http://localhost:3000
+
+# Lancer la suite de tests automatisés (16 validations de sécurité et de flux)
+npm run test:server
+```
