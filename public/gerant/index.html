@@ -247,6 +247,50 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
  .sh-day-times{gap:10px}
 }
 /* ════ end Statut & Horaires ════ */
+
+/* ════ Sidebar & Layout ════ */
+.app-layout{display:flex;min-height:calc(100vh - 69px);max-width:1440px;margin:0 auto;background:var(--bg)}
+.app-sidebar{width:260px;flex-shrink:0;background:var(--white);border-right:1px solid var(--line);padding:24px 14px;position:sticky;top:69px;height:calc(100vh - 69px);overflow-y:auto;box-shadow:2px 0 12px rgba(0,0,0,.015)}
+.sidebar-nav{display:flex;flex-direction:column;gap:6px}
+.sidebar-nav .tab{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:14px;border:0;background:transparent;color:#4b5563;font:700 14px var(--font);cursor:pointer;text-align:left;transition:all .18s;text-decoration:none;user-select:none}
+.sidebar-nav .tab svg{width:18px;height:18px;flex-shrink:0;color:#6b7280;transition:color .18s}
+.sidebar-nav .tab:hover{background:#f8f9fa;color:var(--dark)}
+.sidebar-nav .tab:hover svg{color:var(--dark)}
+.sidebar-nav .tab.active{background:#fff0ef;color:var(--red);font-weight:800}
+.sidebar-nav .tab.active svg{color:var(--red)}
+.app-main{flex:1;min-width:0;padding:28px 36px 60px}
+
+/* Dashboard Overview Styles */
+.dash-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:20px}
+.dash-stat-card{background:var(--white);padding:20px 22px;border-radius:20px;border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.02);display:flex;flex-direction:column}
+.dash-stat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dash-stat-label{font-size:11px;font-weight:800;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
+.dash-stat-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.dash-stat-icon.red{background:#fff0ef;color:var(--red)}
+.dash-stat-icon.green{background:#ecfdf5;color:#10b981}
+.dash-stat-icon.orange{background:#fffbeb;color:#f59e0b}
+.dash-stat-icon.blue{background:#eff6ff;color:#3b82f6}
+.dash-stat-val{font:900 24px var(--font);color:var(--dark);margin-bottom:3px}
+.dash-stat-sub{font-size:12px;color:var(--mute);margin-bottom:12px}
+.dash-stat-link{font:700 13px var(--font);color:var(--red);background:none;border:none;cursor:pointer;padding:0;text-align:left;margin-top:auto}
+.dash-stat-link:hover{text-decoration:underline}
+
+.dash-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.dash-action-btn{display:flex;align-items:center;gap:12px;background:var(--bg);border:1.5px solid var(--line);padding:14px 16px;border-radius:16px;text-align:left;cursor:pointer;font-family:var(--font);transition:all .18s;color:var(--dark);text-decoration:none;width:100%}
+.dash-action-btn:hover{background:#fff;border-color:var(--dark);box-shadow:0 4px 14px rgba(0,0,0,.04);transform:translateY(-1px)}
+.dash-act-icon{font-size:22px;flex-shrink:0}
+.dash-action-btn b{display:block;font-size:14px;font-weight:800;margin-bottom:2px}
+.dash-action-btn p{font-size:12px;color:var(--mute);margin:0;line-height:1.3}
+
+/* Responsive sidebar */
+@media(max-width:960px){
+ .app-layout{flex-direction:column}
+ .app-sidebar{width:100%;height:auto;position:sticky;top:69px;z-index:4;padding:10px 16px;border-right:none;border-bottom:1px solid var(--line);overflow-x:auto}
+ .sidebar-nav{flex-direction:row;gap:6px;width:max-content}
+ .sidebar-nav .tab{padding:8px 14px;white-space:nowrap;border-radius:99px}
+ .app-main{padding:20px 16px 40px}
+}
+
 </style></head><body>
 
 <!-- PASSWORD GATE -->
@@ -280,19 +324,134 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
  </div>
 </header>
 
-<div class="container">
- <h1 class="page-title">Tableau de bord Gérant</h1>
- <p class="page-sub">Gestion intégrale : ouvertures, carte, nouveaux plats, codes promo, QR codes et comptabilité.</p>
+<div class="app-layout">
+ <!-- SIDEBAR NAVIGATION -->
+ <aside class="app-sidebar">
+  <nav class="sidebar-nav" role="tablist">
+   <button type="button" class="tab" data-tab="dashboard" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Tableau de bord</span>
+   </button>
+   <button type="button" class="tab active" data-tab="status" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>Statut &amp; Horaires</span>
+   </button>
+   <button type="button" class="tab" data-tab="menu" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v20M21 2v6a3 3 0 0 1-3 3v11M3 2v7c0 1.1.9 2 2 2h1v11h2V11h1a2 2 0 0 0 2-2V2M7 2v5M4 2v5M10 2v5"/></svg>
+    <span>Carte &amp; Produits</span>
+   </button>
+   <button type="button" class="tab" data-tab="promos" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+    <span>Codes Promo</span>
+   </button>
+   <button type="button" class="tab" data-tab="qr" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span>QR Codes Tables</span>
+   </button>
+   <button type="button" class="tab" data-tab="sales" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <span>Rapport de caisse</span>
+   </button>
+   <button type="button" class="tab" data-tab="security" role="tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="1.5"/><line x1="12" y1="12.5" x2="12" y2="15"/></svg>
+    <span>Sécurité &amp; Mot de passe</span>
+   </button>
+  </nav>
+ </aside>
 
- <div class="tabs" role="tablist">
-  <button class="tab active" data-tab="status" role="tab">Statut &amp; Ouverture</button>
-  <button class="tab" data-tab="menu" role="tab">Carte &amp; Produits</button>
-  <button class="tab" data-tab="promos" role="tab">Codes Promo</button>
-  <button class="tab" data-tab="qr" role="tab">QR Codes Tables</button>
-  <button class="tab" data-tab="sales" role="tab">Rapport de caisse</button>
-  
-   <button class="tab" data-tab="security" role="tab">Sécurité &amp; Mots de passe</button>
- </div>
+ <!-- MAIN DASHBOARD CONTENT -->
+ <main class="app-main">
+
+  <!-- TAB 0: TABLEAU DE BORD (OVERVIEW) -->
+  <div id="tab-dashboard" class="tab-content" style="display:none" role="tabpanel">
+    <div class="sh-page-header">
+      <div class="sh-page-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div>
+        <div class="sh-page-title">Tableau de bord</div>
+        <div class="sh-page-sub">Vue d'ensemble de l'activité du restaurant et raccourcis rapides.</div>
+      </div>
+    </div>
+
+    <!-- Quick stats cards -->
+    <div class="dash-stats-grid">
+      <div class="dash-stat-card">
+        <div class="dash-stat-head">
+          <span class="dash-stat-label">Statut restaurant</span>
+          <span class="dash-stat-icon red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        </div>
+        <div id="db-quick-status" class="dash-stat-val">Ouvert</div>
+        <div class="dash-stat-sub">Commandes en ligne autorisées</div>
+        <button type="button" class="dash-stat-link" onclick="switchTab('status')">Gérer les horaires →</button>
+      </div>
+
+      <div class="dash-stat-card">
+        <div class="dash-stat-head">
+          <span class="dash-stat-label">Ventes du jour</span>
+          <span class="dash-stat-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+        </div>
+        <div id="db-today-ca" class="dash-stat-val">0,00 €</div>
+        <div id="db-today-orders" class="dash-stat-sub">0 commande aujourd'hui</div>
+        <button type="button" class="dash-stat-link" onclick="switchTab('sales')">Voir le rapport de caisse →</button>
+      </div>
+
+      <div class="dash-stat-card">
+        <div class="dash-stat-head">
+          <span class="dash-stat-label">Carte &amp; Produits</span>
+          <span class="dash-stat-icon orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2v20M21 2v6a3 3 0 0 1-3 3v11M3 2v7c0 1.1.9 2 2 2h1v11h2V11h1a2 2 0 0 0 2-2V2M7 2v5M4 2v5M10 2v5"/></svg></span>
+        </div>
+        <div id="db-prods-count" class="dash-stat-val">--</div>
+        <div class="dash-stat-sub">Plats au menu</div>
+        <button type="button" class="dash-stat-link" onclick="switchTab('menu')">Modifier la carte →</button>
+      </div>
+
+      <div class="dash-stat-card">
+        <div class="dash-stat-head">
+          <span class="dash-stat-label">Codes Promo</span>
+          <span class="dash-stat-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
+        </div>
+        <div id="db-promos-count" class="dash-stat-val">--</div>
+        <div class="dash-stat-sub">Codes promo actifs</div>
+        <button type="button" class="dash-stat-link" onclick="switchTab('promos')">Gérer les codes promo →</button>
+      </div>
+    </div>
+
+    <!-- Quick access actions -->
+    <div class="card sh-card" style="margin-top:20px">
+      <h2 style="font-size:18px;margin-bottom:16px">Accès rapide</h2>
+      <div class="dash-actions-grid">
+        <button type="button" class="dash-action-btn" onclick="switchTab('status')">
+          <span class="dash-act-icon">🕒</span>
+          <div>
+            <b>Statut &amp; Horaires</b>
+            <p>Définir créneaux midi/soir et fermetures</p>
+          </div>
+        </button>
+        <button type="button" class="dash-action-btn" onclick="switchTab('menu')">
+          <span class="dash-act-icon">🍕</span>
+          <div>
+            <b>Carte &amp; Tarifs</b>
+            <p>Ajouter des plats, ajuster prix et stocks</p>
+          </div>
+        </button>
+        <button type="button" class="dash-action-btn" onclick="switchTab('sales')">
+          <span class="dash-act-icon">📊</span>
+          <div>
+            <b>Rapport de caisse</b>
+            <p>Consulter les ventes, ticket moyen et export CSV</p>
+          </div>
+        </button>
+        <a href="/cuisine/index.html" class="dash-action-btn" target="_blank">
+          <span class="dash-act-icon">👨‍🍳</span>
+          <div>
+            <b>Écran Cuisine ↗</b>
+            <p>Affichage des commandes en direct</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 
  <!-- TAB 1: STATUS -->
   <div id="tab-status" class="tab-content" role="tabpanel">
@@ -597,6 +756,7 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
     </div>
    </div>
   </div>
+ </main>
 </div>
 
 <!-- CHEVALET DE TABLE IMPRIMABLE -->
@@ -637,15 +797,47 @@ function showToast(msg='Modifications enregistrées !'){
 
 const api=async(body)=>fetch('/api/manager',{method:body?'POST':'GET',headers:{'x-kitchen-key':key,'content-type':'application/json'},body:body?JSON.stringify(body):undefined})
 
-// Tabs navigation
+// Tabs navigation & helper
+function switchTab(name){
+ document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x.dataset.tab === name))
+ document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none')
+ const target = $('#tab-' + name)
+ if(target) target.style.display = 'block'
+}
+
 document.querySelectorAll('.tab').forEach(b=>{
- b.onclick=()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'))
-  document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none')
-  b.classList.add('active')
-  $('#tab-'+b.dataset.tab).style.display='block'
- }
+ b.onclick=()=>switchTab(b.dataset.tab)
 })
+
+function updateDashboardMetrics(){
+ const quickStat = $('#db-quick-status')
+ if(quickStat){
+  const openMode = config.openMode || (config.manualClosed ? 'closed' : (config.forcedOpen ? 'forced_open' : 'auto'))
+  quickStat.textContent = openMode === 'closed' ? 'Fermé' : (openMode === 'forced_open' ? 'Forcé Ouvert' : 'Ouvert')
+  quickStat.style.color = openMode === 'closed' ? 'var(--red)' : '#166534'
+ }
+ const todayCA = $('#db-today-ca')
+ const todayOrders = $('#db-today-orders')
+ if(todayCA && Array.isArray(sales)){
+  const todayStr = new Date().toISOString().slice(0,10)
+  const todaySales = sales.filter(s => (s.created_at||'').slice(0,10) === todayStr && s.paid)
+  const totalCents = todaySales.reduce((acc, s) => acc + (s.total||0), 0)
+  todayCA.textContent = eur(totalCents)
+  if(todayOrders) todayOrders.textContent = todaySales.length + ' commande' + (todaySales.length > 1 ? 's' : '') + ' aujourd\'hui'
+ }
+ const prodsCount = $('#db-prods-count')
+ if(prodsCount && catalog){
+  let cnt = 0
+  Object.values(catalog).forEach(arr => { if(Array.isArray(arr)) cnt += arr.length })
+  if(customItems && Array.isArray(customItems)) cnt += customItems.length
+  prodsCount.textContent = cnt + ' plats'
+ }
+ const promoCount = $('#db-promos-count')
+ if(promoCount && promos){
+  const activeCnt = Object.values(promos).filter(p => p && p.active !== false).length
+  promoCount.textContent = activeCnt + ' actif' + (activeCnt > 1 ? 's' : '')
+ }
+}
 
 async function loadData(){
  try{
@@ -686,7 +878,8 @@ async function loadData(){
   renderMenu()
   renderPromos()
   renderSales()
-    updateQrView(1)
+  updateQrView(1)
+  updateDashboardMetrics()
  }catch(e){console.error(e)}
 }
 
