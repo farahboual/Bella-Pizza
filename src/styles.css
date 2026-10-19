@@ -278,9 +278,22 @@ footer .more p, footer .more summary { color: rgba(255,255,255,.55) }
   .dgrid { grid-template-columns: 1fr } .dgrid div { border-bottom: 1px solid rgba(255,255,255,.1) }
   .bar { display: block }
 }
+@media(max-width:640px) {
+  .hd-call { display: none }
+  header { padding: 0 16px; height: 64px }
+  .logo svg { width: 36px; height: 36px }
+  .logo b { font-size: 18px }
+  .hero { margin-top: 64px }
+  .hero-acts { flex-direction: column; width: 100% }
+  .hero-acts .btn { width: 100% }
+  .promo-inner { padding: 24px 20px }
+  .promo-h { font-size: 1.6rem }
+}
 @media(max-width:560px) {
   .cats-grid { grid-template-columns: repeat(2,1fr) }
   .items-grid { grid-template-columns: 1fr }
-  .hero h1 { font-size: clamp(2.4rem,14vw,3.6rem) }
+  .hero h1 { font-size: clamp(2.2rem,12vw,3.2rem) }
+  .cat h2 { font-size: 1.8rem }
+  .row { gap: 10px }
 }
 @media(prefers-reduced-motion:reduce) { *, *::before, *::after { animation: none!important; transition: none!important } html { scroll-behavior: auto } }

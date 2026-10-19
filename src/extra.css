@@ -82,3 +82,10 @@
 
 /* Mobile item-add in bestsellers already styled via items-grid */
 @media(max-width:700px) { .row .pcol { gap: 8px } }
+@media(max-width:480px) {
+  .cart { width: 100% }
+  .cart-h { padding: calc(14px + env(safe-area-inset-top)) 16px 12px }
+  .cart-b { padding: 14px 16px calc(20px + env(safe-area-inset-bottom)) }
+  .seg label { font-size: 13px; padding: 10px 8px }
+  .obanner { font-size: 14px; padding: 12px 14px }
+}
