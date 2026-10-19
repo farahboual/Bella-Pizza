@@ -746,7 +746,7 @@ function updateDashboardMetrics(){
   const todaySales = sales.filter(s => {
    if(!s.createdAt) return false
    const sd = new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date(s.createdAt))
-   return sd === todayStr && s.paid
+   return sd === todayStr
   })
   const totalCents = todaySales.reduce((acc, s) => acc + (s.total||0), 0)
   todayCA.textContent = eur(totalCents)
