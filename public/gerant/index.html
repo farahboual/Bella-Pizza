@@ -212,7 +212,7 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
   <button class="tab" data-tab="promos" role="tab">Codes Promo</button>
   <button class="tab" data-tab="qr" role="tab">QR Codes Tables</button>
   <button class="tab" data-tab="sales" role="tab">Rapport de caisse</button>
-  <button class="tab" data-tab="rib" role="tab">Compte Bancaire</button>
+  
    <button class="tab" data-tab="security" role="tab">Sécurité &amp; Mots de passe</button>
  </div>
 
@@ -458,28 +458,7 @@ header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;
   </div>
  </div>
 
- <!-- TAB 6: RIB & BANQUE -->
- <div id="tab-rib" class="tab-content" style="display:none" role="tabpanel">
-  <div class="card">
-   <h2>Paiements &amp; Coordonnées Bancaires</h2>
-   <p style="color:var(--mute);margin-bottom:24px;line-height:1.5">Les versements automatiques des commandes payées par carte en ligne sont envoyés directement par Stripe vers le compte bancaire configuré.</p>
-   <div class="form-group">
-    <label>Titulaire du compte</label>
-    <input type="text" id="rib-holder" placeholder="Ex: SARL TACO PIZZA">
-   </div>
-   <div class="form-group">
-    <label>Numéro IBAN</label>
-    <input type="text" id="rib-iban" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX">
-   </div>
-   <div class="form-group">
-    <label>Code BIC / SWIFT</label>
-    <input type="text" id="rib-bic" placeholder="BNPAFRPPXXX">
-   </div>
-   <button id="save-rib-btn" class="btn ink">Sauvegarder le RIB</button>
-  </div>
- </div>
-
-  <!-- TAB 7: SÉCURITÉ & MOTS DE PASSE -->
+ <!-- TAB 7: SÉCURITÉ & MOTS DE PASSE -->
   <div id="tab-security" class="tab-content" style="display:none" role="tabpanel">
    <div class="card">
     <h2>Sécurité &amp; Mots de passe</h2>
@@ -608,8 +587,7 @@ async function loadData(){
   renderMenu()
   renderPromos()
   renderSales()
-  renderRib()
-  updateQrView(1)
+    updateQrView(1)
  }catch(e){console.error(e)}
 }
 
@@ -1063,20 +1041,6 @@ $('#export-csv-btn').onclick=()=>{
  link.href=URL.createObjectURL(blob)
  link.download=`Rapport_TacoPizza_${new Date().toISOString().slice(0,10)}.csv`
  link.click()
-}
-
-function renderRib(){
- $('#rib-holder').value=config.ribHolder||''
- $('#rib-iban').value=config.ribIban||''
- $('#rib-bic').value=config.ribBic||''
-}
-
-$('#save-rib-btn').onclick=async()=>{
- const holder=$('#rib-holder').value.trim()
- const iban=$('#rib-iban').value.trim()
- const bic=$('#rib-bic').value.trim()
- const res=await api({action:'updateConfig',data:{ribHolder:holder,ribIban:iban,ribBic:bic}})
- if(res.ok){config=await res.json();showToast('Coordonnées RIB sauvegardées')}
 }
 
 $('#open-cuisine-btn').onclick=()=>{
