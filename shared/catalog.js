@@ -18,11 +18,11 @@ export function buildCatalog(){
 }
 export const CATALOG=buildCatalog()
 // Options choisies par le client (liste unique des sauces = celle du menu Tacos)
-export const SAUCES=(CATS.find(c=>c.id==='tacos')||{}).sauces||[]
+export const SAUCES=(CATS.find(c=>c.id==='tacos')?.sauces) || ['Sauce Maison', 'Barbecue Fumé', 'Mayonnaise à l’ancienne', 'Ketchup Doux', 'Sauce Poivre', 'Sauce Blanche']
 export const SUPP_CENTS=50
 export const SUPP_MAX=5   // max. de portions par viande et par article
 // Viandes proposables en supplément (= viandes du menu Tacos). Pour en ajouter/retirer : modifier la liste Tacos dans menuData.js
-export const MEATS=((CATS.find(c=>c.id==='tacos')||{}).items||[]).map(i=>i[0])
+export const MEATS=((CATS.find(c=>c.id==='tacos')?.items)||[]).map(i=>i[0]).length ? ((CATS.find(c=>c.id==='tacos')?.items)||[]).map(i=>i[0]) : ['Steak Boucher', 'Poulet Rôti', 'Bacon Fumé', 'Chèvre Chaud']
 const LEGACY_MEAT='Viande (à préciser)' // anciens paniers/navigateurs qui envoyaient supp:true
 export const OPT_CATS=['tacos','burgers','sandwichs']
 export const hasOpts=id=>OPT_CATS.includes(String(id).split(':')[0])

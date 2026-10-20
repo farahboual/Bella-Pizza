@@ -96,15 +96,17 @@ const Status=({id,style,light})=>{const s=useStatus();return(
 // Logo
 const Logo=()=>(
   <>
-    <svg viewBox="0 0 48 48" aria-hidden="true" style={{width:40,height:40,flex:'none'}}>
-      <circle cx="24" cy="24" r="22" fill="var(--red)"/>
-      <path d="M24 24V2A22 22 0 0 1 43.1 13Z" fill="#1A1511"/>
-      <circle cx="15" cy="20" r="3.2" fill="#fff"/>
-      <circle cx="29" cy="32" r="3.2" fill="#fff"/>
-      <circle cx="14" cy="32" r="2.6" fill="rgba(255,255,255,.6)"/>
-      <circle cx="33" cy="22" r="2.6" fill="rgba(255,255,255,.6)"/>
+    <svg viewBox="0 0 48 48" aria-hidden="true" style={{width:38,height:38,flex:'none'}}>
+      <rect width="48" height="48" rx="14" fill="var(--red)"/>
+      <circle cx="24" cy="14" r="2.5" fill="#fff"/>
+      <path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/>
+      <rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/>
+      <path d="M21 35H27" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
     </svg>
-    <b>{cfgB.name}</b>
+    <div style={{display:'flex',flexDirection:'column',lineHeight:1.1}}>
+      <b style={{fontSize:18,letterSpacing:'-0.02em'}}>{cfgB.name}</b>
+      <span style={{fontSize:10,fontWeight:700,letterSpacing:'0.08em',color:'var(--red)',textTransform:'uppercase'}}>{cfgB.shortName||'RESTAURANT'}</span>
+    </div>
   </>
 )
 
@@ -202,10 +204,10 @@ const Strip=()=>(
 function Categories(){
   const cats=[
     {id:'pizzas',label:'Pizzas',img:pizzaImg},
-    {id:'tacos',label:'Tacos',img:tacosImg},
-    {id:'sandwichs',label:'Sandwichs',img:sandwichsImg},
     {id:'burgers',label:'Burgers',img:burgersImg},
-    {id:'salades',label:'Salades',img:saladesImg},
+    {id:'salades',label:'Salades & Bowls',img:saladesImg},
+    {id:'texmex',label:'Entrées & Tapas',img:sandwichsImg},
+    {id:'desserts',label:'Desserts',img:tacosImg},
   ]
   const go=id=>{
     document.getElementById('carte')?.scrollIntoView({behavior:'smooth'})
@@ -285,19 +287,19 @@ function Bestsellers(){
   )
 }
 
-// Promo banner : Menu Duo
+// Promo banner : Menu Dégustation
 function PromoBanner(){
   return(
     <section className="promo">
       <div className="wrap">
         <div className="promo-inner">
           <div>
-            <span className="promo-label">Le bon plan !</span>
-            <h2>Menu Duo<strong>À partir de 25 €</strong></h2>
-            <p className="promo-desc">1 Pizza Méga + 8 Wings + 1 Maxi Coca<br/>Offre à emporter · valable en commande en ligne</p>
+            <span className="promo-label">Offre Découverte</span>
+            <h2>Menu Dégustation<strong>À partir de 22 €</strong></h2>
+            <p className="promo-desc">1 Plat au choix + 1 Entrée à partager + 2 Boissons fraîches<br/>Offre valable à emporter et en livraison</p>
             <OrderBtn className="btn lime">Commander maintenant →</OrderBtn>
           </div>
-          <img className="promo-img" src={pizzaImg} alt="Menu Duo Taco Pizza"/>
+          <img className="promo-img" src={pizzaImg} alt="Menu Dégustation"/>
         </div>
       </div>
     </section>

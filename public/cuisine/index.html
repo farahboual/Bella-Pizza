@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F7F3EE;--white:#ffffff;--red:#C41E17;--red2:#E82020;--dark:#1A1511;--mute:#6B6560;--line:rgba(26,21,17,.1);--green:#166534;--green-bg:#dcfce7;--font:'Nunito',system-ui,sans-serif}
+:root{--bg:#F5F2EB;--white:#ffffff;--red:#A3785E;--red2:#8B5E45;--dark:#28231F;--mute:#78716A;--line:rgba(40,35,31,.1);--green:#166534;--green-bg:#dcfce7;--font:'Nunito',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0}body{font:15px/1.4 var(--font);background:var(--bg);color:var(--dark);-webkit-font-smoothing:antialiased}
 a{color:var(--red);text-decoration:none;font-weight:700}
 header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--line);box-shadow:0 4px 24px rgba(0,0,0,.04)}
@@ -57,8 +57,8 @@ li i{display:block;font:600 13px var(--font);color:#b25;margin-top:4px;font-styl
 }
 .tag.sp{background:#e0e7ff;color:#3730a3}
 </style></head><body>
-<div id="gate"><form id="f"><h1>Taco<span>Pizza</span></h1><p><b>Écran cuisine</b><br>Entrez le mot de passe, touchez pour activer le son et mettez le volume au maximum.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red">Se connecter et activer le son</button></form></div>
-<header><div><h1>Taco<span>Pizza</span> Cuisine</h1><div class="st" id="st">connexion…</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn ghost" id="autoprint-btn">🖨️ Auto-impression: OFF</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
+<div id="gate"><form id="f"><h1>Écran<span>Cuisine</span></h1><p><b>Gestion des commandes en direct</b><br>Entrez le mot de passe, touchez pour activer le son et mettez le volume au maximum.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red">Se connecter et activer le son</button></form></div>
+<header><div><h1>Écran <span>Cuisine</span></h1><div class="st" id="st">connexion…</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn ghost" id="autoprint-btn">🖨️ Auto-impression: OFF</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
 <main id="list"></main>
 <div id="ticket"></div>
 <script>

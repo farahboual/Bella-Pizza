@@ -1,19 +1,46 @@
-const T="Sauce tomate, fromage, ",C="Crème fraîche, fromage, ";
-const tom="CLASSICA|;REGINA|champignons, jambon;CAMPIONE|viande hachée, champignons;MIAMI|jambon, œuf;NAPOLITAINE|anchois, câpres, olives;CALZONE (Soufflée)|jambon, œuf;HAWAÏENNE|jambon, ananas;NEPTUNE|thon, olives, œuf;CHORIZO|tomates fraîches, chorizo, olives;SPÉCIALE|jambon, oignons, poivrons, chèvre;FRUITS DE MER|fruits de mer, persillade;3 JAMBONS|jambon, chorizo, lardons;EXTRÊME|viande hachée, chorizo;BOLOGNAISE|viande hachée, P.de terre, oignons;4 FROMAGES|parmesan, bleu, brie, chèvre;VÉGÉTARIENNE|champignons, poivrons, tomates fraîches, oignons, olives;CHEESE BURGER|viande hachée, merguez, œuf;BOURSIN|viande hachée, boursin;MEXICAINE|merguez, viande hachée, poivrons;FAJITAS|poulet, ail, oignons, poivrons;INDIENNE|viande hachée, poulet crème fraîche;PAYSANNE|lardons, champignons, œuf;4 SAISONS|jambon, artichauts, poivrons, champignons, olives;ORIENTALE|merguez, oignons, poivrons, œuf, olives";
-const cre="SAVOYARDE|bacon, champignons, œuf;FERMIÈRE|jambon, pomme de terre, champignons, œuf;MONTAGNARDE|raclette, bacon, pommes de terre;CARNIVORE|viande hachée, merguez, jambon, poulet, chorizo;CAMPAGNARDE|poulet, champignons;PARISIENNE|jambon, pomme de terre;REINE BLANCHE|jambon, champignons;CHICKEN|poulet, pomme de terre, œuf;GORFA|viande hachée, oignons, chèvre;ROMANA|saumon fumé, citron;TARTIFLETTE|lardons, P. de terre, reblochon;BLANCHE NEIGE|gorgonzola, brie, parmesan, chèvre;MIEL|chèvre, miel;CURRY|sauce curry, poulet rôti";
+const T="Sauce tomate maison aux herbes, mozzarella fior di latte, ",C="Crème fraîche d'Isigny, mozzarella fior di latte, ";
+const tom="CLASSICA|basilic frais, huile d'olive vierge;REGINA|champignons de Paris frais, jambon blanc aux herbes;CAMPIONE|pur bœuf haché assaisonné, champignons de Paris;MIAMI|jambon blanc, œuf bio;NAPOLITAINE|anchois marinés, câpres, olives taggiasche;CALZONE (Soufflée)|jambon blanc, œuf bio, mozzarella fondante;HAWAÏENNE|jambon blanc, morceaux d'ananas rôti;NEPTUNE|thon germon, olives taggiasche, œuf bio;CHORIZO|tomates cerises confites, chorizo ibérique, olives;SPÉCIALE|jambon blanc, oignons confits, poivrons marinés, chèvre frais;FRUITS DE MER|mélange de fruits de mer, persillade maison;3 JAMBONS|jambon blanc, chorizo ibérique, lardons fumés;EXTRÊME|bœuf haché façon bouchère, chorizo ibérique;BOLOGNAISE|bœuf haché mijoté, pommes grenailles, oignons confits;4 FROMAGES|parmesan 24 mois, gorgonzola, chèvre frais, mozzarella;VÉGÉTARIENNE|champignons, poivrons marinés, tomates fraîches, oignons, olives;CHEESE BURGER|bœuf haché boucher, cheddar affiné, oignons rouges;BOURSIN|bœuf haché façon bouchère, boursin crémeux;MEXICAINE|merguez artisanale, bœuf haché, poivrons sautés;FAJITAS|filet de poulet mariné, ail doux, oignons, poivrons;INDIENNE|bœuf haché, poulet rôti, crème fraîche douce;PAYSANNE|lardons fumés croustillants, champignons, œuf bio;4 SAISONS|jambon blanc, cœurs d'artichauts, poivrons, champignons, olives;ORIENTALE|merguez de bœuf/agneau, oignons, poivrons, œuf bio, olives";
+const cre="SAVOYARDE|bacon croustillant, champignons de Paris, œuf bio;FERMIÈRE|jambon blanc, pommes grenailles, champignons, œuf bio;MONTAGNARDE|fromage à raclette affiné, bacon, pommes de terre;CARNIVORE|bœuf haché, merguez, jambon blanc, poulet mariné;CAMPAGNARDE|filet de poulet rôti, champignons frais;PARISIENNE|jambon blanc, pommes grenailles fondantes;REINE BLANCHE|jambon blanc supérieur, champignons de Paris frais;CHICKEN|filet de poulet rôti, pommes grenailles, œuf bio;GORFA|pur bœuf haché, oignons confits, chèvre crémeux;ROMANA|saumon fumé d'Écosse, touche de citron doux;TARTIFLETTE|lardons fumés, pommes grenailles, reblochon fermier AOP;BLANCHE NEIGE|gorgonzola doux, brie de Meaux, parmesan, chèvre;MIEL|fromage de chèvre affiné, filet de miel de fleurs;CURRY|sauce curry douce maison, poulet rôti fermier";
 const pz=(s,b)=>s.split(";").map(x=>{const[n,e]=x.split("|");return[n,e||b.replace(/, $/,"")]});
 const SZ=[["Junior","9 €","+1 €"],["Sénior","14 €","+1,50 €"],["Méga","19 €","+2 €"]];
 const P=(a)=>a.map(([n,d,p])=>[n,d,p]);
 const CATS=[
-{id:"pizzas",t:"Pizzas",pizza:1},
-{id:"tacos",t:"Tacos",h:"1 viande au choix",p:"8,50 €",items:[["Kebab"],["Cordon-bleu"],["Nuggets"],["Poulet"],["Jambon"],["Merguez"],["Viande hachée"]],notes:["+0,50 € supp. viande","+1 € boisson 33cl"],sauces:["Algérienne","Harissa","Curry","Ketchup","Mayonnaise","Blanche","Barbecue","Samouraï"]},
-{id:"burgers",t:"Burgers",notes:["+0,50 € supp. viande","+1 € boisson 33cl"],items:[["Cheese","1 Steak, cheddar","6,50 €"],["DB Cheese","2 Steaks, 2 cheddar","7,50 €"],["Triple Cheese","3 Steaks, 2 cheddar","9,00 €"],["Fish","Poisson pané, sauce, cheddar","6,50 €"],["Chicken","Chicken, sauce, cheddar","6,50 €"],["Royal Chèvre","2 Steaks 100g, œuf, chèvre, cheddar","9,50 €"],["Royal Chicken","Poulet frit, galette de P. de terre, œuf, 2 cheddar","10,50 €"]]},
-{id:"sandwichs",t:"Sandwichs",notes:["+0,50 € supp. viande"],items:[["Kebab","Viande kebab","8,00 €"],["Steak","2 Steaks, cheddar","8,00 €"],["Chicken Chicka","Chicken curry, cheddar","8,00 €"]]},
-{id:"paninis",t:"Paninis",h:"Nos paninis",p:"6,00 €",notes:["+1 € boisson 33cl"],items:[["3 Fromages"],["Jambon"],["Poulet"],["Saumon"],["Kebab"],["Thon"]]},
-{id:"zapwich",t:"Zapwich",h:"Nos zapwich",p:"7,00 €",notes:["Servis avec sauce tomate OU crème fraîche","+1 € boisson 33cl"],items:[["Zap’ Merguez"],["Zap’ Steak"],["Zap’ Thon"],["Zap’ Poulet"],["Zap’ Jambon"],["Zap’ Saumon"],["Zap’ 3 Fromages"]]},
-{id:"salades",t:"Salades",h:"Nos salades",p:"6,00 €",items:[["Pacifique","Salade, tomates, saumon fumé, avocat"],["Niçoise","Salade, tomates, thon, pomme de terre, maïs"],["Chèvre chaud","Salade, tomates, chèvre chaud sur toast, lardons"],["Exotique","Salade, tomates, sauce cocktail, avocat, crevettes, maïs"],["Campagnarde","Salade, tomates, pommes de terre, poulet, concombre, œuf"]]},
-{id:"texmex",t:"Tex-Mex",items:[["Chicken wings","8pcs + sauce","9,00 €"],["Nuggets","8pcs + sauce","9,00 €"],["Calamars","8pcs + sauce","9,00 €"],["Onion rings","8pcs + sauce","9,00 €"],["Tenders","8pcs + sauce","9,00 €"],["Mozza sticks","8pcs + sauce","9,00 €"],["Frites","+ sauce","2,00 €"],["Potatoes","+ sauce","3,00 €"]]},
-{id:"desserts",t:"Desserts",items:[["Brownies","","3,00 €"],["Tarte citron ou pommes","","3,00 €"],["Tiramisu","Demandez nos parfums disponibles","3,00 €"],["Glace Häagen-Dazs","95ml","3,00 €"]]},
-{id:"boissons",t:"Boissons",notes:["Canette 33cl : 1 € avec un plat · 1,50 € seule"],items:[["Canettes 33cl","Coca, Fanta, Tropico, Schweppes, Ice Tea, Oasis, Perrier, 7Up Mojito","1,50 €"],["Maxi 1,5L","Coca-Cola, Coca Zéro, Fanta, Ice Tea, Orangina","3,90 €"],["Maxi Oasis 2L","","3,90 €"]]}
+  {id:"pizzas",t:"Pizzas Artisanales",pizza:1},
+  {id:"burgers",t:"Burgers Gourmets",notes:["Pain brioché artisanal · Frites fraîches incluses","+1 € avec boisson fraîche 33cl"],items:[
+    ["Cheese","Steak façon bouchère 150g, cheddar affiné, oignons caramélisés, sauce maison","9,50 €"],
+    ["DB Cheese","2 Steaks façon bouchère, double cheddar affiné, sauce fumée maison","11,50 €"],
+    ["Triple Cheese","3 Steaks façon bouchère, triple cheddar affiné, cornichons doux","13,50 €"],
+    ["Fish","Filet de cabillaud pané croustillant, sauce tartare maison, cheddar","9,50 €"],
+    ["Chicken","Filet de poulet croustillant mariné maison, cheddar fondu, sauce ciboulette","9,50 €"],
+    ["Royal Chèvre","Steak boucher 150g, chèvre chaud au miel de fleurs, roquette, oignons rouges","12,00 €"],
+    ["Royal Chicken","Poulet croustillant, galette de pomme de terre dorée, œuf au plat, cheddar","12,50 €"]
+  ]},
+  {id:"salades",t:"Salades & Bowls",h:"Nos salades fraîches maison",p:"8,50 €",items:[
+    ["Pacifique","Mesclun croquant, saumon fumé d'Écosse, avocat frais, graines de sésame dorées","9,50 €"],
+    ["Niçoise","Mesclun, thon germon, pommes grenailles, œufs mollets, olives taggiasche","8,50 €"],
+    ["Chèvre chaud","Mesclun, toasts dorés au chèvre chaud, miel de fleurs, cerneaux de noix","9,00 €"],
+    ["Exotique","Mesclun, crevettes marinées, avocat frais, mangue, sauce cocktail douce","9,50 €"],
+    ["Campagnarde","Mesclun, pommes grenailles, effiloché de poulet fermier rôti, concombre, œuf mollet","9,00 €"]
+  ]},
+  {id:"texmex",t:"Entrées & Tapas",items:[
+    ["Mozza sticks","8 pièces au cœur de mozzarella fondante + sauce dip au choix","7,50 €"],
+    ["Chicken wings","8 pièces croustillantes marinées aux épices douces + sauce barbecue","8,50 €"],
+    ["Tenders","6 aiguillettes de filet de poulet croustillant pané maison","8,50 €"],
+    ["Calamars","Calamars dorés croustillants + quartier de citron et sauce tartare","8,00 €"],
+    ["Onion rings","8 rondelles d'oignons dorées et croustillantes","6,00 €"],
+    ["Frites","Frites fraîches maison dorées à souhait","3,50 €"],
+    ["Potatoes","Pommes grenailles rôties aux herbes de Provence","4,00 €"]
+  ]},
+  {id:"desserts",t:"Desserts Maison",items:[
+    ["Brownies","Brownie fondant chocolat noir 70% et éclats de noix de pécan","3,00 €"],
+    ["Tiramisu","Tiramisu artisanal au café expresso et mascarpone onctueux","4,50 €"],
+    ["Tarte citron ou pommes","Tartelette artisanale pur beurre","4,00 €"],
+    ["Glace Häagen-Dazs","Pot individuel 95ml aux parfums gourmands","3,90 €"]
+  ]},
+  {id:"boissons",t:"Boissons Fraîches",notes:["Canette 33cl : 1 € avec un plat · 2,00 € seule"],items:[
+    ["Canettes 33cl","Coca-Cola, Coca Zéro, San Pellegrino, Fuze Tea, Orangina","2,00 €"],
+    ["Maxi 1,5L","Coca-Cola, Coca Zéro, Fanta, Ice Tea","3,90 €"],
+    ["Maxi Oasis 2L","Oasis Tropical format familial","4,50 €"]
+  ]}
 ];
 export {T,C,tom,cre,pz,SZ,CATS}

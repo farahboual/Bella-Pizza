@@ -13,6 +13,12 @@ if (typeof document !== 'undefined') {
   if (RESTAURANT_CONFIG?.theme?.primaryHover) {
     document.documentElement.style.setProperty('--red2', RESTAURANT_CONFIG.theme.primaryHover)
   }
+  if (RESTAURANT_CONFIG?.theme?.backgroundColor) {
+    document.documentElement.style.setProperty('--bg', RESTAURANT_CONFIG.theme.backgroundColor)
+  }
+  if (RESTAURANT_CONFIG?.theme?.textColor) {
+    document.documentElement.style.setProperty('--dark', RESTAURANT_CONFIG.theme.textColor)
+  }
   if (RESTAURANT_CONFIG?.theme?.fontFamily) {
     document.documentElement.style.setProperty('--d', RESTAURANT_CONFIG.theme.fontFamily)
   }
