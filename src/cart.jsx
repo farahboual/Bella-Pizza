@@ -34,15 +34,19 @@ export function CartProvider({children}){
  useEffect(()=>{try{localStorage.setItem(KEY,JSON.stringify(lines))}catch{}},[lines])
 
  useEffect(()=>{
-  fetch('/api/config')
+  const refresh=()=>fetch('/api/config')
    .then(r=>r.ok?r.json():null)
    .then(data=>{
+    if(!data)return
     setCfg(data)
     if(data?.customItems){
      setLines(l=>l.filter(a=>CATALOG[a.id]||(a.id.startsWith('custom:')&&!!data.customItems[a.id])))
     }
    })
-   .catch(()=>setCfg(null))
+   .catch(()=>{})
+  refresh()
+  const id=setInterval(refresh,60000)
+  return()=>clearInterval(id)
  },[])
 
  useEffect(()=>{
