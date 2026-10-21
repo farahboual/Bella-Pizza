@@ -12,6 +12,24 @@ const getPrice=(id,cfg)=>{
 
 const isOut=(id,cfg)=>!!cfg?.overrides?.[id]?.outOfStock
 
+
+function buildClosedMsg(cfg){
+ const reason=cfg?.closedReason
+ if(reason)return reason
+ try{
+  const p=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Paris',weekday:'short'}).formatToParts(new Date())
+  const rawWd=(p.find(x=>x.type==='weekday')||{}).value||''
+  const DAY={mon:'lun',tue:'mar',wed:'mer',thu:'jeu',fri:'ven',sat:'sam',sun:'dim'}
+  const day=DAY[rawWd.toLowerCase().slice(0,3)]||rawWd.toLowerCase().slice(0,3)
+  const d=cfg?.schedule?.weekly?.[day]
+  if(!d||d.open===false)return 'Fermé aujourd\'hui.'
+  const fmt=t=>t?.replace(':','h')||''
+  const parts=[]
+  if(d.lunchStart&&d.lunchEnd)parts.push(fmt(d.lunchStart)+'–'+fmt(d.lunchEnd))
+  if(d.eveStart&&d.eveEnd)parts.push(fmt(d.eveStart)+'–'+fmt(d.eveEnd))
+  return parts.length?'Fermé · Ouverture '+parts.join(' et '):'Fermé pour le moment.'
+ }catch{return 'Fermé pour le moment.'}
+}
 export function CartProvider({children}){
  const[lines,setLines]=useState(()=>{
   try{
@@ -46,7 +64,10 @@ export function CartProvider({children}){
    .catch(()=>{})
   refresh()
   const id=setInterval(refresh,60000)
-  return()=>clearInterval(id)
+  // Also refresh immediately when tab regains focus
+  const onVis=()=>{if(document.visibilityState==='visible')refresh()}
+  document.addEventListener('visibilitychange',onVis)
+  return()=>{clearInterval(id);document.removeEventListener('visibilitychange',onVis)}
  },[])
 
  useEffect(()=>{
@@ -370,7 +391,7 @@ export function CartDrawer(){
     {cfg.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>Carte en ligne</label>}
    </fieldset>
 
-   {closed&&<p className="warn">{cfg.closedReason||'Nous sommes fermés pour le moment. Commandes ouvertes 11h–14h30 et 18h–23h (fermé dimanche midi).'}</p>}
+   {closed&&<p className="warn">{buildClosedMsg(cfg)}</p>}
    {err&&<p className="warn" role="alert">{err}</p>}
 
    <div className="cart-f">
