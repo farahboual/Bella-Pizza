@@ -239,7 +239,7 @@ function Categories(){
 // Bestseller items (hardcoded popular picks from the catalog)
 const PICKS=[
   {id:'pizzas:amalfi:senior',label:'Pizza Amalfi'},
-  {id:'pizzas:classica:senior',label:'Taco Classique',catOverride:'tacos:kebab'},
+  {id:'pizzas:classica:senior',label:'Pizza Classica'},
   {id:'burgers:cheese',label:'Burger Bacon',catOverride:'burgers:db-cheese'},
   {id:'salades:nicoise',label:'Salade César',catOverride:'salades:campagnarde'},
 ]

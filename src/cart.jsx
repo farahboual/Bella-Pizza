@@ -164,7 +164,7 @@ export function CartDrawer(){
 
  if(!open||!cfg)return null
 
- const payment=pay||'online',upd=k=>e=>setF({...f,[k]:e.target.value})
+ const payment=pay||(cfg.online?'online':'sur_place'),upd=k=>e=>setF({...f,[k]:e.target.value})
  const offer=type==='emporter'?baseOffer:0
  const currentTotal=subtotal-offer-drinkDeal
  const short=type=='livraison'&&subtotal<RULES.deliveryMin,closed=!cfg.open
@@ -389,6 +389,7 @@ export function CartDrawer(){
 
    <fieldset className="seg"><legend>Paiement</legend>
     {cfg.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>Carte en ligne</label>}
+    <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?'À la livraison':'Sur place'}</label>
    </fieldset>
 
    {closed&&<p className="warn">{buildClosedMsg(cfg)}</p>}
@@ -405,7 +406,7 @@ export function CartDrawer(){
      {busy?'Envoi…':payment=='online'?`Payer ${eur(finalTotal)}`:'Envoyer la commande'}
     </button>
 
-    <p className="legal">Paiement par carte sécurisé par Stripe. Les prix sont en euros TTC. En commandant vous acceptez nos conditions de vente. Allergènes : demandez-nous la liste au 02 41 03 57 87.</p>
+    <p className="legal">Paiement par carte sécurisé par Stripe. Les prix sont en euros TTC. En commandant vous acceptez nos conditions de vente. Allergènes : demandez-nous la liste au {RESTAURANT_CONFIG?.contact?.phone}.</p>
    </div>
 
   </form>}
@@ -445,7 +446,7 @@ export function OrderBanner(){
    if(!stop&&++n<30)
     setTimeout(poll,1500)
    else
-    setM({k:'ok',t:'Paiement reçu. Confirmation en cours par le restaurant. En cas de question, contactez-nous au 02 41 03 57 87.'})
+    setM({k:'ok',t:`Paiement reçu. Confirmation en cours par le restaurant. En cas de question, contactez-nous au ${RESTAURANT_CONFIG?.contact?.phone}.`})
   }
 
   poll()
