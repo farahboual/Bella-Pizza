@@ -7,7 +7,7 @@ import tacosImg from './assets/tacos.webp'
 import sandwichsImg from './assets/sandwichs.webp'
 import saladesImg from './assets/salades.webp'
 import {CartProvider,CartButton,CartDrawer,AddBtn,OrderBtn,MobileBar,OrderBanner,useCart} from './cart.jsx'
-import {slug,CATALOG,eur} from '../shared/catalog.js'
+import {slug,CATALOG,eur,getParisTime,DEFAULT_SCHEDULE} from '../shared/catalog.js'
 import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
 
 const cfgB = RESTAURANT_CONFIG.brand
@@ -33,56 +33,71 @@ function useStatus(){
   const[s,set]=useState({o:null,t:'Horaires'})
   const { cfg } = useCart()
   useEffect(()=>{
-    if(cfg){
-      if(cfg.forcedOpen){
-        set({o:true,t:'Ouvert · Service continu'})
-        return
-      }
-      if(cfg.manualClosed){
-        set({o:false,t:cfg.closedReason||'Fermé temporairement'})
-        return
+    if(cfg?.forcedOpen){
+      set({o:true,t:'Ouvert · Service continu'})
+      return
+    }
+    if(cfg?.manualClosed){
+      set({o:false,t:cfg.closedReason||'Fermé temporairement'})
+      return
+    }
+
+    const { m, dateStr, dayPart } = getParisTime(new Date())
+    const activeSched = cfg?.schedule?.weekly ? cfg.schedule : DEFAULT_SCHEDULE
+
+    // Check exceptions
+    if(activeSched && Array.isArray(activeSched.exceptions)){
+      const exc = activeSched.exceptions.find(e=>e.date===dateStr)
+      if(exc){
+        if(exc.type==='closed'){
+          set({o:false,t:cfg?.closedReason||exc.note||'Fermé aujourd’hui'})
+          return
+        }
+        if(exc.type==='open'){
+          const [h1,m1]=(exc.start||'11:00').split(':').map(Number)
+          const [h2,m2]=(exc.end||'23:00').split(':').map(Number)
+          const isOpen = m >= (h1*60+m1) && m < (h2*60+m2)
+          set({
+            o: isOpen,
+            t: isOpen ? `Ouvert · jusqu’à ${(exc.end||'23:00').replace(':','h')}` : m < (h1*60+m1) ? `Fermé · ouvre à ${(exc.start||'11:00').replace(':','h')}` : 'Fermé'
+          })
+          return
+        }
       }
     }
-    const p=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Paris',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date())
-    const g=k=>(p.find(x=>x.type===k)||{}).value||''
-    const m=(+g('hour')%24)*60+ +g('minute')
-    const rawWd=g('weekday').toLowerCase().slice(0,3)
-    const DAY_MAP={mon:'lun',tue:'mar',wed:'mer',thu:'jeu',fri:'ven',sat:'sam',sun:'dim',lun:'lun',mar:'mar',mer:'mer',jeu:'jeu',ven:'ven',sam:'sam',dim:'dim'}
-    const dayPart=DAY_MAP[rawWd]||rawWd
 
-    const weekly=cfg?.schedule?.weekly
-    const dayConf=weekly?weekly[dayPart]:null
-    if(dayConf && dayConf.open===false){
+    const dayConf = activeSched?.weekly?.[dayPart]
+    if(!dayConf || dayConf.open === false){
       set({o:false,t:cfg?.closedReason||'Fermé aujourd’hui'})
       return
     }
 
-    let lStart='11:00', lEnd='14:30', eStart='18:00', eEnd='23:00'
-    if(dayConf){
-      lStart=dayConf.lunchStart||lStart
-      lEnd=dayConf.lunchEnd||lEnd
-      eStart=dayConf.eveStart||eStart
-      eEnd=dayConf.eveEnd||eEnd
-    } else if(dayPart==='mer'||dayPart==='dim'){
-      set({o:false,t:cfg?.closedReason||'Fermé aujourd’hui'})
-      return
-    } else if(dayPart==='ven'){
-      eEnd='23:30'
-    } else if(dayPart==='sam'){
-      lEnd='15:00'; eEnd='23:30'
-    }
+    const lStart = dayConf.lunchStart || '11:30'
+    const lEnd = dayConf.lunchEnd || '14:30'
+    const eStart = dayConf.eveStart || '18:30'
+    const eEnd = dayConf.eveEnd || '23:00'
 
-    const [lh1,lm1]=lStart.split(':').map(Number)
-    const [lh2,lm2]=lEnd.split(':').map(Number)
-    const [eh1,em1]=eStart.split(':').map(Number)
-    const [eh2,em2]=eEnd.split(':').map(Number)
+    const [lh1,lm1] = lStart.split(':').map(Number)
+    const [lh2,lm2] = lEnd.split(':').map(Number)
+    const [eh1,em1] = eStart.split(':').map(Number)
+    const [eh2,em2] = eEnd.split(':').map(Number)
 
-    const lunch=m>=(lh1*60+lm1)&&m<(lh2*60+lm2)
-    const eve=m>=(eh1*60+em1)&&m<(eh2*60+em2)
-    const o=lunch||eve
-    const lEndStr=lEnd.replace(':','h')
-    const eEndStr=eEnd.replace(':','h')
-    set({o,t:o?(lunch?`Ouvert · jusqu’à ${lEndStr}`:`Ouvert · jusqu’à ${eEndStr}`):(m<(lh1*60+lm1)?`Fermé · ouvre à ${lStart.replace(':','h')}`:m<(eh1*60+em1)?(m<(lh2*60+lm2)?'Fermé':`Fermé · ouvre à ${eStart.replace(':','h')}`):'Fermé · ouvre demain')})
+    const lunch = m >= (lh1*60+lm1) && m < (lh2*60+lm2)
+    const eve = m >= (eh1*60+em1) && m < (eh2*60+em2)
+    const o = lunch || eve
+    const lEndStr = lEnd.replace(':','h')
+    const eEndStr = eEnd.replace(':','h')
+
+    set({
+      o,
+      t: o
+        ? (lunch ? `Ouvert · jusqu’à ${lEndStr}` : `Ouvert · jusqu’à ${eEndStr}`)
+        : m < (lh1*60+lm1)
+          ? `Fermé · ouvre à ${lStart.replace(':','h')}`
+          : m < (eh1*60+em1)
+            ? (m < (lh2*60+lm2) ? 'Fermé' : `Fermé · ouvre à ${eStart.replace(':','h')}`)
+            : 'Fermé · ouvre demain'
+    })
   },[cfg])
   return s
 }

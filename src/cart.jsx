@@ -1,5 +1,5 @@
 import {createContext,useContext,useEffect,useState} from 'react'
-import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,SUPP_MAX,MEATS,cleanSupp,hasOpts,optExtra,pizzaOffer,canetteDeal,hasFood,CANETTE_ID} from '../shared/catalog.js'
+import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,SUPP_MAX,MEATS,cleanSupp,hasOpts,optExtra,pizzaOffer,canetteDeal,hasFood,CANETTE_ID,getParisTime,DEFAULT_SCHEDULE} from '../shared/catalog.js'
 import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
 const Ctx=createContext(null)
 export const useCart=()=>useContext(Ctx)
@@ -17,12 +17,19 @@ function buildClosedMsg(cfg){
  const reason=cfg?.closedReason
  if(reason)return reason
  try{
-  const p=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Paris',weekday:'short'}).formatToParts(new Date())
-  const rawWd=(p.find(x=>x.type==='weekday')||{}).value||''
-  const DAY={mon:'lun',tue:'mar',wed:'mer',thu:'jeu',fri:'ven',sat:'sam',sun:'dim'}
-  const day=DAY[rawWd.toLowerCase().slice(0,3)]||rawWd.toLowerCase().slice(0,3)
-  const d=cfg?.schedule?.weekly?.[day]
-  if(!d||d.open===false)return 'Fermé aujourd\'hui.'
+  const { dateStr, dayPart } = getParisTime(new Date())
+  const activeSched = cfg?.schedule?.weekly ? cfg.schedule : DEFAULT_SCHEDULE
+  if(activeSched && Array.isArray(activeSched.exceptions)){
+   const exc = activeSched.exceptions.find(e=>e.date===dateStr)
+   if(exc){
+    if(exc.type==='closed') return exc.note || 'Fermé exceptionnellement aujourd’hui.'
+    if(exc.type==='open' && exc.start && exc.end){
+     return `Fermé · Ouverture exceptionnelle ${exc.start.replace(':','h')}–${exc.end.replace(':','h')}`
+    }
+   }
+  }
+  const d=activeSched?.weekly?.[dayPart]
+  if(!d||d.open===false)return 'Fermé aujourd’hui.'
   const fmt=t=>t?.replace(':','h')||''
   const parts=[]
   if(d.lunchStart&&d.lunchEnd)parts.push(fmt(d.lunchStart)+'–'+fmt(d.lunchEnd))
