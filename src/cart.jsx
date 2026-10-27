@@ -11,6 +11,7 @@ const getPrice=(id,cfg)=>{
 }
 
 const isOut=(id,cfg)=>!!cfg?.overrides?.[id]?.outOfStock
+const isHidden=(id,cfg)=>!!cfg?.overrides?.[id]?.hidden
 
 
 function buildClosedMsg(cfg){
@@ -85,7 +86,7 @@ export function CartProvider({children}){
  },[open])
 
  const add=id=>{
-  if(isOut(id,cfg))return
+  if(isOut(id,cfg)||isHidden(id,cfg))return
 
   if(hasOpts(id)){
    const u=id+'#'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)
@@ -133,7 +134,7 @@ export function CartProvider({children}){
  const canetteAlone=lines.some(l=>l.id===CANETTE_ID)&&!hasFood(dl) // canette seule : 1,50 €
  const total=subtotal-offer-drinkDeal
 
- return <Ctx.Provider value={{lines,add,setQty,setNote,setOpt,unit,subtotal,offer,drinkDeal,canetteAlone,clear:()=>setLines([]),total,count,open,setOpen,cfg,enabled:!!cfg,getPrice,isOut}}>{children}</Ctx.Provider>
+ return <Ctx.Provider value={{lines,add,setQty,setNote,setOpt,unit,subtotal,offer,drinkDeal,canetteAlone,clear:()=>setLines([]),total,count,open,setOpen,cfg,enabled:!!cfg,getPrice,isOut,isHidden}}>{children}</Ctx.Provider>
 }
 
 export const AddBtn=({id})=>{

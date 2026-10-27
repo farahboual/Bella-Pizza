@@ -11,6 +11,7 @@ export const RESTAURANT_CONFIG = {
   // --- 1. BRAND & IDENTITY ---
   brand: {
     name: "L'Atelier Gourmand",
+    // logoUrl: "/logo.png",   // ← Uncomment & point to your image to override the SVG logo
     shortName: "Atelier",
     tagline: "Cuisine authentique & produits frais",
     subTagline: "Des recettes généreuses préparées chaque jour avec des ingrédients frais, locaux et de saison.",

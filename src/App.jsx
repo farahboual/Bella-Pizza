@@ -111,13 +111,16 @@ const Status=({id,style,light})=>{const s=useStatus();return(
 // Logo
 const Logo=()=>(
   <>
-    <svg viewBox="0 0 48 48" aria-hidden="true" style={{width:38,height:38,flex:'none'}}>
-      <rect width="48" height="48" rx="14" fill="var(--red)"/>
-      <circle cx="24" cy="14" r="2.5" fill="#fff"/>
-      <path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/>
-      <rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/>
-      <path d="M21 35H27" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    </svg>
+    {cfgB.logoUrl
+      ? <img src={cfgB.logoUrl} alt={cfgB.name} style={{height:38,width:'auto',borderRadius:8,objectFit:'contain',flex:'none'}}/>
+      : <svg viewBox="0 0 48 48" aria-hidden="true" style={{width:38,height:38,flex:'none'}}>
+          <rect width="48" height="48" rx="14" fill="var(--red)"/>
+          <circle cx="24" cy="14" r="2.5" fill="#fff"/>
+          <path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/>
+          <rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/>
+          <path d="M21 35H27" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+    }
     <div style={{display:'flex',flexDirection:'column',lineHeight:1.1}}>
       <b style={{fontSize:18,letterSpacing:'-0.02em'}}>{cfgB.name}</b>
       <span style={{fontSize:10,fontWeight:700,letterSpacing:'0.08em',color:'var(--red)',textTransform:'uppercase'}}>{cfgB.shortName||'RESTAURANT'}</span>
@@ -260,7 +263,7 @@ const PICKS=[
 ]
 
 function Bestsellers(){
-  const {cfg,getPrice,isOut}=useCart()
+  const {cfg,getPrice,isOut,isHidden}=useCart()
   const items=CATS.flatMap(c=>
     (c.items||[]).slice(0,2).map(([n,d,p])=>{
       const id=`${c.id}:${slug(n)}`
@@ -323,7 +326,8 @@ function PromoBanner(){
 
 // Menu section (carte)
 const Row=({n,d,p,id})=>{
-  const {cfg,getPrice,isOut}=useCart()
+  const {cfg,getPrice,isOut,isHidden}=useCart()
+  if(id&&isHidden&&isHidden(id,cfg))return null
   const livePrice=id&&getPrice?getPrice(id,cfg):null
   const displayPrice=livePrice?eur(livePrice):p
   const out=id&&isOut?isOut(id,cfg):false
@@ -382,7 +386,7 @@ const Generic=({c})=><>
 </>
 
 function Menu(){
-  const {cfg,getPrice,isOut}=useCart()
+  const {cfg,getPrice,isOut,isHidden}=useCart()
   const customList=Object.values(cfg?.customItems||{})
   const allCats=customList.length ? [{id:'special',t:'Spécialités'}, ...CATS] : CATS
   const[cat,setCat]=useState('pizzas'),[size,setSize]=useState(1),tabs=useRef()

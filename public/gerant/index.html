@@ -690,6 +690,10 @@ fetch('/api/config').then(r=>r.ok?r.json():null).then(d=>{
   document.title='Espace Gérant — '+restaurantName
   const hGate=$('#f h1');if(hGate)hGate.textContent=restaurantName
   const hLogo=$('header .logo b');if(hLogo)hLogo.innerHTML=`${esc(restaurantName)} <span>ESPACE GÉRANT</span>`
+  if(d?.restaurant?.brand?.logoUrl){
+   const logoEl=$('header .logo svg');if(logoEl){const img=document.createElement('img');img.src=d.restaurant.brand.logoUrl;img.alt=restaurantName;img.style.cssText='height:34px;width:auto;border-radius:8px;object-fit:contain;flex:none';logoEl.replaceWith(img)}
+   const gLogo=$('#f .logo svg');if(gLogo){const img2=document.createElement('img');img2.src=d.restaurant.brand.logoUrl;img2.alt=restaurantName;img2.style.cssText='height:34px;width:auto;border-radius:8px;object-fit:contain;flex:none';gLogo.replaceWith(img2)}
+  }
   const pName=$('#print-brand-name');if(pName)pName.textContent=restaurantName
  }
  if(d?.restaurant?.contact?.address?.full){
@@ -811,14 +815,16 @@ function renderMenu(query=''){
   const ov=overrides[id]||{}
   const currentPrice=typeof ov.price==='number'&&ov.price>0?ov.price:item.price
   const isOut=!!ov.outOfStock
-  return `<div class="item-row" data-id="${id}">
+  const isHid=!!ov.hidden
+  return `<div class="item-row" data-id="${id}" style="${isHid?'opacity:.5':''}">
    <div>
-    <div class="item-name">${item.name} ${isCustom?'<span class="badge-custom">Créé par vous</span>':''}</div>
+    <div class="item-name">${item.name} ${isCustom?'<span class="badge-custom">Créé par vous</span>':''}${isHid?'<span class="badge-custom" style="background:#e5e7eb;color:#6b7280">Masqué</span>':''}</div>
     <div class="item-cat">${item.cat||'Divers'}${item.desc?` · <i>${item.desc}</i>`:''}</div>
    </div>
    <div class="price-input-wrap"><input type="number" step="0.50" min="0" class="price-input" value="${(currentPrice/100).toFixed(2)}"> €</div>
    <div><button class="btn ${isOut?'warn':'ghost'}" data-act="stock">${isOut?'Rupture':'En stock'}</button></div>
    <div style="display:flex;gap:6px">
+    <button class="btn ${isHid?'warn':'ghost'}" data-act="toggle-hide" title="${isHid?'Remettre visible':'Masquer de la carte'}">${isHid?'👁️ Visible':'🚫 Masquer'}</button>
     <button class="btn ink" data-act="save">Enregistrer</button>
     ${isCustom?'<button class="btn warn" data-act="del-custom" title="Supprimer ce produit" style="padding:10px 14px">🗑️</button>':''}
    </div>
@@ -1209,7 +1215,16 @@ if($('#items-list')) $('#items-list').onclick=async e=>{
    showToast('Nouveau prix enregistré')
   }
  }
- if(btn.dataset.act==='del-custom'){
+ if(btn.dataset.act==='toggle-hide'){
+  const newHid=!ov.hidden
+  const res=await api({action:'saveOverride',data:{id,hidden:newHid}})
+  if(res.ok){
+   overrides=await res.json()
+   renderMenu($('#search-item') ? $('#search-item').value : '')
+   showToast(newHid?'Produit masqué de la carte':'Produit remis visible')
+  }
+ }
+ if(btn.dataset.act==='del-custom'){`
   if(!confirm('Voulez-vous vraiment supprimer définitivement ce produit de la carte ?'))return
   const res=await api({action:'deleteCustomItem',data:{id}})
   if(res.ok){
