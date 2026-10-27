@@ -1224,7 +1224,7 @@ if($('#items-list')) $('#items-list').onclick=async e=>{
    showToast(newHid?'Produit masqué de la carte':'Produit remis visible')
   }
  }
- if(btn.dataset.act==='del-custom'){`
+ if(btn.dataset.act==='del-custom'){
   if(!confirm('Voulez-vous vraiment supprimer définitivement ce produit de la carte ?'))return
   const res=await api({action:'deleteCustomItem',data:{id}})
   if(res.ok){
@@ -1345,7 +1345,7 @@ function renderSales(){
     ${(o.status!=='cancelled'&&o.status!=='done')?"<button class='btn warn' style='font-size:11px;padding:5px 10px' data-act='cancel-order' data-id='"+o.id+"'>✕ Annuler</button>":''}
    </div>
   </div>
- `).join('')
+ `}).join('')
 }
 
 // Cancel order from gérant
