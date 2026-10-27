@@ -1,3 +1,4 @@
+import { OrderTracker } from './OrderTracker.jsx'
 import {useEffect,useRef,useState} from 'react'
 import {motion,AnimatePresence,MotionConfig,useReducedMotion} from 'framer-motion'
 import {pz,tom,cre,T,C,SZ,CATS} from './data.js'
@@ -525,7 +526,7 @@ export default function App(){
           </div>
         </footer>
         <MobileBar tel={TEL}/>
-        <CartDrawer/><OrderBanner/>
+        <CartDrawer/><OrderTracker/>
       </MotionConfig>
     </CartProvider>
   )

@@ -235,6 +235,19 @@ export function CartDrawer(){
    if(j.url){location.href=j.url;return}
    clear()
    setDone(j.number)
+   if (j.id) {
+    try {
+     localStorage.setItem('tp_active_order', JSON.stringify({
+      id: j.id,
+      number: j.number,
+      status: 'new',
+      type,
+      total: finalTotal,
+      tableNumber
+     }))
+     window.dispatchEvent(new CustomEvent('order_placed'))
+    } catch {}
+   }
   }catch(x){
    setErr(x.message)
   }finally{
@@ -256,7 +269,8 @@ export function CartDrawer(){
     <a href={RESTAURANT_CONFIG?.contact?.mapsUrl || '#'} target="_blank" rel="noopener noreferrer" className="btn red" style={{fontSize:13,padding:'10px 16px',width:'100%'}}>Laissez-nous 5 étoiles sur Google Maps →</a>
    </div>
 
-   <button className="btn ink" onClick={close}>Fermer</button>
+   <button className="btn red" onClick={()=>{close();window.dispatchEvent(new CustomEvent('order_placed'))}} style={{width:'100%',marginBottom:8}}>Suivre la préparation en direct ➔</button>
+   <button className="btn ghost" onClick={close} style={{width:'100%'}}>Fermer</button>
   </div>
 
   :!count?<div className="cart-b"><p>Votre panier est vide. Ajoutez des plats avec le bouton <b>+</b> sur la carte.</p></div>

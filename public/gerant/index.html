@@ -1328,7 +1328,12 @@ function renderSales(){
 
  const list=$('#sales-list')
  if(!sales.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucune commande enregistrée aujourd\'hui</p>';return}
- list.innerHTML=sales.map(o=>`
+ list.innerHTML=sales.map(o=>{
+   const cleanP=(o.customer?.phone||'').replace(/\D/g,'')
+   const waP=cleanP.startsWith('0')?'33'+cleanP.slice(1):cleanP
+   const waMsg=encodeURIComponent(`Bonjour ${o.customer?.name||''}, concernant votre commande #${o.number} chez ${restaurantName} : `)
+   const waBtn=waP.length>=9?`<a href="https://wa.me/${waP}?text=${waMsg}" target="_blank" class="btn ghost" style="padding:4px 8px;font-size:11px;color:#16a34a;border-color:#22c55e" title="Envoyer un WhatsApp au client">💬 WhatsApp</a>`:''
+   return`
   <div class="item-row" data-sale-id="${o.id}">
    <div>
     <div class="item-name">#${o.number} · ${o.customer?.name||'Client'} (${o.type.toUpperCase()})</div>
@@ -1336,7 +1341,7 @@ function renderSales(){
    </div>
    <div><b>${eur(o.total)}</b></div>
    <div style="display:flex;gap:6px;align-items:center">
-    <span class="status-pill ${o.paid?'open':'closed'}">${o.paid?'Payé en ligne':'À encaisser'}</span>
+    <span class="status-pill ${o.paid?'open':'closed'}">${o.paid?'Payé en ligne':'À encaisser'}</span>${waBtn}
     ${(o.status!=='cancelled'&&o.status!=='done')?"<button class='btn warn' style='font-size:11px;padding:5px 10px' data-act='cancel-order' data-id='"+o.id+"'>✕ Annuler</button>":''}
    </div>
   </div>
