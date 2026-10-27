@@ -109,10 +109,6 @@ function printTicket(o){
  try{
   if(!o)return
   const {items,cust}=getOrderData(o)
-  const cleanP=(cust.phone||'').replace(/\D/g,'')
-  const waP=cleanP.startsWith('0')?'33'+cleanP.slice(1):cleanP
-  const waMsg=encodeURIComponent(`Bonjour ${cust.name||''}, votre commande #${o.number} de ${restaurantName} est en cours de préparation / prête !`)
-  const waBtn=waP.length>=9?`<a href="https://wa.me/${waP}?text=${waMsg}" target="_blank" class="btn-wa" style="display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;padding:3px 9px;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;margin-left:8px" title="Envoyer un WhatsApp">💬 WhatsApp</a>`:''
   const lines=items.map(l=>`<div class="l big"><span>${l.qty||1} × ${esc(l.name)}</span><span>${eur((l.price||0)*(l.qty||1))}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
   $('#ticket').innerHTML=`<h2>${esc(restaurantName.toUpperCase())}</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${typeLabel(o)}${o.tableNumber?`<br>TABLE N° ${esc(o.tableNumber)}`:''}</div><hr>${lines}<hr>${o.discount>0?`<div class="l"><span>Réduction</span><span>-${eur(o.discount)}</span></div>`:''}<div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+typeLabel(o)+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}<hr><div class="c">⭐ Merci de votre commande !<br>Laissez-nous 5★ sur Google Maps !</div>`
   window.print()
@@ -135,6 +131,10 @@ function render(){
  const L=[...orders.values()].filter(o=>o.status!=='done').sort((a,b)=>a.createdAt-b.createdAt)
  $('#list').innerHTML=L.length?L.map(o=>{
   const {items,cust}=getOrderData(o)
+  const cleanP=(cust.phone||'').replace(/\D/g,'')
+  const waP=cleanP.startsWith('0')?'33'+cleanP.slice(1):cleanP
+  const waMsg=encodeURIComponent(`Bonjour ${cust.name||''}, votre commande #${o.number} de ${restaurantName} est en cours de préparation / prête !`)
+  const waBtn=waP.length>=9?`<a href="https://wa.me/${waP}?text=${waMsg}" target="_blank" class="btn-wa" style="display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;padding:3px 9px;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;margin-left:8px" title="Envoyer un WhatsApp">💬 WhatsApp</a>`:''
   return `<article class="o ${o.status}" data-id="${o.id}">
   <div class="top"><b>#${o.number}</b><span>${time(o.createdAt)}</span></div>
   <div class="tags"><span class="tag ${typeClass(o.type)}">${typeLabel(o)}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
@@ -167,7 +167,7 @@ async function load(){try{const r=await api('');if(r.status===401){localStorage.
  const j=await r.json();orders=new Map(j.orders.map(o=>[o.id,o]));render();
  if(autoPrint){for(const o of orders.values()){if(o.status==='new'&&!printedSet.has(o.id)){printedSet.add(o.id);printQueue.push(o)}}; drainPrintQueue()}
  if(j.dbError){console.error('[Database Error]',j.dbError);$('#st').innerHTML=`<span style="color:var(--red);font-weight:700" title="${esc(j.dbError)}">⚠️ BD : ${esc(j.dbError)}</span>`}
- else{$('#st').textContent='Connecté · '+time(Date.now())}}catch{$('#st').textContent='connexion perdue, nouvel essai…'}}
+ else{$('#st').textContent='Connecté · '+time(Date.now())}}catch(err){console.error('Kitchen error:',err);$('#st').textContent='Erreur : '+(err.message||'connexion perdue')}}
 $('#f').onsubmit=async e=>{e.preventDefault();key=$('#pw').value
  ctx=new(window.AudioContext||window.webkitAudioContext)();ring()
  const r=await api('');if(r.status===401){$('#er').textContent='Mot de passe incorrect';return}
