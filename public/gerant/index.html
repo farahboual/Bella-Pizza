@@ -1329,13 +1329,45 @@ function renderSales(){
  const list=$('#sales-list')
  if(!sales.length){list.innerHTML='<p style="padding:20px;color:var(--mute)">Aucune commande enregistrée aujourd\'hui</p>';return}
  list.innerHTML=sales.map(o=>`
-  <div class="item-row">
-   <div><div class="item-name">#${o.number} · ${o.customer?.name||'Client'} (${o.type.toUpperCase()})</div><div class="item-cat">${new Date(o.createdAt).toLocaleTimeString('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'})}</div></div>
+  <div class="item-row" data-sale-id="${o.id}">
+   <div>
+    <div class="item-name">#${o.number} · ${o.customer?.name||'Client'} (${o.type.toUpperCase()})</div>
+    <div class="item-cat">${new Date(o.createdAt).toLocaleDateString('fr-FR',{timeZone:'Europe/Paris',weekday:'short',day:'2-digit',month:'short'})} · ${new Date(o.createdAt).toLocaleTimeString('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'})}</div>
+   </div>
    <div><b>${eur(o.total)}</b></div>
-   <div><span class="status-pill ${o.paid?'open':'closed'}">${o.paid?'Payé en ligne':'À encaisser'}</span></div>
+   <div style="display:flex;gap:6px;align-items:center">
+    <span class="status-pill ${o.paid?'open':'closed'}">${o.paid?'Payé en ligne':'À encaisser'}</span>
+    ${(o.status!=='cancelled'&&o.status!=='done')?"<button class='btn warn' style='font-size:11px;padding:5px 10px' data-act='cancel-order' data-id='"+o.id+"'>✕ Annuler</button>":''}
+   </div>
   </div>
  `).join('')
 }
+
+// Cancel order from gérant
+document.addEventListener('click', async e => {
+ const btn = e.target.closest('[data-act="cancel-order"]')
+ if (!btn) return
+ const id = btn.dataset.id
+ const order = sales.find(o => o.id === id)
+ if (!order) return
+ const paid = order.paid
+ const msg = paid
+  ? 'Annuler cette commande et rembourser le client via Stripe ?'
+  : 'Annuler cette commande ? (paiement sur place — aucun remboursement automatique)'
+ if (!confirm(msg)) return
+ btn.disabled = true; btn.textContent = '...'
+ const res = await api({ action: 'cancelOrder', data: { id } })
+ if (res.ok) {
+  const j = await res.json()
+  showToast(j.refunded ? '✅ Annulée — remboursement Stripe initié' : '✅ Commande annulée')
+  sales = sales.map(o => o.id === id ? { ...o, status: 'cancelled' } : o)
+  renderSales()
+ } else {
+  const err = await res.json().catch(() => ({}))
+  showToast('❌ ' + (err.error || "Erreur lors de l'annulation"))
+  btn.disabled = false; btn.textContent = '✕ Annuler'
+ }
+})
 
 let currentPeriodDays=1
 
