@@ -20,7 +20,6 @@ const cfgS = RESTAURANT_CONFIG.schedule
 const TEL = 'tel:' + cfgC.phoneRaw
 const MAPS = cfgC.mapsUrl
 const NAV = [
-  ['offres','Offres'],
   ['carte','La carte'],
   ...(cfgF.delivery ? [['livraison','Livraison']] : []),
   ['restaurant','Restaurant']
@@ -109,18 +108,14 @@ const Status=({id,style,light})=>{const s=useStatus();return(
   </div>
 )}
 
-// Logo
+// Logo (Authentic artisan lettermark monogram, zero AI clip-art feel)
 const Logo=()=>(
   <>
     {cfgB.logoUrl
       ? <img src={cfgB.logoUrl} alt={cfgB.name} style={{height:38,width:'auto',borderRadius:8,objectFit:'contain',flex:'none'}}/>
-      : <svg viewBox="0 0 48 48" aria-hidden="true" style={{width:38,height:38,flex:'none'}}>
-          <rect width="48" height="48" rx="14" fill="var(--red)"/>
-          <circle cx="24" cy="14" r="2.5" fill="#fff"/>
-          <path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/>
-          <rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/>
-          <path d="M21 35H27" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
+      : <div style={{width:38,height:38,borderRadius:10,background:'var(--red)',display:'grid',placeItems:'center',color:'#fff',fontFamily:'Georgia, serif',fontWeight:900,fontSize:20,flex:'none',boxShadow:'0 2px 6px rgba(0,0,0,0.12)'}} aria-hidden="true">
+          {(cfgB.name||'A').charAt(0)}
+        </div>
     }
     <div style={{display:'flex',flexDirection:'column',lineHeight:1.1}}>
       <b style={{fontSize:18,letterSpacing:'-0.02em'}}>{cfgB.name}</b>
@@ -193,7 +188,7 @@ function Hero(){
           )}
         </div>
         <div className="hero-ctas">
-          <OrderBtn className="btn red">Commander maintenant →</OrderBtn>
+          <a className="btn red" href="#carte">Voir la carte & commander →</a>
           <a className="btn outline" href={TEL}>Appeler</a>
         </div>
       </motion.div>
@@ -325,113 +320,190 @@ function PromoBanner(){
   )
 }
 
-// Menu section (carte)
-const Row=({n,d,p,id})=>{
-  const {cfg,getPrice,isOut,isHidden}=useCart()
-  if(id&&isHidden&&isHidden(id,cfg))return null
-  const livePrice=id&&getPrice?getPrice(id,cfg):null
-  const displayPrice=livePrice?eur(livePrice):p
-  const out=id&&isOut?isOut(id,cfg):false
-  return(
-    <div className={'row'+(p?'':' np')+(out?' row-out':'')}>
-      <h4>{n}</h4>{d&&<p>{d}</p>}
-      <div className="pcol">
-        <motion.span key={displayPrice} className="pr" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{duration:.3}}>{displayPrice}</motion.span>
-        {id&&<AddBtn id={id}/>}
+// FoodCard (Uber Eats style clean card)
+const FoodCard = ({ n, d, p, id, img }) => {
+  const { cfg, getPrice, isOut, isHidden } = useCart()
+  if (id && isHidden && isHidden(id, cfg)) return null
+  const livePrice = id && getPrice ? getPrice(id, cfg) : null
+  const displayPrice = livePrice ? eur(livePrice) : p
+  const out = id && isOut ? isOut(id, cfg) : false
+
+  const cleanName = (n.includes(' ') && n === n.toUpperCase())
+    ? n.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    : n
+
+  return (
+    <div className={'food-card' + (out ? ' food-card-out' : '')}>
+      <div className="food-card-body">
+        <div>
+          <h4 className="food-card-title">{cleanName}</h4>
+          {d && <p className="food-card-desc">{d}</p>}
+        </div>
+        <div className="food-card-bottom">
+          <span className="food-card-price">{displayPrice}</span>
+          {out ? (
+            <span className="tag-out">Rupture</span>
+          ) : (
+            id && <AddBtn id={id} />
+          )}
+        </div>
       </div>
+      {img && (
+        <div className="food-card-thumb">
+          <img src={img} alt={cleanName} loading="lazy" />
+        </div>
+      )}
     </div>
   )
 }
 
-function Pizzas({size,setSize}){
-  const price=SZ[size][1]
-  const Grp=({t,l,s})=><>
-    <div className="grp" dangerouslySetInnerHTML={{__html:t}}/>
-    {s&&<p className="note">{s}</p>}
-    <div className="list">{l.map(([n,d])=><Row key={n} n={n} d={d} p={price} id={'pizzas:'+slug(n)+':'+slug(SZ[size][0])}/>)}</div>
-  </>
-  return(<>
-    <div className="ph"><h3>Nos pizzas</h3></div>
-    {cfgF.pizzaDeals && <p className="note">🍕 Offre à emporter : 2 pizzas Sénior ou Méga achetées = la 3ème offerte (la moins chère), valable uniquement à emporter.</p>}
-    <div className="sizes" role="radiogroup" aria-label="Taille de la pizza">
-      {SZ.map((s,i)=>(
-        <button key={s[0]} className="sz" role="radio" aria-checked={i==size} onClick={()=>setSize(i)}>
-          {i==size&&<motion.span layoutId="szbg" className="szbg" transition={{type:'spring',stiffness:420,damping:36}}/>}
-          <span>{s[0]}</span><strong>{s[1]}</strong>
-        </button>
-      ))}
-    </div>
-    <Grp t="Base sauce tomate &amp; fromage" l={pz(tom,T)} s="Sur toutes les pizzas : sauce tomate, fromage + ingrédients"/>
-    <Grp t="Base sauce crème fraîche &amp; fromage" l={pz(cre,C)} s="Sur toutes les pizzas : crème fraîche, fromage + ingrédients"/>
-    <Grp t="Base sauce barbecue" l={[['LATINA','Sauce BBQ, fromage, viande hachée, merguez']]}/>
-    <motion.div className="compose" initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
-      <div><h4>Composez votre pizza</h4><p>À partir de la Classica : tomate, fromage + ingrédients de votre choix</p></div>
-      <div className="cp">{SZ.map((s,i)=>(
-        <div key={s[0]} className={i==size?'on':''}>
-          <span>{s[0]}</span><b>{s[2]}</b>
-        </div>
-      ))}</div>
-    </motion.div>
-  </>)
-}
-
-const Generic=({c})=><>
-  <div className="ph">
-    <h3>{c.t}</h3>
-    {c.h&&<p>{c.h} · <b style={{fontFamily:'var(--d)',color:'var(--red)'}}>{c.p}</b></p>}
-  </div>
-  {CAT_IMG[c.id]&&<div className="ban"><img src={CAT_IMG[c.id]} alt="" loading="lazy"/></div>}
-  {(c.notes||[]).map(n=><p className="note" key={n}>{n}</p>)}
-  <div className="list">{c.items.map(i=><Row key={i[0]} n={i[0]} d={i[1]||''} p={i[2]||c.p} id={c.id+':'+slug(i[0])}/>)}</div>
-  {c.sauces&&<><div className="grp">Sauces</div><div className="sauces">{c.sauces.map(s=><span key={s}>{s}</span>)}</div></>}
-</>
-
 function Menu(){
-  const {cfg,getPrice,isOut,isHidden}=useCart()
-  const customList=Object.values(cfg?.customItems||{})
-  const allCats=customList.length ? [{id:'special',t:'Spécialités'}, ...CATS] : CATS
-  const[cat,setCat]=useState('pizzas'),[size,setSize]=useState(1),tabs=useRef()
-  const pick=id=>{
-    setCat(id)
-    document.getElementById('t-'+id)?.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'})
-    const y=tabs.current.getBoundingClientRect().top+scrollY-120
-    if(scrollY<y-2)scrollTo({top:y,behavior:'smooth'})
-  }
-  const key=e=>{
-    const k=allCats.findIndex(c=>c.id==cat),n=e.key=='ArrowRight'?Math.min(k+1,allCats.length-1):e.key=='ArrowLeft'?Math.max(k-1,0):k
-    if(n!=k){pick(allCats[n].id);document.getElementById('t-'+allCats[n].id).focus()}
-  }
-  const c=allCats.find(x=>x.id==cat)
-  return(
-    <section className="menu" id="carte">
+  const { cfg, getPrice, isOut, isHidden } = useCart()
+  const customList = Object.values(cfg?.customItems || {})
+  const allCats = customList.length ? [{ id: 'special', t: 'Spécialités' }, ...CATS] : CATS
+  const [cat, setCat] = useState('pizzas')
+  const [size, setSize] = useState(1)
+  const [search, setSearch] = useState('')
+
+  const pizzaPrice = SZ[size][1]
+  const pizzaList = [
+    ...pz(tom, T).map(([n, d]) => ({ n, d, p: pizzaPrice, id: 'pizzas:' + slug(n) + ':' + slug(SZ[size][0]), cat: 'pizzas' })),
+    ...pz(cre, C).map(([n, d]) => ({ n, d, p: pizzaPrice, id: 'pizzas:' + slug(n) + ':' + slug(SZ[size][0]), cat: 'pizzas' })),
+    { n: 'Latina', d: 'Sauce BBQ, fromage, viande hachée, merguez', p: pizzaPrice, id: 'pizzas:latina:' + slug(SZ[size][0]), cat: 'pizzas' }
+  ]
+
+  const allItems = [
+    ...pizzaList,
+    ...CATS.filter(c => c.id !== 'pizzas').flatMap(c =>
+      (c.items || []).map(i => ({
+        n: i[0],
+        d: i[1] || '',
+        p: i[2] || c.p,
+        id: c.id + ':' + slug(i[0]),
+        cat: c.id,
+        img: CAT_IMG[c.id]
+      }))
+    ),
+    ...customList.map(it => ({
+      n: it.name,
+      d: it.desc || it.cat,
+      p: eur(it.price),
+      id: it.id,
+      cat: 'special'
+    }))
+  ]
+
+  const q = search.trim().toLowerCase()
+  const filteredItems = q
+    ? allItems.filter(it => it.n.toLowerCase().includes(q) || it.d.toLowerCase().includes(q))
+    : null
+
+  const activeCat = allCats.find(x => x.id === cat)
+
+  return (
+    <section className="menu" id="carte" style={{ paddingTop: 36 }}>
       <div className="wrap">
-        <div className="sec-header"><h2 className="sec-title">La carte.</h2></div>
-        <div className="tabs" role="tablist" aria-label="Catégories" ref={tabs} onKeyDown={key}>
-          {allCats.map(x=>(
-            <button key={x.id} id={'t-'+x.id} className="tab" role="tab" aria-selected={x.id==cat} onClick={()=>pick(x.id)}>
-              {x.t}{x.id==cat&&<motion.span layoutId="ind" className="ind" transition={{type:'spring',stiffness:500,damping:38}}/>}
-            </button>
-          ))}
+        {/* Search bar */}
+        <div className="menu-search-wrap">
+          <span className="menu-search-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <input
+            type="search"
+            className="menu-search-input"
+            placeholder="Rechercher une pizza, un burger, un ingrédient..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
         </div>
-        <AnimatePresence mode="wait">
-          <motion.div key={cat} className="panel" role="tabpanel" aria-labelledby={'t-'+cat}
-            initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
-            transition={{duration:.25,ease}}>
-            {cat==='special'?(
-              <>
-                <div className="ph">
-                  <h3>Spécialités &amp; Nouveautés</h3>
-                  <p>Créations spéciales du chef</p>
-                </div>
-                <div className="list">
-                  {customList.map(it=>(
-                    <Row key={it.id} n={it.name} d={it.desc||it.cat} p={eur(it.price)} id={it.id}/>
-                  ))}
-                </div>
-              </>
-            ):c?.pizza?<Pizzas size={size} setSize={setSize}/>:<Generic c={c}/>}
-          </motion.div>
-        </AnimatePresence>
+
+        {/* Promo banner strip */}
+        {cfgF.pizzaDeals && !q && (
+          <div className="offer-strip-clean">
+            <span className="badge">Offre</span>
+            <span>🍕 2 pizzas achetées = la 3ème offerte à emporter</span>
+          </div>
+        )}
+
+        {/* Category Pills (horizontal scroll) */}
+        {!q && (
+          <div className="cat-pills-bar" role="tablist">
+            {allCats.map(x => (
+              <button
+                key={x.id}
+                className={`cat-pill ${x.id === cat ? 'active' : ''}`}
+                onClick={() => setCat(x.id)}
+                role="tab"
+                aria-selected={x.id === cat}
+              >
+                {x.t}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Search results view */}
+        {q ? (
+          <div>
+            <div style={{ marginBottom: 16, fontWeight: 700, fontSize: 15 }}>
+              Résultats pour « {search} » ({filteredItems.length})
+            </div>
+            {filteredItems.length === 0 ? (
+              <p style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>Aucun plat ne correspond à votre recherche.</p>
+            ) : (
+              <div className="food-grid">
+                {filteredItems.map(it => (
+                  <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={it.img || CAT_IMG[it.cat] || pizzaImg} />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : cat === 'pizzas' ? (
+          /* Pizzas category view */
+          <div>
+            {/* Pizza size switcher */}
+            <div className="sizes" style={{ marginBottom: 20 }}>
+              {SZ.map((s, i) => (
+                <button key={s[0]} className="sz" role="radio" aria-checked={i === size} onClick={() => setSize(i)}>
+                  {i === size && <motion.span layoutId="szbg" className="szbg" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
+                  <span>{s[0]}</span><strong>{s[1]}</strong>
+                </button>
+              ))}
+            </div>
+
+            <div className="food-grid">
+              {pizzaList.map(it => (
+                <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={pizzaImg} />
+              ))}
+            </div>
+          </div>
+        ) : cat === 'special' ? (
+          /* Custom chef items */
+          <div className="food-grid">
+            {customList.map(it => (
+              <FoodCard key={it.id} n={it.name} d={it.desc || it.cat} p={eur(it.price)} id={it.id} />
+            ))}
+          </div>
+        ) : (
+          /* Generic category (burgers, salades, texmex, desserts, boissons) */
+          <div>
+            {(activeCat?.notes || []).map(n => <p className="note" key={n} style={{ marginBottom: 12 }}>{n}</p>)}
+            <div className="food-grid">
+              {(activeCat?.items || []).map(i => (
+                <FoodCard
+                  key={i[0]}
+                  n={i[0]}
+                  d={i[1] || ''}
+                  p={i[2] || activeCat.p}
+                  id={activeCat.id + ':' + slug(i[0])}
+                  img={CAT_IMG[activeCat.id]}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
@@ -507,10 +579,6 @@ export default function App(){
         <Header/>
         <main id="top">
           <Hero/>
-          <Strip/>
-          <Categories/>
-          {cfgF.bestsellers && <Bestsellers/>}
-          {cfgF.promoBanner && <PromoBanner/>}
           <Menu/>
           <Delivery/>
           <Location/>

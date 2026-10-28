@@ -17,7 +17,7 @@ export const RESTAURANT_CONFIG = {
     subTagline: "Des recettes généreuses préparées chaque jour avec des ingrédients frais, locaux et de saison.",
     heroTitle: "Le goût des",
     heroHighlight: "bonnes choses.",
-    heroBadge: "✨ Cuisine fraîche & fait maison",
+    heroBadge: "Cuisine artisanale & produits frais",
     badgeFloat: {
       title: "Livraison offerte",
       subtitle: "dès 25 €"
