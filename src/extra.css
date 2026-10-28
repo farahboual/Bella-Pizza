@@ -1540,8 +1540,9 @@ header {
 .menu {
   background: #120F0D !important;
   color: #FAF7F2 !important;
-  padding: 64px 0 96px !important;
+  padding: 10px 0 96px !important;
   position: relative !important;
+  margin-top: -30px !important;
 }
 
 /* Luxury Section Header */
@@ -2375,11 +2376,13 @@ header {
 .minimal-hero {
   position: relative;
   width: 100%;
-  min-height: 92vh;
+  min-height: 68vh;
+  padding: 110px 0 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background-color: #120F0D;
 }
 
 .minimal-hero-bg {
@@ -2396,11 +2399,24 @@ header {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    160deg,
-    rgba(10, 8, 6, 0.72) 0%,
-    rgba(18, 15, 13, 0.55) 50%,
-    rgba(10, 8, 6, 0.82) 100%
+    180deg,
+    rgba(18, 15, 13, 0.72) 0%,
+    rgba(18, 15, 13, 0.42) 40%,
+    rgba(18, 15, 13, 0.85) 75%,
+    #120F0D 100%
   );
+}
+
+.minimal-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: linear-gradient(to bottom, transparent 0%, #120F0D 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .minimal-hero-content {
