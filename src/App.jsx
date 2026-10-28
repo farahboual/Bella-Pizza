@@ -166,19 +166,19 @@ function Header(){
 
       {/* Clean luxury navigation */}
       <nav className="luxury-nav" aria-label="Navigation principale">
-        <a href="#savoir-faire" className="luxury-nav-link">Savoir-Faire</a>
         <a href="#carte" className="luxury-nav-link">La Carte</a>
         <a href="#restaurant" className="luxury-nav-link">Livraison &amp; Accès</a>
         <a href="#restaurant" className="luxury-nav-link">Horaires</a>
       </nav>
 
-      {/* Right actions: phone + luxury cart */}
+      {/* Right actions: phone icon (desktop shows number, mobile icon only) + cart */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <a className="luxury-phone-btn" href={TEL}>
-          📞 {cfgC.phone}
+        <a className="luxury-phone-btn" href={TEL} aria-label={`Appeler le ${cfgC.phone}`}>
+          <span className="phone-icon">📞</span>
+          <span className="phone-number">{cfgC.phone}</span>
         </a>
         <button
-          className="luxury-cart-btn"
+          className={`luxury-cart-btn${count > 0 ? ' cart-has-items' : ''}`}
           onClick={() => openCart(true)}
           aria-label="Voir le panier"
         >
@@ -189,7 +189,7 @@ function Header(){
               <span>{eur(total)}</span>
             </>
           ) : (
-            <span>Panier</span>
+            <span className="cart-empty-label">Panier</span>
           )}
         </button>
       </div>
@@ -389,6 +389,34 @@ function ScrollytellingSection() {
   )
 }
 
+function MinimalHero() {
+  return (
+    <section className="minimal-hero" id="top">
+      <div
+        className="minimal-hero-bg"
+        style={{ backgroundImage: `url(/client-assets/hero.jpg)` }}
+        aria-hidden="true"
+      />
+      <div className="minimal-hero-overlay" aria-hidden="true" />
+      <div className="minimal-hero-content">
+        <span className="minimal-hero-badge">
+          <span className="dot-live" />
+          Cuisine artisanale · Produits frais
+        </span>
+        <h1 className="minimal-hero-title">
+          {cfgB.heroTitle || 'Le goût des'}{' '}
+          <em>{cfgB.heroHighlight || 'bonnes choses.'}</em>
+        </h1>
+        <p className="minimal-hero-sub">{cfgB.tagline}</p>
+        <div className="minimal-hero-actions">
+          <a className="minimal-hero-cta" href="#carte">Voir la carte →</a>
+          <a className="minimal-hero-tel" href={TEL}>📞 {cfgC.phone}</a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // FoodCard (Uber Eats / Deliveroo style clean card)
 const FoodCard = ({ n, d, p, id, img }) => {
   const { cfg, getPrice, isOut, isHidden } = useCart()
@@ -403,14 +431,21 @@ const FoodCard = ({ n, d, p, id, img }) => {
     : n
 
   return (
-    <div className={'food-card' + (out ? ' food-card-out' : '')}>
-      <div className="food-card-body">
-        <div>
-          <h4 className="food-card-title">{cleanName}</h4>
-          {d && <p className="food-card-desc">{d}</p>}
+    <div className={'food-card-v' + (out ? ' food-card-out' : '')}>
+      {img && !thumbErr ? (
+        <div className="food-card-v-img">
+          <img src={img} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
         </div>
-        <div className="food-card-bottom">
-          <span className="food-card-price">{displayPrice}</span>
+      ) : (
+        <div className="food-card-v-img food-card-v-img-placeholder" aria-hidden="true">
+          <span>🍽️</span>
+        </div>
+      )}
+      <div className="food-card-v-body">
+        <h4 className="food-card-v-title">{cleanName}</h4>
+        {d && <p className="food-card-v-desc">{d}</p>}
+        <div className="food-card-v-bottom">
+          <span className="food-card-v-price">{displayPrice}</span>
           {out ? (
             <span className="tag-out">Rupture</span>
           ) : (
@@ -418,11 +453,6 @@ const FoodCard = ({ n, d, p, id, img }) => {
           )}
         </div>
       </div>
-      {img && !thumbErr && (
-        <div className="food-card-thumb">
-          <img src={img} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
-        </div>
-      )}
     </div>
   )
 }
@@ -563,24 +593,24 @@ function Menu(){
               ))}
             </div>
 
-            <div className="food-grid">
+            <motion.div className="food-grid" key={"pizzas-"+size} initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.35,ease:[.16,1,.3,1]}}>
               {pizzaList.map(it => (
                 <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={it.img} />
               ))}
-            </div>
+            </motion.div>
           </div>
         ) : cat === 'special' ? (
           /* Custom chef items */
-          <div className="food-grid">
+          <motion.div className="food-grid" key="special" initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.35,ease:[.16,1,.3,1]}}>
             {customList.map(it => (
               <FoodCard key={it.id} n={it.name} d={it.desc || it.cat} p={eur(it.price)} id={it.id} img={it.img || getItemImg('special', slug(it.name))} />
             ))}
-          </div>
+          </motion.div>
         ) : (
           /* Generic category (burgers, salades, texmex, desserts, boissons) */
           <div>
             {(activeCat?.notes || []).map(n => <p className="note" key={n} style={{ marginBottom: 12 }}>{n}</p>)}
-            <div className="food-grid">
+            <motion.div className="food-grid" key={cat} initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.35,ease:[.16,1,.3,1]}}>
               {(activeCat?.items || []).map(i => {
                 const s = slug(i[0])
                 return (
@@ -594,7 +624,7 @@ function Menu(){
                   />
                 )
               })}
-            </div>
+            </motion.div>
           </div>
         )}
       </div>
@@ -743,7 +773,8 @@ export default function App(){
       <MotionConfig reducedMotion="user">
         <a href="#carte" className="skip">Aller à la carte</a>
         <Header/>
-        <main id="top">
+        <main>
+          <MinimalHero/>
           <Menu/>
           <RestaurantInfo/>
         </main>

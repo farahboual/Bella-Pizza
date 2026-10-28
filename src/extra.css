@@ -2365,3 +2365,275 @@ header {
     padding: 10px 12px;
   }
 }
+
+
+/* ===================================================================
+   EXPERT UX IMPROVEMENTS — MINIMAL HERO, VERTICAL CARDS, CART GLOW
+   =================================================================== */
+
+/* ── 1. MINIMAL HERO ─────────────────────────────────────────────── */
+.minimal-hero {
+  position: relative;
+  width: 100%;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.minimal-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.04);
+  transition: transform 8s ease-out;
+}
+
+.minimal-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(10, 8, 6, 0.72) 0%,
+    rgba(18, 15, 13, 0.55) 50%,
+    rgba(10, 8, 6, 0.82) 100%
+  );
+}
+
+.minimal-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 720px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.minimal-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  padding: 7px 18px;
+  border-radius: 99px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #D9B59F;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.minimal-hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 800;
+  color: #FAF7F2;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.minimal-hero-title em {
+  color: #D9B59F;
+  font-style: italic;
+}
+
+.minimal-hero-sub {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: rgba(250, 247, 242, 0.7);
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0;
+}
+
+.minimal-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.minimal-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red, #A3785E);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 30px;
+  border-radius: 99px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 28px rgba(163, 120, 94, 0.4);
+}
+
+.minimal-hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(163, 120, 94, 0.55);
+  background: #8B5E45;
+}
+
+.minimal-hero-tel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(250, 247, 242, 0.85);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 99px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: all 0.22s ease;
+}
+
+.minimal-hero-tel:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.35);
+  color: #fff;
+}
+
+/* ── 2. VERTICAL FOOD CARDS ──────────────────────────────────────── */
+.food-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.food-card-v {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease, border-color 0.2s;
+  cursor: default;
+}
+
+.food-card-v:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 42px rgba(0,0,0,0.45);
+  border-color: rgba(217, 181, 159, 0.22);
+}
+
+.food-card-v.food-card-out {
+  opacity: 0.5;
+}
+
+.food-card-v-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #1e1916;
+  flex-shrink: 0;
+}
+
+.food-card-v-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+
+.food-card-v:hover .food-card-v-img img {
+  transform: scale(1.06);
+}
+
+.food-card-v-img-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  opacity: 0.25;
+}
+
+.food-card-v-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 14px 16px 16px;
+  gap: 6px;
+}
+
+.food-card-v-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #FAF7F2;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.food-card-v-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12.5px;
+  color: rgba(250, 247, 242, 0.52);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.food-card-v-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.food-card-v-price {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #D9B59F;
+}
+
+/* ── 3. CART GLOW when items inside ──────────────────────────────── */
+.luxury-cart-btn.cart-has-items {
+  background: var(--red, #A3785E) !important;
+  box-shadow: 0 0 0 0 rgba(163, 120, 94, 0.5) !important;
+  animation: cartPulse 2.4s cubic-bezier(0.16,1,0.3,1) infinite !important;
+}
+
+@keyframes cartPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(163, 120, 94, 0.5); }
+  60%  { box-shadow: 0 0 0 10px rgba(163, 120, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(163, 120, 94, 0); }
+}
+
+/* ── 4. MOBILE HEADER: show only phone icon, hide number ─────────── */
+@media (max-width: 640px) {
+  .phone-number { display: none !important; }
+  .luxury-phone-btn { padding: 9px 13px !important; }
+  .cart-empty-label { display: none !important; }
+  .luxury-cart-btn { padding: 9px 13px !important; gap: 4px !important; }
+  .minimal-hero { min-height: 85vh; }
+  .food-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 12px !important;
+  }
+  .food-card-v-body { padding: 10px 12px 12px; }
+}
