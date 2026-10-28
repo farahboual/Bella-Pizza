@@ -278,6 +278,45 @@ function CinematicHero(){
     </section>
   )
 }
+
+// FoodCard (Uber Eats / Deliveroo style clean card)
+const FoodCard = ({ n, d, p, id, img }) => {
+  const { cfg, getPrice, isOut, isHidden } = useCart()
+  const [thumbErr, setThumbErr] = useState(false)
+  if (id && isHidden && isHidden(id, cfg)) return null
+  const livePrice = id && getPrice ? getPrice(id, cfg) : null
+  const displayPrice = livePrice ? eur(livePrice) : p
+  const out = id && isOut ? isOut(id, cfg) : false
+
+  const cleanName = (n.includes(' ') && n === n.toUpperCase())
+    ? n.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    : n
+
+  return (
+    <div className={'food-card' + (out ? ' food-card-out' : '')}>
+      <div className="food-card-body">
+        <div>
+          <h4 className="food-card-title">{cleanName}</h4>
+          {d && <p className="food-card-desc">{d}</p>}
+        </div>
+        <div className="food-card-bottom">
+          <span className="food-card-price">{displayPrice}</span>
+          {out ? (
+            <span className="tag-out">Rupture</span>
+          ) : (
+            id && <AddBtn id={id} />
+          )}
+        </div>
+      </div>
+      {img && !thumbErr && (
+        <div className="food-card-thumb">
+          <img src={img} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Menu(){
   const { cfg, getPrice, isOut, isHidden } = useCart()
   const customList = Object.values(cfg?.customItems || {})
