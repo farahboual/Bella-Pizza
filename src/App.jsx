@@ -16,6 +16,7 @@ const cfgC = RESTAURANT_CONFIG.contact
 const cfgF = RESTAURANT_CONFIG.features
 const cfgD = RESTAURANT_CONFIG.delivery
 const cfgS = RESTAURANT_CONFIG.schedule
+const cfgI = RESTAURANT_CONFIG.images || {}
 
 const TEL = 'tel:' + cfgC.phoneRaw
 const MAPS = cfgC.mapsUrl
@@ -26,8 +27,12 @@ const NAV = [
 ]
 const ease=[.2,.7,.2,1]
 
-// Category images mapped by id
+// Default culinary photos bundled with the app
 const CAT_IMG={pizzas:pizzaImg,tacos:tacosImg,burgers:burgersImg,sandwichs:sandwichsImg,salades:saladesImg}
+
+// Dynamic image resolvers for white-label clients
+const getCatImg = (catId) => cfgI[catId] || CAT_IMG[catId] || pizzaImg
+const getItemImg = (catId, itemSlug) => (cfgI.items && cfgI.items[itemSlug]) || getCatImg(catId)
 
 function useStatus(){
   const[s,set]=useState({o:null,t:'Horaires'})
@@ -108,21 +113,31 @@ const Status=({id,style,light})=>{const s=useStatus();return(
   </div>
 )}
 
-// Logo (Authentic artisan lettermark monogram, zero AI clip-art feel)
-const Logo=()=>(
-  <>
-    {cfgB.logoUrl
-      ? <img src={cfgB.logoUrl} alt={cfgB.name} style={{height:38,width:'auto',borderRadius:8,objectFit:'contain',flex:'none'}}/>
-      : <div style={{width:38,height:38,borderRadius:10,background:'var(--red)',display:'grid',placeItems:'center',color:'#fff',fontFamily:'Georgia, serif',fontWeight:900,fontSize:20,flex:'none',boxShadow:'0 2px 6px rgba(0,0,0,0.12)'}} aria-hidden="true">
+// Logo (Authentic artisan lettermark monogram or custom client logo with auto-fallback)
+const Logo=()=>{
+  const [err,setErr]=useState(false)
+  const showCustom = Boolean(cfgB.logoUrl && !err)
+  return(
+    <>
+      {showCustom ? (
+        <img
+          src={cfgB.logoUrl}
+          alt={cfgB.name}
+          onError={()=>setErr(true)}
+          style={{height:38,width:'auto',borderRadius:8,objectFit:'contain',flex:'none'}}
+        />
+      ) : (
+        <div style={{width:38,height:38,borderRadius:10,background:'var(--red)',display:'grid',placeItems:'center',color:'#fff',fontFamily:'Georgia, serif',fontWeight:900,fontSize:20,flex:'none',boxShadow:'0 2px 6px rgba(0,0,0,0.12)'}} aria-hidden="true">
           {(cfgB.name||'A').charAt(0)}
         </div>
-    }
-    <div style={{display:'flex',flexDirection:'column',lineHeight:1.1}}>
-      <b style={{fontSize:18,letterSpacing:'-0.02em'}}>{cfgB.name}</b>
-      <span style={{fontSize:10,fontWeight:700,letterSpacing:'0.08em',color:'var(--red)',textTransform:'uppercase'}}>{cfgB.shortName||'RESTAURANT'}</span>
-    </div>
-  </>
-)
+      )}
+      <div style={{display:'flex',flexDirection:'column',lineHeight:1.1}}>
+        <b style={{fontSize:18,letterSpacing:'-0.02em'}}>{cfgB.name}</b>
+        <span style={{fontSize:10,fontWeight:700,letterSpacing:'0.08em',color:'var(--red)',textTransform:'uppercase'}}>{cfgB.shortName||'RESTAURANT'}</span>
+      </div>
+    </>
+  )
+}
 
 function Header(){
   const[on,setOn]=useState(false),[open,setOpen]=useState(false),[act,setAct]=useState('')
@@ -160,6 +175,8 @@ function Header(){
 
 function Hero(){
   const rm=useReducedMotion()
+  const [heroErr, setHeroErr]=useState(false)
+  const heroSrc = (!heroErr && cfgB.heroImage) ? cfgB.heroImage : (cfgI.pizzas || pizzaImg)
   return(
     <div className="hero" id="top">
       <motion.div className="hero-left" initial={{opacity:0,x:-32}} animate={{opacity:1,x:0}} transition={{duration:.9,ease}}>
@@ -194,7 +211,12 @@ function Hero(){
       </motion.div>
 
       <motion.div className="hero-right" initial={{opacity:0,scale:1.04}} animate={{opacity:1,scale:1}} transition={{duration:1.1,ease}}>
-        <img src={pizzaImg} alt={cfgB.name} fetchpriority="high"/>
+        <img
+          src={heroSrc}
+          alt={cfgB.name}
+          fetchpriority="high"
+          onError={()=>setHeroErr(true)}
+        />
         {cfgB.badgeFloat && (
           <div className="hero-badge-float">
             <span>{cfgB.badgeFloat.title}</span>
@@ -323,6 +345,7 @@ function PromoBanner(){
 // FoodCard (Uber Eats style clean card)
 const FoodCard = ({ n, d, p, id, img }) => {
   const { cfg, getPrice, isOut, isHidden } = useCart()
+  const [thumbErr, setThumbErr] = useState(false)
   if (id && isHidden && isHidden(id, cfg)) return null
   const livePrice = id && getPrice ? getPrice(id, cfg) : null
   const displayPrice = livePrice ? eur(livePrice) : p
@@ -348,9 +371,9 @@ const FoodCard = ({ n, d, p, id, img }) => {
           )}
         </div>
       </div>
-      {img && (
+      {img && !thumbErr && (
         <div className="food-card-thumb">
-          <img src={img} alt={cleanName} loading="lazy" />
+          <img src={img} alt={cleanName} loading="lazy" onError={()=>setThumbErr(true)} />
         </div>
       )}
     </div>
@@ -367,29 +390,39 @@ function Menu(){
 
   const pizzaPrice = SZ[size][1]
   const pizzaList = [
-    ...pz(tom, T).map(([n, d]) => ({ n, d, p: pizzaPrice, id: 'pizzas:' + slug(n) + ':' + slug(SZ[size][0]), cat: 'pizzas' })),
-    ...pz(cre, C).map(([n, d]) => ({ n, d, p: pizzaPrice, id: 'pizzas:' + slug(n) + ':' + slug(SZ[size][0]), cat: 'pizzas' })),
-    { n: 'Latina', d: 'Sauce BBQ, fromage, viande hachée, merguez', p: pizzaPrice, id: 'pizzas:latina:' + slug(SZ[size][0]), cat: 'pizzas' }
+    ...pz(tom, T).map(([n, d]) => {
+      const s = slug(n)
+      return { n, d, p: pizzaPrice, id: 'pizzas:' + s + ':' + slug(SZ[size][0]), cat: 'pizzas', img: getItemImg('pizzas', s) }
+    }),
+    ...pz(cre, C).map(([n, d]) => {
+      const s = slug(n)
+      return { n, d, p: pizzaPrice, id: 'pizzas:' + s + ':' + slug(SZ[size][0]), cat: 'pizzas', img: getItemImg('pizzas', s) }
+    }),
+    { n: 'Latina', d: 'Sauce BBQ, fromage, viande hachée, merguez', p: pizzaPrice, id: 'pizzas:latina:' + slug(SZ[size][0]), cat: 'pizzas', img: getItemImg('pizzas', 'latina') }
   ]
 
   const allItems = [
     ...pizzaList,
     ...CATS.filter(c => c.id !== 'pizzas').flatMap(c =>
-      (c.items || []).map(i => ({
-        n: i[0],
-        d: i[1] || '',
-        p: i[2] || c.p,
-        id: c.id + ':' + slug(i[0]),
-        cat: c.id,
-        img: CAT_IMG[c.id]
-      }))
+      (c.items || []).map(i => {
+        const s = slug(i[0])
+        return {
+          n: i[0],
+          d: i[1] || '',
+          p: i[2] || c.p,
+          id: c.id + ':' + s,
+          cat: c.id,
+          img: getItemImg(c.id, s)
+        }
+      })
     ),
     ...customList.map(it => ({
       n: it.name,
       d: it.desc || it.cat,
       p: eur(it.price),
       id: it.id,
-      cat: 'special'
+      cat: 'special',
+      img: it.img || getItemImg('special', slug(it.name))
     }))
   ]
 
@@ -475,7 +508,7 @@ function Menu(){
 
             <div className="food-grid">
               {pizzaList.map(it => (
-                <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={pizzaImg} />
+                <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={it.img} />
               ))}
             </div>
           </div>
@@ -483,7 +516,7 @@ function Menu(){
           /* Custom chef items */
           <div className="food-grid">
             {customList.map(it => (
-              <FoodCard key={it.id} n={it.name} d={it.desc || it.cat} p={eur(it.price)} id={it.id} />
+              <FoodCard key={it.id} n={it.name} d={it.desc || it.cat} p={eur(it.price)} id={it.id} img={it.img || getItemImg('special', slug(it.name))} />
             ))}
           </div>
         ) : (
@@ -491,16 +524,19 @@ function Menu(){
           <div>
             {(activeCat?.notes || []).map(n => <p className="note" key={n} style={{ marginBottom: 12 }}>{n}</p>)}
             <div className="food-grid">
-              {(activeCat?.items || []).map(i => (
-                <FoodCard
-                  key={i[0]}
-                  n={i[0]}
-                  d={i[1] || ''}
-                  p={i[2] || activeCat.p}
-                  id={activeCat.id + ':' + slug(i[0])}
-                  img={CAT_IMG[activeCat.id]}
-                />
-              ))}
+              {(activeCat?.items || []).map(i => {
+                const s = slug(i[0])
+                return (
+                  <FoodCard
+                    key={i[0]}
+                    n={i[0]}
+                    d={i[1] || ''}
+                    p={i[2] || activeCat.p}
+                    id={activeCat.id + ':' + s}
+                    img={getItemImg(activeCat.id, s)}
+                  />
+                )
+              })}
             </div>
           </div>
         )}

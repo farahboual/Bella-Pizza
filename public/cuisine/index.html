@@ -73,6 +73,9 @@ fetch('/api/config').then(r=>r.ok?r.json():null).then(d=>{
   const hGate=$('#f h1');if(hGate)hGate.textContent=restaurantName
   const hHead=$('header h1');if(hHead)hHead.textContent=restaurantName+' Cuisine'
  }
+ if(d?.restaurant?.brand?.logoUrl){
+  const hHead=$('header h1');if(hHead&&!$('header h1 img')){const img=document.createElement('img');img.src=d.restaurant.brand.logoUrl;img.alt=restaurantName;img.style.cssText='height:30px;width:auto;border-radius:6px;object-fit:contain;vertical-align:middle;margin-right:10px;';hHead.prepend(img)}
+ }
  if(d?.restaurant?.theme?.primaryColor){
   document.documentElement.style.setProperty('--red',d.restaurant.theme.primaryColor)
  }
