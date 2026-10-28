@@ -23,6 +23,37 @@ body{
   color:var(--dark);
   -webkit-font-smoothing:antialiased;
 }
+
+/* Global Full-Page Culinary Photo Background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image: url('/client-assets/hero.jpg');
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  opacity: 0.75;
+  filter: saturate(1.15) brightness(0.92);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 239, 235, 0.45) 0%,
+    rgba(244, 239, 235, 0.60) 40%,
+    rgba(244, 239, 235, 0.78) 100%
+  );
+  backdrop-filter: blur(8px);
+}
+
 h1, h2, .sh-page-title {
   font-family:var(--serif) !important;
 }
