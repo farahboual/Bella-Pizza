@@ -481,8 +481,22 @@ function Menu(){
   const activeCat = allCats.find(x => x.id === cat)
 
   return (
-    <section className="menu" id="carte" style={{ paddingTop: 36 }}>
+    <section className="menu" id="carte">
       <div className="wrap">
+        {/* Luxury Section Header */}
+        <div className="menu-header">
+          <div className="menu-eyebrow">
+            <span className="dot-live" />
+            <span>Sélection Culinaire Artisanale</span>
+          </div>
+          <h2 className="menu-title">
+            Notre <em>Carte</em>
+          </h2>
+          <p className="menu-subtitle">
+            Pizzas cuites à la flamme, smash burgers généreux &amp; créations fraîches préparées minute avec des ingrédients nobles.
+          </p>
+        </div>
+
         {/* Search bar */}
         <div className="menu-search-wrap">
           <span className="menu-search-icon">
@@ -599,6 +613,17 @@ function RestaurantInfo(){
   return(
     <section className="storefront-info-section" id="restaurant">
       <div className="wrap">
+        <div className="menu-header" style={{ marginBottom: 44 }}>
+          <div className="menu-eyebrow">
+            <span>Accueil &amp; Informations</span>
+          </div>
+          <h2 className="menu-title">
+            Le <em>Restaurant</em>
+          </h2>
+          <p className="menu-subtitle">
+            Dégustez sur place, commandez à emporter ou profitez de notre livraison soignée à domicile.
+          </p>
+        </div>
         <div className="info-cards-grid">
           {/* Card 1: Livraison & Conditions */}
           <div className="info-card">

@@ -5,22 +5,28 @@
 
 /* --- Reset & Variables --- */
 :root {
-  --bg: #F5F2EB;
-  --white: #ffffff;
+  --bg: #120F0D;
+  --white: #181412;
+  --surface: #1A1613;
+  --surface2: #221D19;
   --red: #A3785E;
   --red2: #8B5E45;
-  --dark: #28231F;
-  --mute: #78716A;
-  --line: rgba(40,35,31,.1);
-  --yellow: #D4913B;
-  --d: 'Nunito', 'Archivo', Arial, sans-serif;
-  --s: 'Nunito', Arial, sans-serif;
+  --gold: #D9B59F;
+  --gold2: #C5A089;
+  --dark: #FAF7F2;
+  --text: #FAF7F2;
+  --mute: rgba(250, 247, 242, 0.65);
+  --line: rgba(255, 255, 255, 0.08);
+  --yellow: #D9B59F;
+  --d: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --serif: 'Playfair Display', Georgia, serif;
+  --s: 'Plus Jakarta Sans', sans-serif;
   --pad: clamp(16px, 5vw, 64px);
   --r: 20px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0 }
-html { scroll-behavior: smooth; scroll-padding-top: 80px }
-body { font-family: var(--d); background: var(--bg); color: var(--dark); line-height: 1.5; -webkit-font-smoothing: antialiased }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; background: #120F0D; color: #FAF7F2; }
+body { font-family: var(--d); background: #120F0D; color: #FAF7F2; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 img { display: block; max-width: 100% }
 a { color: inherit; text-decoration: none }
 :focus-visible { outline: 3px solid var(--red); outline-offset: 3px }
@@ -191,7 +197,7 @@ section { padding-block: clamp(56px,8vw,110px) }
 /* ===================================================
    MENU SECTION
    =================================================== */
-.menu { background: var(--white) }
+.menu { background: #120F0D; color: #FAF7F2; }
 .tabs { position: sticky; top: 72px; z-index: 20; background: rgba(255,255,255,.94); backdrop-filter: blur(12px); margin-inline: calc(var(--pad)*-1); padding: 10px var(--pad); display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line) }
 .tabs::-webkit-scrollbar { display: none }
 .tab { position: relative; z-index: 0; flex: none; font: 600 14px var(--d); padding: 10px 20px; border-radius: 99px; border: 0; background: transparent; color: var(--mute); cursor: pointer; transition: color .2s }
