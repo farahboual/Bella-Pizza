@@ -270,6 +270,8 @@ function render(){
  const L=[...orders.values()].filter(o=>o.status!=='done').sort((a,b)=>a.createdAt-b.createdAt)
  $('#list').innerHTML=L.length?L.map(o=>{
   const {items,cust}=getOrderData(o)
+  const slotM = (o.note||'').match(/\[Heure souhaitée:\s*([^\]]+)\]/i)
+  const slotBadge = slotM ? `<span class="tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-weight:900">⏰ POUR ${esc(slotM[1])}</span>` : ''
   const cleanP=(cust.phone||'').replace(/\D/g,'')
   const waP=cleanP.startsWith('0')?'33'+cleanP.slice(1):cleanP
   const waMsg=encodeURIComponent(`Bonjour ${cust.name||''}, votre commande #${o.number} de ${restaurantName} est en cours de préparation / prête !`)

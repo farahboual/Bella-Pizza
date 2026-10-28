@@ -309,28 +309,38 @@ export function CartDrawer(){
        <div className="cl-o" style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center',margin:'6px 0'}}>
 
         {/* Multiple sauces */}
-        <div style={{display:'flex',flexDirection:'column',gap:6,width:'100%'}}>
-         <span style={{fontWeight:600}}>Sauces au choix :</span>
+        <div className="cart-sauce-section" style={{display:'flex',flexDirection:'column',gap:8,width:'100%',margin:'8px 0'}}>
+         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--nude-text, #28231F)'}}>Sauces au choix :</span>
 
-         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+         <div className="cart-sauce-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(105px, 1fr))',gap:6}}>
           {SAUCES.map(s=>{
            const selected=(l.sauces||[]).includes(s)
 
            return <label
             key={s}
+            className={`cart-sauce-pill ${selected ? 'is-selected' : ''}`}
             style={{
              display:'flex',
              alignItems:'center',
-             gap:5,
-             padding:'6px 9px',
-             border:'1px solid var(--line)',
+             justifyContent:'center',
+             gap:6,
+             padding:'8px 10px',
              borderRadius:10,
-             cursor:'pointer'
+             cursor:'pointer',
+             fontSize:12.5,
+             fontWeight:600,
+             userSelect:'none',
+             transition:'all .15s ease',
+             background:selected ? '#A3785E' : '#FFFFFF',
+             color:selected ? '#FFFFFF' : '#28231F',
+             border:selected ? '1.5px solid #A3785E' : '1px solid rgba(40,35,31,0.15)',
+             boxShadow:selected ? '0 2px 6px rgba(163,120,94,0.25)' : 'none'
             }}
            >
             <input
              type="checkbox"
              checked={selected}
+             style={{display:'none'}}
              onChange={()=>{
               const sauces=l.sauces||[]
 
@@ -341,17 +351,18 @@ export function CartDrawer(){
               })
              }}
             />
-            {s}
+            {selected && <span style={{fontSize:11}}>✓</span>}
+            <span>{s}</span>
            </label>
           })}
          </div>
         </div>
 
         {/* Supplément viande : le client choisit quelle viande et combien */}
-        <div style={{display:'flex',flexDirection:'column',gap:6,width:'100%'}}>
-         <span style={{fontWeight:600}}>Supp. viande +{eur(SUPP_CENTS)} chacun :</span>
+        <div className="cart-supp-section" style={{display:'flex',flexDirection:'column',gap:8,width:'100%',margin:'8px 0'}}>
+         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--nude-text, #28231F)'}}>Supp. viande +{eur(SUPP_CENTS)} chacun :</span>
 
-         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+         <div className="cart-supp-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(130px, 1fr))',gap:6}}>
           {MEATS.map(m=>{
            const supp=cleanSupp(l.supp),n=supp[m]||0
            const setN=q=>{
@@ -359,28 +370,34 @@ export function CartDrawer(){
             if(q<1)delete next[m];else next[m]=Math.min(q,SUPP_MAX)
             setOpt(l.u,{supp:next})
            }
-           const btn={width:28,height:28,borderRadius:'50%',border:'1.5px solid var(--dark)',background:'none',fontSize:16,lineHeight:1,cursor:'pointer',padding:0}
+           const btn={width:24,height:24,borderRadius:'50%',border:'1px solid #A3785E',background:'#fff',color:'#A3785E',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',padding:0}
 
            return <div
             key={m}
             style={{
              display:'flex',
              alignItems:'center',
+             justifyContent:'space-between',
              gap:6,
-             padding:'4px 8px',
-             border:n>0?'1.5px solid var(--dark)':'1px solid var(--line)',
+             padding:'6px 8px',
+             border:n>0?'1.5px solid #A3785E':'1px solid rgba(40,35,31,0.15)',
+             background:n>0?'rgba(163,120,94,0.08)':'#fff',
              borderRadius:10,
-             fontSize:14
+             fontSize:12.5,
+             fontWeight:600
             }}
            >
-            <span>{m}</span>
-            <button type="button" style={{...btn,opacity:n<1?.35:1}} disabled={n<1} onClick={()=>setN(n-1)} aria-label={`Retirer un supplément ${m}`}>−</button>
-            <b aria-live="polite" style={{minWidth:14,textAlign:'center'}}>{n}</b>
-            <button type="button" style={{...btn,opacity:n>=SUPP_MAX?.35:1}} disabled={n>=SUPP_MAX} onClick={()=>setN(n+1)} aria-label={`Ajouter un supplément ${m}`}>+</button>
+            <span style={{color:'#28231F'}}>{m}</span>
+            <div style={{display:'flex',alignItems:'center',gap:5}}>
+             {n>0&&<button type="button" style={btn} onClick={()=>setN(n-1)} aria-label={`Moins de ${m}`}>-</button>}
+             {n>0&&<span style={{fontWeight:700,minWidth:14,textAlign:'center',color:'#A3785E'}}>{n}</span>}
+             <button type="button" style={btn} onClick={()=>setN(n+1)} aria-label={`Plus de ${m}`}>+</button>
+            </div>
            </div>
           })}
          </div>
         </div>
+
 
        </div>
       }
