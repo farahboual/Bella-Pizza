@@ -166,6 +166,7 @@ function Header(){
 
       {/* Clean luxury navigation */}
       <nav className="luxury-nav" aria-label="Navigation principale">
+        <a href="#savoir-faire" className="luxury-nav-link">Savoir-Faire</a>
         <a href="#carte" className="luxury-nav-link">La Carte</a>
         <a href="#restaurant" className="luxury-nav-link">Livraison &amp; Accès</a>
         <a href="#restaurant" className="luxury-nav-link">Horaires</a>
@@ -276,6 +277,115 @@ function CinematicHero(){
         </div>
       </div>
     </section>
+  )
+}
+
+
+function ScrollytellingSection() {
+  const containerRef = useRef(null)
+  const [activeIdx, setActiveIdx] = useState(0)
+
+  const steps = [
+    {
+      num: '01',
+      tag: 'Le Pétrissage & La Maturation',
+      title: 'La Pâte & Le Temps',
+      desc: 'Une farine italienne type 00 sélectionnée, de l’eau pure et du levain naturel. Une fermentation lente de 48 heures pour une digestibilité absolue et une texture alvéolée incomparable.',
+      img: '/client-assets/story-1-dough.jpg'
+    },
+    {
+      num: '02',
+      tag: 'La Sélection Terroir',
+      title: 'Les Ingrédients Nobles',
+      desc: 'Tomates San Marzano AOP gorgées de soleil, mozzarella Fior di Latte d’Isigny onctueuse et basilic frais effeuillé minute pour libérer tous ses arômes.',
+      img: '/client-assets/story-2-ingredients.jpg'
+    },
+    {
+      num: '03',
+      tag: 'La Flamme à 450°C',
+      title: 'La Cuisson au Feu de Bois',
+      desc: '90 secondes chrono sur pierre réfractaire incandescente. La pâte gonfle instantanément, se teinte d’alvéoles léopardées et développe ce parfum fumé signature.',
+      img: '/client-assets/story-3-oven.jpg'
+    },
+    {
+      num: '04',
+      tag: 'L’Art de la Dégustation',
+      title: 'Servie à la Perfection',
+      desc: 'Un filet d’huile d’olive vierge extra pressée à froid, du parmesan 24 mois râpé minute et une texture croustillante et fondante prête à être savourée.',
+      img: '/client-assets/story-4-plated.jpg'
+    }
+  ]
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (!containerRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      const scrollable = rect.height - window.innerHeight
+      if (scrollable <= 0) return
+      const scrolled = -rect.top
+      const p = Math.max(0, Math.min(1, scrolled / scrollable))
+      const idx = Math.min(steps.length - 1, Math.floor(p * steps.length))
+      setActiveIdx(idx)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <div className="scrolly-container" ref={containerRef} id="savoir-faire">
+      <div className="scrolly-sticky-viewport">
+        {/* Full-viewport Background Images (Crossfade & subtle scale) */}
+        {steps.map((st, i) => (
+          <div
+            key={st.num}
+            className={`scrolly-bg-layer ${i === activeIdx ? 'active' : ''}`}
+            style={{
+              backgroundImage: `url(${st.img})`,
+              opacity: i === activeIdx ? 1 : 0,
+              transform: i === activeIdx ? 'scale(1.02)' : 'scale(1.08)'
+            }}
+          />
+        ))}
+
+        {/* Cinematic Vignette Overlay */}
+        <div className="scrolly-overlay" />
+
+        {/* Scrollytelling Content Overlay */}
+        <div className="scrolly-content-wrap">
+          <div className="scrolly-content-card">
+            <div className="scrolly-tag-row">
+              <span className="scrolly-num-pill">ÉTAPE {steps[activeIdx].num} / 04</span>
+              <span className="scrolly-tag-text">{steps[activeIdx].tag}</span>
+            </div>
+
+            <h2 className="scrolly-title">{steps[activeIdx].title}</h2>
+            <p className="scrolly-desc">{steps[activeIdx].desc}</p>
+
+            {/* Step Progress indicators */}
+            <div className="scrolly-progress-bars">
+              {steps.map((s, idx) => (
+                <div
+                  key={s.num}
+                  className={`scrolly-progress-dash ${idx === activeIdx ? 'active' : (idx < activeIdx ? 'completed' : '')}`}
+                  onClick={() => {
+                    if (!containerRef.current) return
+                    const scrollable = containerRef.current.offsetHeight - window.innerHeight
+                    const targetScroll = containerRef.current.offsetTop + (idx / steps.length) * scrollable
+                    window.scrollTo({ top: targetScroll, behavior: 'smooth' })
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Scroll down prompt */}
+            <div className="scrolly-scroll-cue">
+              <span>{activeIdx === steps.length - 1 ? '↓ Découvrir la carte' : 'Faites défiler pour la suite ↓'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -617,6 +727,7 @@ export default function App(){
         <Header/>
         <main id="top">
           <CinematicHero/>
+          <ScrollytellingSection/>
           <Menu/>
           <RestaurantInfo/>
         </main>

@@ -1380,3 +1380,153 @@ header {
     text-align: center;
   }
 }
+
+
+/* ===================================================================
+   APPLE-STYLE FULL-PAGE SCROLLYTELLING EXPERIENCE
+   =================================================================== */
+
+.scrolly-container {
+  position: relative;
+  height: 380vh;
+  background: #120F0D;
+}
+
+.scrolly-sticky-viewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scrolly-bg-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.scrolly-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(18, 15, 13, 0.35) 0%, rgba(18, 15, 13, 0.85) 100%),
+              linear-gradient(180deg, rgba(18, 15, 13, 0.75) 0%, transparent 25%, transparent 75%, rgba(18, 15, 13, 0.95) 100%);
+  pointer-events: none;
+}
+
+.scrolly-content-wrap {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 960px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.scrolly-content-card {
+  background: rgba(18, 15, 13, 0.82);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  padding: 42px 48px;
+  max-width: 680px;
+  text-align: center;
+  color: #FAF7F2;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+}
+
+.scrolly-tag-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.scrolly-num-pill {
+  background: var(--red, #A3785E);
+  color: #fff;
+  font: 800 11px 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.12em;
+  padding: 4px 12px;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+
+.scrolly-tag-text {
+  font: 700 12px 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #D9B59F;
+}
+
+.scrolly-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: #FAF7F2;
+  margin: 0 0 16px;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.scrolly-desc {
+  font: 400 clamp(14px, 2vw, 16.5px)/1.6 'Plus Jakarta Sans', sans-serif;
+  color: rgba(250, 247, 242, 0.85);
+  margin: 0 auto 28px;
+  max-width: 50ch;
+}
+
+.scrolly-progress-bars {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.scrolly-progress-dash {
+  position: relative;
+  width: 58px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .25s;
+}
+.scrolly-progress-dash.active {
+  background: var(--red, #A3785E);
+  box-shadow: 0 0 10px rgba(163, 120, 94, 0.8);
+  transform: scaleY(1.3);
+}
+.scrolly-progress-dash.completed {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.scrolly-scroll-cue {
+  font: 600 12px 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.1em;
+  color: rgba(250, 247, 242, 0.55);
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .scrolly-container {
+    height: 320vh;
+  }
+  .scrolly-content-card {
+    padding: 26px 20px;
+    border-radius: 20px;
+  }
+  .scrolly-progress-dash {
+    width: 40px;
+  }
+}
