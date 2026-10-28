@@ -434,17 +434,12 @@ function Menu(){
   const [cat, setCat] = useState('pizzas')
   const [size, setSize] = useState(1)
   const [search, setSearch] = useState('')
-  const [bgChoice, setBgChoice] = useState('auto')
-
   const bgImages = {
     pizzas: getItemImg('pizzas', 'pizza') || pizzaImg,
     burgers: getItemImg('burgers', 'burger') || burgersImg,
     salades: getItemImg('salades', 'salade') || saladesImg
   }
-  const effectiveBgKey = bgChoice === 'auto'
-    ? (cat === 'burgers' ? 'burgers' : cat === 'salades' ? 'salades' : 'pizzas')
-    : bgChoice
-  const activeBgImg = bgImages[effectiveBgKey] || bgImages.pizzas
+  const activeBgImg = bgImages[cat] || bgImages.pizzas
 
   const pizzaPrice = SZ[size][1]
   const pizzaList = [
@@ -532,28 +527,6 @@ function Menu(){
             <span>🍕 2 pizzas achetées = la 3ème offerte à emporter</span>
           </div>
         )}
-
-        {/* Background switcher & ambiance control */}
-        <div className="menu-ambiance-bar" role="toolbar" aria-label="Ambiance culinaire de fond">
-          <span className="ambiance-label">✨ Fond d’ambiance :</span>
-          <div className="ambiance-pills">
-            {[
-              { id: 'auto', label: '⚡ Auto (synchro carte)' },
-              { id: 'pizzas', label: '🍕 Pizzas' },
-              { id: 'burgers', label: '🍔 Burgers' },
-              { id: 'salades', label: '🥗 Salades' }
-            ].map(b => (
-              <button
-                key={b.id}
-                type="button"
-                className={`ambiance-pill ${bgChoice === b.id ? 'active' : ''}`}
-                onClick={() => setBgChoice(b.id)}
-              >
-                {b.label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Category Pills (horizontal scroll) */}
         {!q && (
