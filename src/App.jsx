@@ -107,70 +107,78 @@ const Status=({id,style,light})=>{const s=useStatus();return(
 )}
 
 // Logo (Authentic artisan lettermark monogram or custom client logo with auto-fallback)
-const Logo=()=>{
-  const [err,setErr]=useState(false)
+const Logo = () => {
+  const [err, setErr] = useState(false)
   const showCustom = Boolean(cfgB.logoUrl && !err)
-  return(
-    <>
+
+  return (
+    <div className="luxury-logo-link">
       {showCustom ? (
         <img
           src={cfgB.logoUrl}
           alt={cfgB.name}
-          onError={()=>setErr(true)}
-          style={{height:38,width:'auto',borderRadius:8,objectFit:'contain',flex:'none'}}
+          onError={() => setErr(true)}
+          style={{ height: 42, width: 'auto', borderRadius: 8, objectFit: 'contain', flex: 'none' }}
         />
       ) : (
-        <div style={{width:38,height:38,borderRadius:10,background:'var(--red)',display:'grid',placeItems:'center',color:'#fff',fontFamily:'Georgia, serif',fontWeight:900,fontSize:20,flex:'none',boxShadow:'0 2px 6px rgba(0,0,0,0.12)'}} aria-hidden="true">
-          {(cfgB.name||'A').charAt(0)}
+        <div
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 10,
+            background: 'var(--red, #A3785E)',
+            display: 'grid',
+            placeItems: 'center',
+            color: '#fff',
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontWeight: 800,
+            fontSize: 20,
+            flex: 'none'
+          }}
+          aria-hidden="true"
+        >
+          {(cfgB.name || 'A').charAt(0)}
         </div>
       )}
-      <div style={{display:'flex',flexDirection:'column',lineHeight:1.1}}>
-        <b style={{fontSize:18,letterSpacing:'-0.02em'}}>{cfgB.name}</b>
-        <span style={{fontSize:10,fontWeight:700,letterSpacing:'0.08em',color:'var(--red)',textTransform:'uppercase'}}>{cfgB.shortName||'RESTAURANT'}</span>
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+        <span className="luxury-logo-title">{cfgB.name}</span>
+        <span className="luxury-logo-sub">{cfgB.shortName || 'RESTAURANT'}</span>
       </div>
-    </>
+    </div>
   )
 }
-
 function Header(){
-  const[on,setOn]=useState(false),[open,setOpen]=useState(false)
-  const [mode, setMode] = useState('livraison')
+  const [on, setOn] = useState(false)
   const { count, total, setOpen: openCart } = useCart()
 
-  useEffect(()=>{
-    const f=()=>setOn(scrollY>10);f()
-    addEventListener('scroll',f,{passive:true})
-    return()=>removeEventListener('scroll',f)
-  },[])
+  useEffect(() => {
+    const f = () => setOn(scrollY > 10)
+    f()
+    addEventListener('scroll', f, { passive: true })
+    return () => removeEventListener('scroll', f)
+  }, [])
 
-  return(
-    <header id="hd" style={on?{boxShadow:'0 4px 20px rgba(0,0,0,.08)'}:{}}>
-      <a className="logo" href="#top" aria-label={`${cfgB.name} — accueil`}><Logo/></a>
+  return (
+    <header id="hd">
+      <a href="#top" aria-label={`${cfgB.name} — accueil`}>
+        <Logo />
+      </a>
 
-      <div className="header-mode-toggle" role="radiogroup" aria-label="Mode de commande">
-        <button
-          type="button"
-          className={`header-mode-btn ${mode==='livraison'?'active':''}`}
-          onClick={()=>setMode('livraison')}
-        >
-          🚲 Livraison
-        </button>
-        <button
-          type="button"
-          className={`header-mode-btn ${mode==='emporter'?'active':''}`}
-          onClick={()=>setMode('emporter')}
-        >
-          🛍️ À emporter
-        </button>
-      </div>
+      {/* Clean luxury navigation */}
+      <nav className="luxury-nav" aria-label="Navigation principale">
+        <a href="#carte" className="luxury-nav-link">La Carte</a>
+        <a href="#restaurant" className="luxury-nav-link">Livraison &amp; Accès</a>
+        <a href="#restaurant" className="luxury-nav-link">Horaires</a>
+      </nav>
 
-      <div style={{display:'flex',alignItems:'center',gap:10}}>
-        <a className="btn outline hd-call" href={TEL} style={{padding:'8px 16px',fontSize:13}}>
+      {/* Right actions: phone + luxury cart */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <a className="luxury-phone-btn" href={TEL}>
           📞 {cfgC.phone}
         </a>
         <button
-          className="cart-pill-btn"
-          onClick={()=>openCart(true)}
+          className="luxury-cart-btn"
+          onClick={() => openCart(true)}
           aria-label="Voir le panier"
         >
           <span>🛒</span>
@@ -187,234 +195,89 @@ function Header(){
     </header>
   )
 }
-function StorefrontHero(){
-  const rm=useReducedMotion()
-  const [heroErr, setHeroErr]=useState(false)
-  const heroSrc = (!heroErr && cfgB.heroImage) ? cfgB.heroImage : (cfgI.pizzas || pizzaImg)
-
-  return(
-    <section className="storefront-hero" id="top">
-      <div className="storefront-wrap">
-        {/* Modern Deliveroo / Uber Eats cover banner */}
-        <div className="storefront-cover">
-          <img
-            src={heroSrc}
-            alt={cfgB.name}
-            fetchpriority="high"
-            onError={()=>setHeroErr(true)}
-          />
-          <div className="storefront-cover-overlay" />
-          {cfgB.badgeFloat && (
-            <div className="storefront-promo-pill">
-              <span>{cfgB.badgeFloat.title}</span> • {cfgB.badgeFloat.subtitle}
-            </div>
-          )}
-        </div>
-
-        {/* Restaurant Profile Card */}
-        <div className="storefront-info-card">
-          <div className="storefront-header-row">
-            <div>
-              <div className="storefront-tags-line">
-                <span className="storefront-rating-badge">★ 4.9 <small>(180+ avis)</small></span>
-                <span style={{color:'var(--line)'}}>•</span>
-                <span>Pizzas &amp; Burgers artisanaux</span>
-                <span style={{color:'var(--line)'}}>•</span>
-                <span>Fait maison</span>
-              </div>
-              <h1 className="storefront-title">{cfgB.name}</h1>
-              <p className="storefront-tagline">{cfgB.subTagline || cfgB.tagline}</p>
-            </div>
-            <div className="storefront-actions">
-              <a className="btn red storefront-cta" href="#carte">Voir le menu →</a>
-              <a className="btn ghost storefront-call" href={TEL}>Appeler</a>
-            </div>
-          </div>
-
-          {/* Quick Info Chips Row (Uber Eats / Deliveroo style) */}
-          <div className="storefront-chips-row">
-            <div className="storefront-chip">
-              <span className="chip-icon">🕒</span>
-              <div>
-                <strong>15–25 min</strong>
-                <small>Préparation rapide</small>
-              </div>
-            </div>
-            <div className="storefront-chip">
-              <span className="chip-icon">🚲</span>
-              <div>
-                <strong>Livraison 2,50 €</strong>
-                <small>Offerte dès 25 €</small>
-              </div>
-            </div>
-            <div className="storefront-chip">
-              <span className="chip-icon">📍</span>
-              <div>
-                <strong>{cfgC.address.city}</strong>
-                <small>{cfgC.address.street}</small>
-              </div>
-            </div>
-            <div className="storefront-chip status-chip">
-              <Status />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-const Strip=()=>(
-  <div className="mq" aria-hidden="true">
-    <div>
-      {[0,1].map(k=>CATS.map(c=><span key={k+c.id}>{c.t}</span>))}
-    </div>
-  </div>
-)
-
-// Category cards
-function Categories(){
-  const cats=[
-    {id:'pizzas',label:'Pizzas',img:pizzaImg},
-    {id:'burgers',label:'Burgers',img:burgersImg},
-    {id:'salades',label:'Salades & Bowls',img:saladesImg},
-    {id:'texmex',label:'Entrées & Tapas',img:sandwichsImg},
-    {id:'desserts',label:'Desserts',img:tacosImg},
+function CinematicHero(){
+  const slides = [
+    { id: 'pizza', name: 'Pizza Artisanale Napolitaine', img: '/client-assets/pizza.jpg', label: '🍕 Pizzas' },
+    { id: 'burger', name: 'Double Smash Burger Gourmet', img: '/client-assets/burgers.jpg', label: '🍔 Burgers' },
+    { id: 'salade', name: 'Salade Fraîcheur & Saumon', img: '/client-assets/salades.jpg', label: '🥗 Salades' },
+    { id: 'table', name: 'La Table Gourmande', img: '/client-assets/hero.jpg', label: '✨ La Table' }
   ]
-  const go=id=>{
-    document.getElementById('carte')?.scrollIntoView({behavior:'smooth'})
-    setTimeout(()=>{document.getElementById('t-'+id)?.click()},400)
-  }
-  return(
-    <section className="cats" id="offres">
-      <div className="wrap">
-        <div className="sec-header">
-          <h2 className="sec-title">Nos catégories</h2>
-          <a className="sec-link" href="#carte">Voir toute la carte →</a>
-        </div>
-        <div className="cats-grid">
-          {cats.map(c=>(
-            <motion.button key={c.id} className="cat-card" onClick={()=>go(c.id)}
-              initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:'-60px'}}
-              transition={{duration:.6,ease}}>
-              <img src={c.img} alt={c.label}/>
-              <h3>{c.label}</h3>
-              <span className="cat-add" aria-hidden="true">+</span>
-            </motion.button>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
+  const [currentSlide, setCurrentSlide] = useState(0)
 
-// Bestseller items (hardcoded popular picks from the catalog)
-const PICKS=[
-  {id:'pizzas:amalfi:senior',label:'Pizza Amalfi'},
-  {id:'pizzas:classica:senior',label:'Pizza Classica'},
-  {id:'burgers:cheese',label:'Burger Bacon',catOverride:'burgers:db-cheese'},
-  {id:'salades:nicoise',label:'Salade César',catOverride:'salades:campagnarde'},
-]
+  const prevSlide = () => setCurrentSlide(prev => (prev === 0 ? slides.length - 1 : prev - 1))
+  const nextSlide = () => setCurrentSlide(prev => (prev === slides.length - 1 ? 0 : prev + 1))
 
-function Bestsellers(){
-  const {cfg,getPrice,isOut,isHidden}=useCart()
-  const items=CATS.flatMap(c=>
-    (c.items||[]).slice(0,2).map(([n,d,p])=>{
-      const id=`${c.id}:${slug(n)}`
-      return CATALOG[id]?{id,name:CATALOG[id].name,price:CATALOG[id].price,desc:d,img:CAT_IMG[c.id]||pizzaImg}:null
-    }).filter(Boolean)
-  ).slice(0,4)
-
-  if(!items.length)return null
-  return(
-    <section className="bestsellers">
-      <div className="wrap">
-        <div className="sec-header">
-          <h2 className="sec-title">🔥 Nos incontournables</h2>
-          <a className="sec-link" href="#carte">Voir toute la carte →</a>
-        </div>
-        <div className="items-grid">
-          {items.map((it,i)=>{
-            const livePrice=getPrice?getPrice(it.id,cfg):it.price
-            const out=isOut?isOut(it.id,cfg):false
-            return(
-              <motion.div key={it.id} className={'item-card'+(out?' row-out':'')}
-                initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:'-40px'}}
-                transition={{duration:.6,delay:i*.08,ease}}>
-                <img src={it.img} alt={it.name}/>
-                <div className="item-body">
-                  <h4>{it.name}</h4>
-                  {it.desc&&<p>{it.desc}</p>}
-                </div>
-                <div className="item-footer">
-                  <span className="item-price">{eur(livePrice||it.price)}</span>
-                  <AddBtn id={it.id}/>
-                </div>
-              </motion.div>
-            )
-          })}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// Promo banner : Menu Dégustation
-function PromoBanner(){
-  return(
-    <section className="promo">
-      <div className="wrap">
-        <div className="promo-inner">
-          <div>
-            <span className="promo-label">Offre Découverte</span>
-            <h2>Menu Dégustation<strong>À partir de 22 €</strong></h2>
-            <p className="promo-desc">1 Plat au choix + 1 Entrée à partager + 2 Boissons fraîches<br/>Offre valable à emporter et en livraison</p>
-            <OrderBtn className="btn lime">Commander maintenant →</OrderBtn>
-          </div>
-          <img className="promo-img" src={pizzaImg} alt="Menu Dégustation"/>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// FoodCard (Uber Eats style clean card)
-const FoodCard = ({ n, d, p, id, img }) => {
-  const { cfg, getPrice, isOut, isHidden } = useCart()
-  const [thumbErr, setThumbErr] = useState(false)
-  if (id && isHidden && isHidden(id, cfg)) return null
-  const livePrice = id && getPrice ? getPrice(id, cfg) : null
-  const displayPrice = livePrice ? eur(livePrice) : p
-  const out = id && isOut ? isOut(id, cfg) : false
-
-  const cleanName = (n.includes(' ') && n === n.toUpperCase())
-    ? n.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
-    : n
+  const active = slides[currentSlide]
 
   return (
-    <div className={'food-card' + (out ? ' food-card-out' : '')}>
-      <div className="food-card-body">
-        <div>
-          <h4 className="food-card-title">{cleanName}</h4>
-          {d && <p className="food-card-desc">{d}</p>}
+    <section className="luxury-hero" id="top">
+      <div className="luxury-hero-inner">
+        <div className="luxury-hero-badge">
+          <span className="dot-live" />
+          <span>Cuisine artisanale &amp; produits frais</span>
         </div>
-        <div className="food-card-bottom">
-          <span className="food-card-price">{displayPrice}</span>
-          {out ? (
-            <span className="tag-out">Rupture</span>
-          ) : (
-            id && <AddBtn id={id} />
-          )}
+
+        <h1 className="luxury-hero-title">
+          Fired to <em>Perfection</em>
+        </h1>
+
+        <p className="luxury-hero-desc">
+          Pizzas cuites à la flamme, burgers d'exception &amp; recettes généreuses préparées chaque jour avec passion.
+        </p>
+
+        {/* Centerpiece Showcase Stage with arrows (Forno Nero reference) */}
+        <div className="luxury-showcase-stage">
+          <button className="luxury-slider-btn prev" onClick={prevSlide} aria-label="Plat précédent">
+            ‹
+          </button>
+
+          <div className="luxury-photo-card">
+            <img
+              src={active.img}
+              alt={active.name}
+              key={active.id}
+            />
+            <div className="luxury-photo-overlay" />
+            <div className="luxury-floating-pill">
+              <strong>★ 4.9</strong>
+              <span>180+ avis clients vérifiés</span>
+              <span style={{opacity:0.4}}>•</span>
+              <span style={{color:'#D9B59F'}}>{active.name}</span>
+            </div>
+          </div>
+
+          <button className="luxury-slider-btn next" onClick={nextSlide} aria-label="Plat suivant">
+            ›
+          </button>
+        </div>
+
+        {/* Slide Selector Pills */}
+        <div className="luxury-slide-pills">
+          {slides.map((s, idx) => (
+            <button
+              key={s.id}
+              className={`luxury-slide-tab ${idx === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(idx)}
+              type="button"
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Hero Actions */}
+        <div className="luxury-actions-row">
+          <a className="luxury-btn-primary" href="#carte">
+            Commander en ligne →
+          </a>
+          <a className="luxury-btn-secondary" href={TEL}>
+            📞 {cfgC.phone}
+          </a>
         </div>
       </div>
-      {img && !thumbErr && (
-        <div className="food-card-thumb">
-          <img src={img} alt={cleanName} loading="lazy" onError={()=>setThumbErr(true)} />
-        </div>
-      )}
-    </div>
+    </section>
   )
 }
-
 function Menu(){
   const { cfg, getPrice, isOut, isHidden } = useCart()
   const customList = Object.values(cfg?.customItems || {})
@@ -714,7 +577,7 @@ export default function App(){
         <a href="#carte" className="skip">Aller à la carte</a>
         <Header/>
         <main id="top">
-          <StorefrontHero/>
+          <CinematicHero/>
           <Menu/>
           <RestaurantInfo/>
         </main>
