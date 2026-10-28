@@ -8,7 +8,7 @@ import tacosImg from './assets/tacos.webp'
 import sandwichsImg from './assets/sandwichs.webp'
 import saladesImg from './assets/salades.webp'
 import {CartProvider,CartButton,CartDrawer,AddBtn,OrderBtn,MobileBar,OrderBanner,useCart} from './cart.jsx'
-import {slug,CATALOG,eur,getParisTime,DEFAULT_SCHEDULE} from '../shared/catalog.js'
+import {slug,CATALOG,eur,getParisTime,DEFAULT_SCHEDULE,isInSlot} from '../shared/catalog.js'
 import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
 
 const cfgB = RESTAURANT_CONFIG.brand
@@ -59,12 +59,12 @@ function useStatus(){
           return
         }
         if(exc.type==='open'){
-          const [h1,m1]=(exc.start||'11:00').split(':').map(Number)
-          const [h2,m2]=(exc.end||'23:00').split(':').map(Number)
-          const isOpen = m >= (h1*60+m1) && m < (h2*60+m2)
+          const isOpen = isInSlot(m, exc.start||'11:00', exc.end||'23:00')
+          const endLabel = (exc.end === '00:00' ? '00h00' : (exc.end||'23:00').replace(':','h'))
+          const startLabel = (exc.start||'11:00').replace(':','h')
           set({
             o: isOpen,
-            t: isOpen ? `Ouvert · jusqu’à ${(exc.end||'23:00').replace(':','h')}` : m < (h1*60+m1) ? `Fermé · ouvre à ${(exc.start||'11:00').replace(':','h')}` : 'Fermé'
+            t: isOpen ? `Ouvert · jusqu’à ${endLabel}` : `Fermé · ouvre à ${startLabel}`
           })
           return
         }
@@ -82,31 +82,24 @@ function useStatus(){
     const eStart = dayConf.eveStart || '18:30'
     const eEnd = dayConf.eveEnd || '23:00'
 
-    const [lh1,lm1] = lStart.split(':').map(Number)
-    const [lh2,lm2] = lEnd.split(':').map(Number)
-    const [eh1,em1] = eStart.split(':').map(Number)
-    const [eh2,em2] = eEnd.split(':').map(Number)
+    const lunch = isInSlot(m, lStart, lEnd)
+    const eve = isInSlot(m, eStart, eEnd)
+    const extraSlots = Array.isArray(dayConf.extraSlots) ? dayConf.extraSlots : []
+    const activeExtra = extraSlots.find(slot => isInSlot(m, slot.start, slot.end))
+    const o = lunch || eve || Boolean(activeExtra)
 
-    const lunch = m >= (lh1*60+lm1) && m < (lh2*60+lm2)
-    const eve = m >= (eh1*60+em1) && m < (eh2*60+em2)
-    const o = lunch || eve
-    const lEndStr = lEnd.replace(':','h')
-    const eEndStr = eEnd.replace(':','h')
+    const formatHour = t => (t === '00:00' ? '00h00' : (t||'').replace(':', 'h'))
+    const closingTime = lunch ? lEnd : (eve ? eEnd : (activeExtra?.end || eEnd))
 
     set({
       o,
       t: o
-        ? (lunch ? `Ouvert · jusqu’à ${lEndStr}` : `Ouvert · jusqu’à ${eEndStr}`)
-        : m < (lh1*60+lm1)
-          ? `Fermé · ouvre à ${lStart.replace(':','h')}`
-          : m < (eh1*60+em1)
-            ? (m < (lh2*60+lm2) ? 'Fermé' : `Fermé · ouvre à ${eStart.replace(':','h')}`)
-            : 'Fermé · ouvre demain'
+        ? `Ouvert · jusqu’à ${formatHour(closingTime)}`
+        : `Fermé · ouvre à ${formatHour(lStart)}`
     })
   },[cfg])
   return s
 }
-
 const Status=({id,style,light})=>{const s=useStatus();return(
   <div className={'status '+(s.o==null?'':s.o?'o':'c')} id={id} style={style} role="status">
     <i/><span>{s.t}</span>
@@ -173,61 +166,82 @@ function Header(){
   </>)
 }
 
-function Hero(){
+function StorefrontHero(){
   const rm=useReducedMotion()
   const [heroErr, setHeroErr]=useState(false)
   const heroSrc = (!heroErr && cfgB.heroImage) ? cfgB.heroImage : (cfgI.pizzas || pizzaImg)
-  return(
-    <div className="hero" id="top">
-      <motion.div className="hero-left" initial={{opacity:0,x:-32}} animate={{opacity:1,x:0}} transition={{duration:.9,ease}}>
-        <Status/>
-        <p className="hero-tag">{cfgB.heroBadge}</p>
-        <h1>{cfgB.heroTitle}<em>{cfgB.heroHighlight}</em></h1>
-        <p className="hero-desc">{cfgB.subTagline}</p>
-        <div className="hero-badges">
-          {cfgF.delivery && (
-            <span className="hero-badge">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              Livraison à domicile
-            </span>
-          )}
-          {cfgF.takeaway && (
-            <span className="hero-badge">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18M3 15h18M12 3v18"/></svg>
-              À emporter
-            </span>
-          )}
-          {cfgF.dineIn && (
-            <span className="hero-badge">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              Sur place
-            </span>
-          )}
-        </div>
-        <div className="hero-ctas">
-          <a className="btn red" href="#carte">Voir la carte & commander →</a>
-          <a className="btn outline" href={TEL}>Appeler</a>
-        </div>
-      </motion.div>
 
-      <motion.div className="hero-right" initial={{opacity:0,scale:1.04}} animate={{opacity:1,scale:1}} transition={{duration:1.1,ease}}>
-        <img
-          src={heroSrc}
-          alt={cfgB.name}
-          fetchpriority="high"
-          onError={()=>setHeroErr(true)}
-        />
-        {cfgB.badgeFloat && (
-          <div className="hero-badge-float">
-            <span>{cfgB.badgeFloat.title}</span>
-            {cfgB.badgeFloat.subtitle}
+  return(
+    <section className="storefront-hero" id="top">
+      <div className="storefront-wrap">
+        {/* Modern Deliveroo / Uber Eats cover banner */}
+        <div className="storefront-cover">
+          <img
+            src={heroSrc}
+            alt={cfgB.name}
+            fetchpriority="high"
+            onError={()=>setHeroErr(true)}
+          />
+          <div className="storefront-cover-overlay" />
+          {cfgB.badgeFloat && (
+            <div className="storefront-promo-pill">
+              <span>{cfgB.badgeFloat.title}</span> • {cfgB.badgeFloat.subtitle}
+            </div>
+          )}
+        </div>
+
+        {/* Restaurant Profile Card */}
+        <div className="storefront-info-card">
+          <div className="storefront-header-row">
+            <div>
+              <div className="storefront-tags-line">
+                <span className="storefront-rating-badge">★ 4.9 <small>(180+ avis)</small></span>
+                <span style={{color:'var(--line)'}}>•</span>
+                <span>Pizzas &amp; Burgers artisanaux</span>
+                <span style={{color:'var(--line)'}}>•</span>
+                <span>Fait maison</span>
+              </div>
+              <h1 className="storefront-title">{cfgB.name}</h1>
+              <p className="storefront-tagline">{cfgB.subTagline || cfgB.tagline}</p>
+            </div>
+            <div className="storefront-actions">
+              <a className="btn red storefront-cta" href="#carte">Voir le menu →</a>
+              <a className="btn ghost storefront-call" href={TEL}>Appeler</a>
+            </div>
           </div>
-        )}
-      </motion.div>
-    </div>
+
+          {/* Quick Info Chips Row (Uber Eats / Deliveroo style) */}
+          <div className="storefront-chips-row">
+            <div className="storefront-chip">
+              <span className="chip-icon">🕒</span>
+              <div>
+                <strong>15–25 min</strong>
+                <small>Préparation rapide</small>
+              </div>
+            </div>
+            <div className="storefront-chip">
+              <span className="chip-icon">🚲</span>
+              <div>
+                <strong>Livraison 2,50 €</strong>
+                <small>Offerte dès 25 €</small>
+              </div>
+            </div>
+            <div className="storefront-chip">
+              <span className="chip-icon">📍</span>
+              <div>
+                <strong>{cfgC.address.city}</strong>
+                <small>{cfgC.address.street}</small>
+              </div>
+            </div>
+            <div className="storefront-chip status-chip">
+              <Status />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }
-
 const Strip=()=>(
   <div className="mq" aria-hidden="true">
     <div>
@@ -614,7 +628,7 @@ export default function App(){
         <a href="#carte" className="skip">Aller à la carte</a>
         <Header/>
         <main id="top">
-          <Hero/>
+          <StorefrontHero/>
           <Menu/>
           <Delivery/>
           <Location/>

@@ -111,6 +111,20 @@ export function getParisTime(d=new Date()){
  return { hour, minute, m, dateStr, dayPart }
 }
 
+export function isInSlot(m, startStr, endStr){
+ if(!startStr || !endStr) return false
+ const [h1, m1] = startStr.split(':').map(Number)
+ const [h2, m2] = endStr.split(':').map(Number)
+ const t1 = h1 * 60 + m1
+ let t2 = h2 * 60 + m2
+ if(t2 === 0 && (h2 === 0 && m2 === 0)){
+  t2 = 1440 // 00:00 midnight closing
+ } else if(t2 < t1){
+  return m >= t1 || m < t2
+ }
+ return m >= t1 && m < t2
+}
+
 export function isOpen(d=new Date(), schedule=null){
  const { m, dateStr, dayPart } = getParisTime(d)
  const activeSched = (schedule && schedule.weekly) ? schedule : DEFAULT_SCHEDULE
@@ -121,9 +135,7 @@ export function isOpen(d=new Date(), schedule=null){
   if(exc){
    if(exc.type==='closed') return false
    if(exc.type==='open'){
-    const [h1,m1]=(exc.start||'00:00').split(':').map(Number)
-    const [h2,m2]=(exc.end||'23:59').split(':').map(Number)
-    return m >= (h1*60+m1) && m < (h2*60+m2)
+    return isInSlot(m, exc.start||'00:00', exc.end||'23:59')
    }
   }
  }
@@ -133,32 +145,17 @@ export function isOpen(d=new Date(), schedule=null){
   const dayConf=activeSched.weekly[dayPart]
   if(dayConf){
    if(dayConf.open===false) return false
-   let inLunch=false, inEve=false
-   if(dayConf.lunchStart && dayConf.lunchEnd){
-    const [lh1,lm1]=dayConf.lunchStart.split(':').map(Number)
-    const [lh2,lm2]=dayConf.lunchEnd.split(':').map(Number)
-    inLunch = m >= (lh1*60+lm1) && m < (lh2*60+lm2)
-   }
-   if(dayConf.eveStart && dayConf.eveEnd){
-    const [eh1,em1]=dayConf.eveStart.split(':').map(Number)
-    const [eh2,em2]=dayConf.eveEnd.split(':').map(Number)
-    inEve = m >= (eh1*60+em1) && m < (eh2*60+em2)
-   }
-   return inLunch || inEve
+   const inLunch = isInSlot(m, dayConf.lunchStart, dayConf.lunchEnd)
+   const inEve = isInSlot(m, dayConf.eveStart, dayConf.eveEnd)
+   const inExtra = Array.isArray(dayConf.extraSlots) && dayConf.extraSlots.some(slot => isInSlot(m, slot.start, slot.end))
+   return inLunch || inEve || inExtra
   }
  }
 
  // 3. Fallback for legacy schedule.hours
  if(schedule && schedule.lunchStart && schedule.lunchEnd){
-  const [lh1,lm1]=schedule.lunchStart.split(':').map(Number)
-  const [lh2,lm2]=schedule.lunchEnd.split(':').map(Number)
-  const inLunch = m >= (lh1*60+lm1) && m < (lh2*60+lm2)
-  let inEve = false
-  if(schedule.eveStart && schedule.eveEnd){
-   const [eh1,em1]=schedule.eveStart.split(':').map(Number)
-   const [eh2,em2]=schedule.eveEnd.split(':').map(Number)
-   inEve = m >= (eh1*60+em1) && m < (eh2*60+em2)
-  }
+  const inLunch = isInSlot(m, schedule.lunchStart, schedule.lunchEnd)
+  const inEve = isInSlot(m, schedule.eveStart, schedule.eveEnd)
   return inLunch || inEve
  }
 

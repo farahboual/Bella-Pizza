@@ -899,6 +899,22 @@ function renderWeeklySchedule(){
   const c = weekly[d.id] || DEFAULT_SCHEDULE.weekly[d.id] || { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' }
   const isOpen = c.open !== false
   const timeDis = !isOpen ? 'opacity:0.4;pointer-events:none' : ''
+  const extraHtml = (c.extraSlots || []).map((ex, exIdx) => `
+    <div class="sh-slot extra-slot" data-idx="${exIdx}">
+     <div style="display:flex;justify-content:space-between;align-items:center">
+      <span class="sh-slot-label">${esc(ex.label || 'Créneau additionnel')}</span>
+      <button type="button" class="del-slot-btn" style="background:none;border:0;color:var(--red);cursor:pointer;font-size:12px;padding:2px 6px;font-weight:700">✕ Supprimer</button>
+     </div>
+     <div class="sh-slot-row">
+      <span class="sh-clock-icon">${clk}</span>
+      <input type="time" class="sh-time-in extra-start" value="${ex.start || '15:00'}">
+      <span class="sh-arr">→</span>
+      <span class="sh-clock-icon">${clk}</span>
+      <input type="time" class="sh-time-in extra-end" value="${ex.end || '18:00'}">
+     </div>
+    </div>
+  `).join('')
+
   return `<div class="sh-day-row" data-day="${d.id}">
    <div class="sh-day-left">
     <span class="sh-day-name">${d.name}</span>
@@ -929,10 +945,10 @@ function renderWeeklySchedule(){
       <input type="time" class="sh-time-in eve-end" value="${c.eveEnd||'23:00'}">
      </div>
     </div>
+    ${extraHtml}
    </div>
    <div class="sh-day-actions">
     <button type="button" class="sh-add-slot-btn">+ Ajouter un créneau</button>
-    <span class="sh-day-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
    </div>
   </div>`
  }).join('')
@@ -949,8 +965,42 @@ function renderWeeklySchedule(){
   }
  })
 
+ const bindDelBtns = (container) => {
+  container.querySelectorAll('.del-slot-btn').forEach(btn => {
+   btn.onclick = () => {
+    btn.closest('.extra-slot').remove()
+    showToast('Créneau retiré. Cliquez sur Enregistrer en bas.')
+   }
+  })
+ }
+ bindDelBtns(grid)
+
  grid.querySelectorAll('.sh-add-slot-btn').forEach(btn => {
-  btn.onclick = () => showToast('Fonctionnalité à venir : créneaux multiples par jour.')
+  btn.onclick = () => {
+   const row = btn.closest('.sh-day-row')
+   const timesDiv = row.querySelector('.sh-day-times')
+   const slotDiv = document.createElement('div')
+   slotDiv.className = 'sh-slot extra-slot'
+   slotDiv.innerHTML = `
+     <div style="display:flex;justify-content:space-between;align-items:center">
+      <span class="sh-slot-label">Créneau additionnel</span>
+      <button type="button" class="del-slot-btn" style="background:none;border:0;color:var(--red);cursor:pointer;font-size:12px;padding:2px 6px;font-weight:700">✕ Supprimer</button>
+     </div>
+     <div class="sh-slot-row">
+      <span class="sh-clock-icon">${clk}</span>
+      <input type="time" class="sh-time-in extra-start" value="15:00">
+      <span class="sh-arr">→</span>
+      <span class="sh-clock-icon">${clk}</span>
+      <input type="time" class="sh-time-in extra-end" value="18:00">
+     </div>
+   `
+   slotDiv.querySelector('.del-slot-btn').onclick = () => {
+    slotDiv.remove()
+    showToast('Créneau retiré.')
+   }
+   timesDiv.appendChild(slotDiv)
+   showToast('Nouveau créneau ajouté ! Pensez à enregistrer en bas.')
+  }
  })
 }
 
@@ -993,11 +1043,23 @@ function collectWeeklySchedule(){
   const row = document.querySelector(`.sh-day-row[data-day="${d.id}"]`)
   if(row){
    const open = row.querySelector('.day-open-chk').checked
-   const lunchStart = row.querySelector('.lunch-start').value || '11:00'
-   const lunchEnd = row.querySelector('.lunch-end').value || '14:30'
-   const eveStart = row.querySelector('.eve-start').value || '18:00'
-   const eveEnd = row.querySelector('.eve-end').value || '23:00'
-   weekly[d.id] = { open, lunchStart, lunchEnd, eveStart, eveEnd }
+   const ls = row.querySelector('.lunch-start')?.value
+   const le = row.querySelector('.lunch-end')?.value
+   const es = row.querySelector('.eve-start')?.value
+   const ee = row.querySelector('.eve-end')?.value
+   const lunchStart = (ls !== undefined && ls !== '') ? ls : '11:00'
+   const lunchEnd = (le !== undefined && le !== '') ? le : '14:30'
+   const eveStart = (es !== undefined && es !== '') ? es : '18:00'
+   const eveEnd = (ee !== undefined && ee !== '') ? ee : '23:00'
+
+   const extraSlots = []
+   row.querySelectorAll('.extra-slot').forEach(slotEl => {
+    const sIn = slotEl.querySelector('.extra-start')?.value || '15:00'
+    const eIn = slotEl.querySelector('.extra-end')?.value || '18:00'
+    extraSlots.push({ start: sIn, end: eIn, label: 'Créneau additionnel' })
+   })
+
+   weekly[d.id] = { open, lunchStart, lunchEnd, eveStart, eveEnd, extraSlots }
   }
  })
  return weekly
