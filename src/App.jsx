@@ -744,8 +744,6 @@ export default function App(){
         <a href="#carte" className="skip">Aller à la carte</a>
         <Header/>
         <main id="top">
-          <CinematicHero/>
-          <ScrollytellingSection/>
           <Menu/>
           <RestaurantInfo/>
         </main>
