@@ -345,3 +345,82 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ===================================================================
+   CART UPSELL INTELLIGENT (Smart Cross-selling to boost basket size)
+   =================================================================== */
+
+.cart-upsell {
+  background: #fff;
+  border: 1.5px dashed var(--line, #e5e0d8);
+  border-radius: 18px;
+  padding: 14px 16px;
+  margin: 6px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cart-upsell-title {
+  font: 800 13px var(--d, sans-serif);
+  color: var(--dark, #28231F);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: -0.01em;
+}
+.cart-upsell-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.cart-upsell-card {
+  background: var(--bg, #F5F2EB);
+  border: 1px solid var(--line, #e5e0d8);
+  border-radius: 12px;
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  transition: transform .15s, border-color .15s;
+}
+.cart-upsell-card:hover {
+  border-color: var(--red, #A3785E);
+  transform: translateY(-1px);
+}
+.cart-upsell-name {
+  font: 700 12px var(--d, sans-serif);
+  color: var(--dark, #28231F);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cart-upsell-price {
+  font: 800 11.5px var(--d, sans-serif);
+  color: var(--red, #A3785E);
+}
+.cart-upsell-btn {
+  background: #fff;
+  color: var(--dark, #28231F);
+  border: 1.5px solid var(--dark, #28231F);
+  border-radius: 99px;
+  padding: 4px 8px;
+  font: 700 11px var(--d, sans-serif);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all .15s;
+  width: 100%;
+}
+.cart-upsell-btn:hover {
+  background: var(--dark, #28231F);
+  color: #fff;
+}
+.cart-upsell-btn.added {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+}

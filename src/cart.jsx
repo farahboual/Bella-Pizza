@@ -157,9 +157,16 @@ export const MobileBar=({tel})=>{const{enabled,count,total,setOpen}=useCart()
  return <div className="bar">{enabled?<button className="btn ink" onClick={()=>setOpen(true)}>{count?`Voir mon panier · ${eur(total)}`:'Commander en ligne'}</button>:<a className="btn ink" href={tel}>Appeler pour commander</a>}</div>
 }
 
+const UPSELL_CANDIDATES = [
+  { id: 'boissons:canettes-33cl', name: 'Canette 33cl', icon: '🥤', fallbackPrice: 200 },
+  { id: 'desserts:tiramisu', name: 'Tiramisu', icon: '🍰', fallbackPrice: 450 },
+  { id: 'desserts:brownies', name: 'Brownie fondant', icon: '🍫', fallbackPrice: 300 },
+  { id: 'desserts:glace-haagen-dazs', name: 'Häagen-Dazs', icon: '🍨', fallbackPrice: 390 }
+]
+
 export function CartDrawer(){
- const{lines,setQty,setNote,setOpt,unit,subtotal,offer:baseOffer,drinkDeal,canetteAlone,clear,total,count,open,setOpen,cfg,getPrice}=useCart()
- const[type,setType]=useState('emporter'),[pay,setPay]=useState(''),[f,setF]=useState({name:'',phone:'',email:'',address:'',postcode:''}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
+ const{lines,add,setQty,setNote,setOpt,unit,subtotal,offer:baseOffer,drinkDeal,canetteAlone,clear,total,count,open,setOpen,cfg,getPrice,isOut,isHidden}=useCart()
+ const[type,setType]=useState('emporter'),[pay,setPay]=useState(''),[f,setF]=useState(()=>{try{const s=localStorage.getItem('tp_customer');if(s)return JSON.parse(s)}catch{}return{name:'',phone:'',email:'',address:'',postcode:''}}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
 
  useEffect(()=>{
   const q=new URLSearchParams(location.search)
@@ -172,7 +179,7 @@ export function CartDrawer(){
 
  if(!open||!cfg)return null
 
- const payment=pay||(cfg.online?'online':'sur_place'),upd=k=>e=>setF({...f,[k]:e.target.value})
+ const payment=pay||(cfg.online?'online':'sur_place'),upd=k=>e=>{const val=e.target.value;setF(prev=>{const next={...prev,[k]:val};try{localStorage.setItem('tp_customer',JSON.stringify(next))}catch{}return next})}
  const offer=type==='emporter'?baseOffer:0
  const currentTotal=subtotal-offer-drinkDeal
  const short=type=='livraison'&&subtotal<RULES.deliveryMin,closed=!cfg.open
@@ -375,6 +382,43 @@ export function CartDrawer(){
 
    </ul>
 
+   {(()=>{
+    const availableUpsells = UPSELL_CANDIDATES.filter(item => {
+      if (isHidden && isHidden(item.id, cfg)) return false
+      if (isOut && isOut(item.id, cfg)) return false
+      return true
+    })
+    if (!availableUpsells.length) return null
+    return (
+      <div className="cart-upsell">
+        <div className="cart-upsell-title">
+          <span>✨ Envie d'une douceur ou d'une boisson fraîche ?</span>
+        </div>
+        <div className="cart-upsell-grid">
+          {availableUpsells.map(u => {
+            const inCart = lines.find(l => l.id === u.id)
+            const price = (getPrice && getPrice(u.id, cfg)) || u.fallbackPrice
+            return (
+              <div key={u.id} className="cart-upsell-card">
+                <div className="cart-upsell-info">
+                  <span className="cart-upsell-name">{u.icon} {u.name}</span>
+                  <span className="cart-upsell-price">{eur(price)}</span>
+                </div>
+                <button
+                  type="button"
+                  className={`cart-upsell-btn ${inCart ? 'added' : ''}`}
+                  onClick={() => add(u.id)}
+                >
+                  {inCart ? `✓ Ajouté (${inCart.qty}) +` : '+ Ajouter'}
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+   })()}
+
    {offer>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🍕 3ème pizza offerte : -{eur(offer)}</p>}
    {type!=='emporter'&&baseOffer>0&&<p className="note" style={{color:'var(--mute)'}}>ℹ️ L’offre 3ème pizza offerte est réservée aux commandes à emporter.</p>}
    {drinkDeal>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🥤 Canette à 1 € avec votre plat : -{eur(drinkDeal)}</p>}
@@ -386,6 +430,7 @@ export function CartDrawer(){
 
    {type==='sur_place'&&<label>Numéro de Table<input placeholder="Ex: Table 4" value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/></label>}
 
+   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:6,marginBottom:2}}><span style={{fontWeight:800,fontSize:13.5}}>Vos coordonnées</span>{f.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>✓ Coordonnées mémorisées</span>}</div>
    <label>Nom<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
    <label>Téléphone<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
    <label>E-mail <small>(reçu de paiement, facultatif)</small><input type="email" autoComplete="email" value={f.email} onChange={upd('email')}/></label>
