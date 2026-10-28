@@ -39,7 +39,7 @@ export const RESTAURANT_CONFIG = {
      * Example: logoUrl: "/client-assets/logo.png"
      * Leave commented-out to use the auto-generated monogram.
      */
-    // logoUrl: "/client-assets/logo.png",
+    logoUrl: "/client-assets/logo.png",
 
     /**
      * HERO IMAGE: the big photo shown on the right side of the hero section.
@@ -47,7 +47,7 @@ export const RESTAURANT_CONFIG = {
      * Example: heroImage: "/client-assets/hero.jpg"
      * Leave commented-out to use the default pizza photo.
      */
-    // heroImage: "/client-assets/hero.jpg",
+    heroImage: "/client-assets/hero.jpg",
 
     metaDescription: "Commandez en ligne nos spécialités faites maison. Livraison rapide ou à emporter.",
     footerNote:      "Produits frais & ingrédients rigoureusement sélectionnés.",
