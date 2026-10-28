@@ -713,6 +713,10 @@ function switchTab(name){
  document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none')
  const target = $('#tab-' + name)
  if(target) target.style.display = 'block'
+ if(name === 'status'){
+  try{renderWeeklySchedule()}catch(e){}
+  try{renderExceptions()}catch(e){}
+ }
 }
 
 document.querySelectorAll('.tab').forEach(b=>{
@@ -875,6 +879,8 @@ async function loadData(){
   if(j.gerantKey)localStorage.setItem('tp_gerant_key',key)
   try{renderSecurity()}catch(e){console.error('renderSecurity',e)}
   try{renderStatus()}catch(e){console.error('renderStatus',e)}
+  try{renderWeeklySchedule()}catch(e){console.error('renderWeeklySchedule',e)}
+  try{renderExceptions()}catch(e){console.error('renderExceptions',e)}
   try{renderMenu()}catch(e){console.error('renderMenu',e)}
   try{renderPromos()}catch(e){console.error('renderPromos',e)}
   try{renderSales()}catch(e){console.error('renderSales',e)}
@@ -891,9 +897,12 @@ function getActiveSchedule(){
 }
 
 function renderWeeklySchedule(){
- const { weekly } = getActiveSchedule()
  const grid = $('#week-schedule-grid')
  if(!grid) return
+ if(document.activeElement && grid.contains(document.activeElement)){
+   return // User is actively editing an input, do not disturb!
+ }
+ const { weekly } = getActiveSchedule()
  const clk = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`
  grid.innerHTML = DAYS_DEF.map(d => {
   const c = weekly[d.id] || DEFAULT_SCHEDULE.weekly[d.id] || { open: true, lunchStart: '11:00', lunchEnd: '14:30', eveStart: '18:00', eveEnd: '23:00' }
@@ -1535,14 +1544,32 @@ $('#logout-btn').onclick=()=>{
  location.reload()
 }
 
+
+async function pollLiveSales(){
+ try{
+  const r = await api()
+  if(r.status === 401) return
+  const j = await r.json()
+  const newSales = j.sales || []
+  if (lastSalesCount !== -1 && newSales.length > lastSalesCount) {
+   playOrderChime()
+   showToast('🔔 Nouvelle commande reçue !')
+  }
+  lastSalesCount = newSales.length
+  sales = newSales
+  try{renderSales()}catch(e){}
+  try{updateDashboardMetrics()}catch(e){}
+ }catch(e){}
+}
+
 // Gate auth with password
 const saved=sessionStorage.getItem('k')||localStorage.getItem('tp_gerant_key')
-if(saved){key=saved;$('#gate').remove();loadData();setInterval(loadData,5000);setInterval(loadData,5000)}
+if(saved){key=saved;$('#gate').remove();loadData();setInterval(pollLiveSales,5000)}
 $('#f').onsubmit=async e=>{
  e.preventDefault();key=$('#pw').value
  const r=await api()
  if(r.status===401){$('#er').textContent='Mot de passe incorrect';return}
- localStorage.setItem('tp_gerant_key',key);sessionStorage.setItem('k',key);$('#gate').remove();loadData()
+ localStorage.setItem('tp_gerant_key',key);sessionStorage.setItem('k',key);$('#gate').remove();loadData();setInterval(pollLiveSales,5000)
 }
 
 const testDbBtn = $('#test-db-btn');
