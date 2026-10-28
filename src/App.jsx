@@ -490,20 +490,6 @@ function Menu(){
     <section className="menu luxury-menu-section" id="carte" style={{ '--menu-bg-img': `url(${activeBgImg})` }}>
       <div className="menu-bg-soft" aria-hidden="true" />
       <div className="wrap">
-        {/* Luxury Section Header */}
-        <div className="menu-header">
-          <div className="menu-eyebrow">
-            <span className="dot-live" />
-            <span>Sélection Culinaire Artisanale</span>
-          </div>
-          <h2 className="menu-title">
-            Notre <em>Carte</em>
-          </h2>
-          <p className="menu-subtitle">
-            Pizzas cuites à la flamme, smash burgers généreux &amp; créations fraîches préparées minute avec des ingrédients nobles.
-          </p>
-        </div>
-
         {/* Search bar */}
         <div className="menu-search-wrap">
           <span className="menu-search-icon">
