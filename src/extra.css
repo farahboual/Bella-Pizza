@@ -2245,3 +2245,123 @@ header {
 .bar {
   background: linear-gradient(transparent, rgba(18, 15, 13, 0.96) 40%) !important;
 }
+
+
+/* ===================================================================
+   SOFT PHOTO PARALLAX BACKGROUND & AMBIANCE SWITCHER FOR MENU
+   =================================================================== */
+
+.luxury-menu-section {
+  position: relative !important;
+  background-color: #120F0D !important;
+  overflow: hidden !important;
+}
+
+/* Soft culinary background photo with subtle parallax effect */
+.menu-bg-soft {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: var(--menu-bg-img);
+  background-repeat: no-repeat;
+  background-position: center 20%;
+  background-size: cover;
+  background-attachment: fixed;
+  opacity: 0.16;
+  filter: blur(2px) saturate(1.15);
+  transform: scale(1.04);
+  transition: background-image 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+/* Dark gradient overlays so text and food cards are ultra crisp and legible */
+.luxury-menu-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 25%, rgba(18, 15, 13, 0.65) 0%, rgba(18, 15, 13, 0.94) 85%, #120F0D 100%);
+}
+
+.luxury-menu-section .wrap {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Ambiance switch control */
+.menu-ambiance-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+  padding: 8px 14px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ambiance-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #D9B59F;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-left: 6px;
+}
+
+.ambiance-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ambiance-pill {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(250, 247, 242, 0.75);
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ambiance-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FAF7F2;
+  border-color: rgba(217, 181, 159, 0.3);
+  transform: translateY(-1px);
+}
+
+.ambiance-pill.active {
+  background: var(--red, #A3785E);
+  color: #FFFFFF;
+  border-color: var(--red, #A3785E);
+  box-shadow: 0 4px 14px rgba(163, 120, 94, 0.35);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .menu-bg-soft {
+    background-attachment: scroll;
+    opacity: 0.13;
+  }
+  .menu-ambiance-bar {
+    border-radius: 18px;
+    padding: 10px 12px;
+  }
+}
