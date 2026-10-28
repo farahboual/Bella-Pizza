@@ -1153,8 +1153,7 @@ function renderStatus(){
  const crEl = $('#closed-reason'); if(crEl) crEl.value = config.closedReason || ''
  const prev = $('#msg-preview'); if(prev) prev.textContent = config.closedReason ? `"${config.closedReason.slice(0,60)}${config.closedReason.length>60?'…':''}"` : '"Notre restaurant est actuellement ouvert."'
 
- renderWeeklySchedule()
- renderExceptions()
+ // Schedule grid is updated on tab switch or save, not on renderStatus
 
  btn.onclick = async () => {
   btn.disabled = true
@@ -1561,6 +1560,18 @@ async function pollLiveSales(){
   try{updateDashboardMetrics()}catch(e){}
  }catch(e){}
 }
+
+
+function updateParisClock(){
+ try{
+  const clk = $('#live-paris-clock')
+  if(clk){
+   clk.textContent = new Date().toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  }
+ }catch(e){}
+}
+setInterval(updateParisClock, 1000)
+updateParisClock()
 
 // Gate auth with password
 const saved=sessionStorage.getItem('k')||localStorage.getItem('tp_gerant_key')
