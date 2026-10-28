@@ -109,6 +109,8 @@ function printTicket(o){
  try{
   if(!o)return
   const {items,cust}=getOrderData(o)
+  const slotM = (o.note||'').match(/\[Heure souhaitée:\s*([^\]]+)\]/i)
+  const slotBadge = slotM ? `<span class="tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-weight:900">⏰ POUR ${esc(slotM[1])}</span>` : ''
   const lines=items.map(l=>`<div class="l big"><span>${l.qty||1} × ${esc(l.name)}</span><span>${eur((l.price||0)*(l.qty||1))}</span></div>${l.note?`<div>   ↳ ${esc(l.note)}</div>`:''}`).join('')
   $('#ticket').innerHTML=`<h2>${esc(restaurantName.toUpperCase())}</h2><div class="c">Commande n° ${o.number||''} · ${time(o.createdAt)}</div><hr><div class="big c">${typeLabel(o)}${o.tableNumber?`<br>TABLE N° ${esc(o.tableNumber)}`:''}</div><hr>${lines}<hr>${o.discount>0?`<div class="l"><span>Réduction</span><span>-${eur(o.discount)}</span></div>`:''}<div class="l big"><span>TOTAL</span><span>${eur(o.total||0)}</span></div><div class="c big">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER ('+typeLabel(o)+')'}</div><hr><div>${esc(cust.name)}<br>Tél ${esc(cust.phone)}${o.type==='livraison'?`<br>${esc(cust.address)}<br>${esc(cust.postcode)}`:''}</div>${o.note?`<hr><div>Note : ${esc(o.note)}</div>`:''}<hr><div class="c">⭐ Merci de votre commande !<br>Laissez-nous 5★ sur Google Maps !</div>`
   window.print()
@@ -137,7 +139,7 @@ function render(){
   const waBtn=waP.length>=9?`<a href="https://wa.me/${waP}?text=${waMsg}" target="_blank" class="btn-wa" style="display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;padding:3px 9px;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;margin-left:8px" title="Envoyer un WhatsApp">💬 WhatsApp</a>`:''
   return `<article class="o ${o.status}" data-id="${o.id}">
   <div class="top"><b>#${o.number}</b><span>${time(o.createdAt)}</span></div>
-  <div class="tags"><span class="tag ${typeClass(o.type)}">${typeLabel(o)}</span><span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
+  <div class="tags"><span class="tag ${typeClass(o.type)}">${typeLabel(o)}</span>${slotBadge}<span class="tag ${o.paid?'pay':'due'}">${o.paid?'PAYÉ EN LIGNE':'À ENCAISSER '+eur(o.total||0)}</span></div>
   <ul>${items.map(l=>`<li><b>${l.qty||1}</b> <div><span>${esc(l.name)}</span>${l.note?`<i>↳ ${esc(l.note)}</i>`:''}</div></li>`).join('')}</ul>
   ${o.discount>0?`<div style="font-size:13px;color:var(--green);font-weight:700">🏷️ Code promo appliqué (-${eur(o.discount)})</div>`:''}
   ${o.note?`<div class="note">💬 ${esc(o.note)}</div>`:''}

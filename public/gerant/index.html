@@ -832,6 +832,23 @@ function renderMenu(query=''){
  }).join('')
 }
 
+let lastSalesCount = -1
+function playOrderChime(){
+ try{
+  const ctx = new (window.AudioContext || window.webkitAudioContext)()
+  const osc = ctx.createOscillator()
+  const gain = ctx.createGain()
+  osc.connect(gain); gain.connect(ctx.destination)
+  osc.type = 'sine'
+  osc.frequency.setValueAtTime(587.33, ctx.currentTime)
+  osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12)
+  gain.gain.setValueAtTime(0.3, ctx.currentTime)
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6)
+  osc.start()
+  osc.stop(ctx.currentTime + 0.6)
+ }catch{}
+}
+
 async function loadData(){
  try{
   const r=await api()
@@ -847,7 +864,13 @@ async function loadData(){
   promos=j.promos||{}
   catalog=j.catalog||{}
   customItems=j.customItems||{}
-  sales=j.sales||[]
+  const newSales = j.sales || []
+  if (lastSalesCount !== -1 && newSales.length > lastSalesCount) {
+    playOrderChime()
+    showToast('🔔 Nouvelle commande reçue !')
+  }
+  lastSalesCount = newSales.length
+  sales = newSales
   kitchenKey=j.kitchenKey||''
   if(j.gerantKey)localStorage.setItem('tp_gerant_key',key)
   try{renderSecurity()}catch(e){console.error('renderSecurity',e)}
@@ -1452,7 +1475,7 @@ $('#logout-btn').onclick=()=>{
 
 // Gate auth with password
 const saved=sessionStorage.getItem('k')||localStorage.getItem('tp_gerant_key')
-if(saved){key=saved;$('#gate').remove();loadData()}
+if(saved){key=saved;$('#gate').remove();loadData();setInterval(loadData,5000);setInterval(loadData,5000)}
 $('#f').onsubmit=async e=>{
  e.preventDefault();key=$('#pw').value
  const r=await api()

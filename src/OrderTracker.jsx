@@ -172,6 +172,8 @@ export function OrderTracker() {
   }
 
   const currentInfo = statusInfo[order.status] || statusInfo.new
+  const slotMatch = (order?.note || '').match(/\[Heure souhaitée:\s*([^\]]+)\]/i)
+  const slotTime = slotMatch ? slotMatch[1] : null
 
   const waMessage = encodeURIComponent(
     `Bonjour, j'ai une question concernant ma commande #${order.number} chez ${cfgB.name || 'votre restaurant'} : `
@@ -257,6 +259,11 @@ export function OrderTracker() {
             <div className="tracker-status-box">
               <div className="tracker-status-title">{currentInfo.title}</div>
               <div className="tracker-status-desc">{currentInfo.desc}</div>
+              {slotTime && (
+                <div style={{ marginTop: 6, fontSize: 12.5, fontWeight: 800, color: '#b45309', background: '#fef3c7', padding: '4px 10px', borderRadius: 8, alignSelf: 'center' }}>
+                  ⏰ Heure souhaitée : {slotTime}
+                </div>
+              )}
               {order.paid && (
                 <div style={{ fontSize: 11.5, color: '#15803d', fontWeight: 700, marginTop: 4 }}>
                   ✓ Commande payée en ligne

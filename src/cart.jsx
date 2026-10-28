@@ -157,6 +157,20 @@ export const MobileBar=({tel})=>{const{enabled,count,total,setOpen}=useCart()
  return <div className="bar">{enabled?<button className="btn ink" onClick={()=>setOpen(true)}>{count?`Voir mon panier · ${eur(total)}`:'Commander en ligne'}</button>:<a className="btn ink" href={tel}>Appeler pour commander</a>}</div>
 }
 
+function getAvailableSlots(){
+  const { m } = getParisTime(new Date())
+  let startM = Math.ceil((m + 30) / 15) * 15
+  const slots = []
+  const maxM = 23 * 60
+  while (startM <= maxM) {
+    const hh = String(Math.floor(startM / 60)).padStart(2, '0')
+    const mm = String(startM % 60).padStart(2, '0')
+    slots.push(`${hh}h${mm}`)
+    startM += 15
+  }
+  return slots
+}
+
 const UPSELL_CANDIDATES = [
   { id: 'boissons:canettes-33cl', name: 'Canette 33cl', icon: '🥤', fallbackPrice: 200 },
   { id: 'desserts:tiramisu', name: 'Tiramisu', icon: '🍰', fallbackPrice: 450 },
@@ -166,7 +180,7 @@ const UPSELL_CANDIDATES = [
 
 export function CartDrawer(){
  const{lines,add,setQty,setNote,setOpt,unit,subtotal,offer:baseOffer,drinkDeal,canetteAlone,clear,total,count,open,setOpen,cfg,getPrice,isOut,isHidden}=useCart()
- const[type,setType]=useState('emporter'),[pay,setPay]=useState(''),[f,setF]=useState(()=>{try{const s=localStorage.getItem('tp_customer');if(s)return JSON.parse(s)}catch{}return{name:'',phone:'',email:'',address:'',postcode:''}}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
+ const[type,setType]=useState('emporter'),[slot,setSlot]=useState('asap'),[pay,setPay]=useState(''),[f,setF]=useState(()=>{try{const s=localStorage.getItem('tp_customer');if(s)return JSON.parse(s)}catch{}return{name:'',phone:'',email:'',address:'',postcode:''}}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
 
  useEffect(()=>{
   const q=new URLSearchParams(location.search)
@@ -231,7 +245,7 @@ export function CartDrawer(){
      })),
 
      customer:f,
-     note,
+     note: slot && slot !== 'asap' ? `[Heure souhaitée: ${slot}] ${note}`.trim() : note,
      tableNumber,
      promoCode:appliedPromo?.code||''
     })
@@ -429,6 +443,19 @@ export function CartDrawer(){
    {short&&<p className="warn">Livraison à partir de {eur(RULES.deliveryMin)} de commande (il manque {eur(RULES.deliveryMin-subtotal)}). Ou choisissez « À emporter » ou « Sur place ».</p>}
 
    {type==='sur_place'&&<label>Numéro de Table<input placeholder="Ex: Table 4" value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/></label>}
+
+   <label>
+     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+      <span style={{fontWeight:700,fontSize:13}}>Créneau horaire souhaité</span>
+      <span style={{fontSize:11.5,color:'var(--mute)'}}>{slot === 'asap' ? '⚡ Immédiat (~25-35 min)' : `⏰ Pour ${slot}`}</span>
+     </div>
+     <select value={slot} onChange={e=>setSlot(e.target.value)} style={{font:'600 14px var(--d)',padding:'11px 12px',borderRadius:12,border:'1.5px solid var(--line)',background:'#fff',width:'100%'}}>
+      <option value="asap">Dès que possible (~25-35 min)</option>
+      {getAvailableSlots().map(s => (
+        <option key={s} value={s}>Pour aujourd'hui à {s}</option>
+      ))}
+     </select>
+   </label>
 
    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:6,marginBottom:2}}><span style={{fontWeight:800,fontSize:13.5}}>Vos coordonnées</span>{f.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>✓ Coordonnées mémorisées</span>}</div>
    <label>Nom<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
