@@ -392,12 +392,6 @@ function ScrollytellingSection() {
 function MinimalHero() {
   return (
     <section className="minimal-hero" id="top">
-      <div
-        className="minimal-hero-bg"
-        style={{ backgroundImage: `url(/client-assets/hero.jpg)` }}
-        aria-hidden="true"
-      />
-      <div className="minimal-hero-overlay" aria-hidden="true" />
       <div className="minimal-hero-content">
         <span className="minimal-hero-badge">
           <span className="dot-live" />
@@ -799,7 +793,10 @@ export default function App(){
       <MotionConfig reducedMotion="user">
         <a href="#carte" className="skip">Aller à la carte</a>
         <Header/>
-        <main>
+        <main className="app-main-canvas">
+          {/* Global fixed full-viewport culinary photo that unifies the whole website */}
+          <div className="global-page-photo-bg" aria-hidden="true" />
+          <div className="global-nude-vignette" aria-hidden="true" />
           <MinimalHero/>
           <Menu/>
           <RestaurantInfo/>

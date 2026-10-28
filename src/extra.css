@@ -2745,3 +2745,258 @@ header {
   50% { transform: scale(1.18); }
   100% { transform: scale(1); }
 }
+
+
+/* ===================================================================
+   UNIFIED NUDE BEIGE AESTHETIC & FULL-PAGE CULINARY PHOTO CANVAS
+   =================================================================== */
+
+:root {
+  --nude-bg: #F4EFEB;
+  --nude-card: rgba(255, 252, 248, 0.78);
+  --nude-card-border: rgba(163, 120, 94, 0.16);
+  --nude-text: #28231F;
+  --nude-text-mute: rgba(40, 35, 31, 0.68);
+  --nude-accent: #A3785E;
+}
+
+html, body {
+  background-color: var(--nude-bg) !important;
+  color: var(--nude-text) !important;
+}
+
+/* App Main Canvas holding the full-page photo */
+.app-main-canvas {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--nude-bg);
+}
+
+/* 1. The culinary photo (pizza, burger, fries & cola) covers the ENTIRE PAGE */
+.global-page-photo-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('/client-assets/hero.jpg');
+  background-size: cover;
+  background-position: center 25%;
+  background-repeat: no-repeat;
+  opacity: 0.28;
+  filter: saturate(1.1);
+  transform: scale(1.02);
+}
+
+/* 2. Warm Nude & Soft Blur Scrim across the entire scroll */
+.global-nude-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 20%, rgba(244, 239, 235, 0.45) 0%, rgba(244, 239, 235, 0.88) 60%, #F4EFEB 100%);
+  backdrop-filter: blur(8px);
+}
+
+/* Top Header in Frosted Nude */
+#hd {
+  background: rgba(244, 239, 235, 0.82) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+}
+#hd.hd-glass-scrolled {
+  background: rgba(244, 239, 235, 0.94) !important;
+  box-shadow: 0 10px 30px rgba(40, 35, 31, 0.08) !important;
+}
+.luxury-logo-title {
+  color: var(--nude-text) !important;
+}
+.luxury-logo-sub {
+  color: var(--nude-accent) !important;
+}
+.luxury-nav-link {
+  color: var(--nude-text-mute) !important;
+}
+.luxury-nav-link:hover {
+  color: var(--nude-text) !important;
+}
+.luxury-phone-btn {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+}
+.luxury-cart-btn {
+  background: var(--nude-accent) !important;
+  color: #fff !important;
+}
+
+/* Hero Section (Blends into the canvas without any borders or cuts) */
+.minimal-hero {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 60vh;
+  padding: 130px 0 30px;
+  background: transparent !important;
+}
+.minimal-hero::after {
+  display: none !important;
+}
+.minimal-hero-badge {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-accent) !important;
+  box-shadow: 0 4px 16px rgba(163, 120, 94, 0.1) !important;
+}
+.minimal-hero-title {
+  color: var(--nude-text) !important;
+}
+.minimal-hero-title em {
+  color: var(--nude-accent) !important;
+}
+.minimal-hero-sub {
+  color: var(--nude-text-mute) !important;
+}
+.minimal-hero-tel {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border: 1.5px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+}
+.minimal-hero-tel:hover {
+  background: #fff !important;
+  color: var(--nude-text) !important;
+}
+.hero-trust-bar {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+  box-shadow: 0 6px 20px rgba(163, 120, 94, 0.08) !important;
+}
+.trust-text {
+  color: var(--nude-text) !important;
+}
+
+/* Menu Section (Shares the exact same canvas, seamlessly flowing down) */
+.luxury-menu-section {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+  margin-top: 0 !important;
+  padding: 10px 0 80px !important;
+}
+.luxury-menu-section::before,
+.menu-bg-soft {
+  display: none !important; /* Unified into the global full-page background */
+}
+
+/* Search bar in Frosted Nude */
+.menu-search-input {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1.5px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+  box-shadow: 0 6px 24px rgba(40, 35, 31, 0.06) !important;
+}
+.menu-search-input::placeholder {
+  color: rgba(40, 35, 31, 0.45) !important;
+}
+.menu-search-icon {
+  color: var(--nude-accent) !important;
+}
+
+/* Category Pills in Warm Sandstone */
+.cat-pill {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+.cat-pill:hover {
+  background: #fff !important;
+  color: var(--nude-text) !important;
+}
+.cat-pill.active {
+  background: var(--nude-accent) !important;
+  color: #fff !important;
+  border-color: var(--nude-accent) !important;
+  box-shadow: 0 6px 18px rgba(163, 120, 94, 0.35) !important;
+}
+
+/* Food Cards: Frosted Milky Glass on Nude Background */
+.food-card-v {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(163, 120, 94, 0.15) !important;
+  box-shadow: 0 8px 24px rgba(40, 35, 31, 0.06) !important;
+}
+.food-card-v:hover {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(163, 120, 94, 0.32) !important;
+  box-shadow: 0 16px 36px rgba(40, 35, 31, 0.12) !important;
+}
+.food-card-v-title {
+  color: var(--nude-text) !important;
+}
+.food-card-v-desc {
+  color: var(--nude-text-mute) !important;
+}
+.food-card-v-price {
+  color: var(--nude-accent) !important;
+}
+.food-badge-marketing {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(163, 120, 94, 0.3) !important;
+  color: var(--nude-accent) !important;
+  box-shadow: 0 4px 12px rgba(40, 35, 31, 0.08) !important;
+}
+
+/* Offer banner */
+.offer-strip-clean {
+  background: rgba(255, 255, 255, 0.68) !important;
+  border: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+}
+
+/* Sizes selector */
+.sz {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+}
+
+/* Restaurant Info Section in Nude */
+.storefront-info-section {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+.info-card {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(163, 120, 94, 0.15) !important;
+  color: var(--nude-text) !important;
+  box-shadow: 0 8px 24px rgba(40, 35, 31, 0.06) !important;
+}
+.info-card h3 {
+  color: var(--nude-text) !important;
+}
+.info-card p, .info-row span, .info-hour-row span {
+  color: var(--nude-text-mute) !important;
+}
+.info-row strong {
+  color: var(--nude-text) !important;
+}
+.info-row.highlight strong {
+  color: var(--nude-accent) !important;
+}
+
+/* Modern Footer in Nude */
+.modern-footer {
+  position: relative;
+  z-index: 1;
+  background: rgba(244, 239, 235, 0.92) !important;
+  border-top: 1px solid var(--nude-card-border) !important;
+  color: var(--nude-text) !important;
+}
+.modern-footer p {
+  color: var(--nude-text-mute) !important;
+}
