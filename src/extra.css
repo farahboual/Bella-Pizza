@@ -2653,3 +2653,95 @@ header {
   }
   .food-card-v-body { padding: 10px 12px 12px; }
 }
+
+
+/* ===================================================================
+   RECORD-READY MARKETING STYLING (TRUST BAR, BADGES, CART MICRO-ANIM)
+   =================================================================== */
+
+/* Hero Trust Proof Bar */
+.hero-trust-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: #FAF7F2;
+  margin-top: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trust-star {
+  color: #fbbf24;
+  font-weight: 800;
+}
+
+.trust-text {
+  color: rgba(250, 247, 242, 0.85);
+  font-weight: 600;
+}
+
+.trust-sep {
+  opacity: 0.3;
+  color: #D9B59F;
+}
+
+/* Marketing highlight badges on food cards */
+.food-card-v {
+  position: relative !important;
+}
+
+.food-badge-marketing {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  background: rgba(18, 15, 13, 0.82);
+  border: 1px solid rgba(217, 181, 159, 0.4);
+  color: #FAF7F2;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 99px;
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Glassmorphic scrolled header */
+#hd.hd-glass-scrolled {
+  background: rgba(18, 15, 13, 0.88) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Button click tactile bounce */
+.add:active {
+  transform: scale(0.85) !important;
+}
+.add.ok {
+  background: #22c55e !important;
+  animation: addPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes addPop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}

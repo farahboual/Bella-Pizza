@@ -159,7 +159,7 @@ function Header(){
   }, [])
 
   return (
-    <header id="hd">
+    <header id="hd" className={on ? 'hd-glass-scrolled' : ''}>
       <a href="#top" aria-label={`${cfgB.name} — accueil`}>
         <Logo />
       </a>
@@ -412,6 +412,24 @@ function MinimalHero() {
           <a className="minimal-hero-cta" href="#carte">Voir la carte →</a>
           <a className="minimal-hero-tel" href={TEL}>📞 {cfgC.phone}</a>
         </div>
+
+        {/* Marketing Trust Proof Bar */}
+        <div className="hero-trust-bar">
+          <div className="trust-item">
+            <span className="trust-star">★ 4.9</span>
+            <span className="trust-text">180+ avis Google</span>
+          </div>
+          <span className="trust-sep">•</span>
+          <div className="trust-item">
+            <span>🔥</span>
+            <span className="trust-text">Pâte maturée 48h</span>
+          </div>
+          <span className="trust-sep">•</span>
+          <div className="trust-item">
+            <span>⚡</span>
+            <span className="trust-text">Livraison 25–35 min</span>
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -430,8 +448,16 @@ const FoodCard = ({ n, d, p, id, img }) => {
     ? n.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
     : n
 
+  // Smart marketing highlight badges for video appeal
+  const isBestSeller = cleanName.toLowerCase().includes('latina') || cleanName.toLowerCase().includes('margherita') || cleanName.toLowerCase().includes('bacon') || cleanName.toLowerCase().includes('double')
+  const isChefsPick = cleanName.toLowerCase().includes('4 fromages') || cleanName.toLowerCase().includes('burrata') || cleanName.toLowerCase().includes('saumon')
+  const badgeText = isBestSeller ? '⭐ Best-Seller' : (isChefsPick ? '✨ Coup de cœur' : null)
+
   return (
     <div className={'food-card-v' + (out ? ' food-card-out' : '')}>
+      {badgeText && (
+        <span className="food-badge-marketing">{badgeText}</span>
+      )}
       {img && !thumbErr ? (
         <div className="food-card-v-img">
           <img src={img} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
