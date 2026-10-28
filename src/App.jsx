@@ -133,39 +133,60 @@ const Logo=()=>{
 }
 
 function Header(){
-  const[on,setOn]=useState(false),[open,setOpen]=useState(false),[act,setAct]=useState('')
+  const[on,setOn]=useState(false),[open,setOpen]=useState(false)
+  const [mode, setMode] = useState('livraison')
+  const { count, total, setOpen: openCart } = useCart()
+
   useEffect(()=>{
     const f=()=>setOn(scrollY>10);f()
     addEventListener('scroll',f,{passive:true})
-    const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&setAct(e.target.id)),{rootMargin:'-45% 0px -50% 0px'})
-    NAV.forEach(([id])=>{const el=document.getElementById(id);if(el)io.observe(el)})
-    const k=e=>e.key=='Escape'&&setOpen(false)
-    addEventListener('keydown',k)
-    return()=>{removeEventListener('scroll',f);removeEventListener('keydown',k);io.disconnect()}
+    return()=>removeEventListener('scroll',f)
   },[])
-  useEffect(()=>{document.body.classList.toggle('menu-open',open)},[open])
-  return(<>
-    <header id="hd" style={on?{boxShadow:'0 4px 24px rgba(0,0,0,.12)'}:{}}>
-      <a className="logo" href="#top" aria-label={`${cfgB.name} — accueil`}><Logo/></a>
-      <nav className="top" aria-label="Navigation">
-        {NAV.map(([id,l])=><a key={id} href={'#'+id} className={act==id?'act':''}>{l}</a>)}
-      </nav>
-      <a className="btn red hd-call" href={TEL}>{cfgC.phone}</a>
-      <CartButton/>
-      <button className="burger" aria-label="Menu" aria-expanded={open} onClick={()=>setOpen(!open)}><i/><i/></button>
-    </header>
-    <div className={'mnav'+(open?' on':'')} onClick={e=>e.target.closest('a')&&setOpen(false)}>
-      <nav aria-label="Navigation mobile">
-        {NAV.map(([id,l])=><a key={id} href={'#'+id}>{l}</a>)}
-      </nav>
-      <div className="mn-f">
-        <p>{cfgC.address.street}<br/>{cfgC.address.postalCode} {cfgC.address.city}</p>
-        <p className="mn-h" style={{fontStyle:'italic',marginTop:10,color:'var(--mute)'}}>{cfgS.displayText}</p>
-      </div>
-    </div>
-  </>)
-}
 
+  return(
+    <header id="hd" style={on?{boxShadow:'0 4px 20px rgba(0,0,0,.08)'}:{}}>
+      <a className="logo" href="#top" aria-label={`${cfgB.name} — accueil`}><Logo/></a>
+
+      <div className="header-mode-toggle" role="radiogroup" aria-label="Mode de commande">
+        <button
+          type="button"
+          className={`header-mode-btn ${mode==='livraison'?'active':''}`}
+          onClick={()=>setMode('livraison')}
+        >
+          🚲 Livraison
+        </button>
+        <button
+          type="button"
+          className={`header-mode-btn ${mode==='emporter'?'active':''}`}
+          onClick={()=>setMode('emporter')}
+        >
+          🛍️ À emporter
+        </button>
+      </div>
+
+      <div style={{display:'flex',alignItems:'center',gap:10}}>
+        <a className="btn outline hd-call" href={TEL} style={{padding:'8px 16px',fontSize:13}}>
+          📞 {cfgC.phone}
+        </a>
+        <button
+          className="cart-pill-btn"
+          onClick={()=>openCart(true)}
+          aria-label="Voir le panier"
+        >
+          <span>🛒</span>
+          {count > 0 ? (
+            <>
+              <b>{count}</b>
+              <span>{eur(total)}</span>
+            </>
+          ) : (
+            <span>Panier</span>
+          )}
+        </button>
+      </div>
+    </header>
+  )
+}
 function StorefrontHero(){
   const rm=useReducedMotion()
   const [heroErr, setHeroErr]=useState(false)
@@ -477,17 +498,20 @@ function Menu(){
         {/* Category Pills (horizontal scroll) */}
         {!q && (
           <div className="cat-pills-bar" role="tablist">
-            {allCats.map(x => (
-              <button
-                key={x.id}
-                className={`cat-pill ${x.id === cat ? 'active' : ''}`}
-                onClick={() => setCat(x.id)}
-                role="tab"
-                aria-selected={x.id === cat}
-              >
-                {x.t}
-              </button>
-            ))}
+            {allCats.map(x => {
+              const icon = x.id === 'pizzas' ? '🍕 ' : x.id === 'burgers' ? '🍔 ' : x.id === 'salades' ? '🥗 ' : x.id === 'texmex' ? '🍗 ' : x.id === 'desserts' ? '🍰 ' : x.id === 'boissons' ? '🥤 ' : '✨ '
+              return (
+                <button
+                  key={x.id}
+                  className={`cat-pill ${x.id === cat ? 'active' : ''}`}
+                  onClick={() => setCat(x.id)}
+                  role="tab"
+                  aria-selected={x.id === cat}
+                >
+                  {icon}{x.t}
+                </button>
+              )
+            })}
           </div>
         )}
 
@@ -559,26 +583,90 @@ function Menu(){
   )
 }
 
-const Delivery=()=>{
-  if(!cfgF.delivery) return null
+function RestaurantInfo(){
   return(
-    <section className="deliv" id="livraison">
+    <section className="storefront-info-section" id="restaurant">
       <div className="wrap">
-        <div className="dcard">
-          <h2>Livraison <span>{cfgB.badgeFloat ? `${cfgB.badgeFloat.title} ${cfgB.badgeFloat.subtitle}` : 'à domicile'}</span></h2>
-          <motion.div className="dgrid" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
-            <div><h4>À domicile &amp; au bureau</h4><p>Dès {eur(cfgD.minOrderCents)} de commande</p></div>
-            <div><h4>Zone limitée</h4><p>Minimum {eur(cfgD.minOrderCents)}</p></div>
-            <div><h4>Paiement</h4><p>CB, Mastercard, Visa<br/>Chèques déjeuner, tickets restaurant</p></div>
-            {cfgF.halalBadge && <div><h4>Halal</h4><p>Viandes certifiées</p></div>}
-          </motion.div>
-          <details className="more">
-            <summary>Conditions de livraison</summary>
-            <p>{cfgD.conditionText}</p>
-          </details>
-          <div className="ctas" style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:32}}>
-            <OrderBtn className="btn lime"/>
-            <a className="btn ghost" style={{color:'#fff',borderColor:'rgba(255,255,255,.4)'}} href={TEL}>Appeler pour commander</a>
+        <div className="info-cards-grid">
+          {/* Card 1: Livraison & Conditions */}
+          <div className="info-card">
+            <div className="info-card-header">
+              <span className="info-card-icon">🚲</span>
+              <div>
+                <h3>Livraison</h3>
+                <p>À domicile ou au bureau</p>
+              </div>
+            </div>
+            <div className="info-card-body">
+              <div className="info-row">
+                <span>Minimum de commande</span>
+                <strong>{eur(cfgD.minOrderCents)}</strong>
+              </div>
+              <div className="info-row">
+                <span>Frais de livraison</span>
+                <strong>{eur(cfgD.deliveryFeeCents)}</strong>
+              </div>
+              <div className="info-row highlight">
+                <span>Livraison offerte</span>
+                <strong>dès {eur(cfgD.freeDeliveryAboveCents)}</strong>
+              </div>
+              <div className="info-row">
+                <span>Moyens de paiement</span>
+                <span style={{textAlign:'right'}}>CB, Visa, Mastercard, Tickets resto</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Adresse & Contact */}
+          <div className="info-card">
+            <div className="info-card-header">
+              <span className="info-card-icon">📍</span>
+              <div>
+                <h3>Adresse &amp; Contact</h3>
+                <p>{cfgB.name} · Paris</p>
+              </div>
+            </div>
+            <div className="info-card-body">
+              <p className="info-address-text">
+                <strong>{cfgC.address.street}</strong><br/>
+                {cfgC.address.postalCode} {cfgC.address.city}
+              </p>
+              <div className="info-contact-links">
+                <a className="btn outline" href={TEL}>📞 {cfgC.phone}</a>
+                <a className="btn red" href={MAPS} target="_blank" rel="noopener">🗺️ Google Maps</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Horaires */}
+          <div className="info-card">
+            <div className="info-card-header">
+              <span className="info-card-icon">🕒</span>
+              <div>
+                <h3>Horaires d’ouverture</h3>
+                <p>Service du midi &amp; du soir</p>
+              </div>
+            </div>
+            <div className="info-card-body">
+              <div className="info-hours-list">
+                <div className="info-hour-row">
+                  <span>Lundi</span>
+                  <span className="closed-text">Fermé</span>
+                </div>
+                <div className="info-hour-row">
+                  <span>Mardi – Jeudi</span>
+                  <span>11h30–14h30 &amp; 18h30–23h00</span>
+                </div>
+                <div className="info-hour-row">
+                  <span>Vendredi – Samedi</span>
+                  <span>11h30–15h00 &amp; 18h30–23h30</span>
+                </div>
+                <div className="info-hour-row">
+                  <span>Dimanche</span>
+                  <span>11h30–15h00 &amp; 18h30–00h00</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -586,29 +674,27 @@ const Delivery=()=>{
   )
 }
 
-const Location=()=>(
-  <section className="loc" id="restaurant">
-    <div className="wrap lgrid">
-      <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
-        <Status id="status"/>
-        <p className="addr">{cfgC.address.street}<br/><span>{cfgC.address.postalCode} {cfgC.address.city}</span></p>
-        <a className="tel" href={TEL}>{cfgC.phone}</a>
-        <div className="ctas" style={{display:'flex',gap:12,flexWrap:'wrap'}}>
-          <a className="btn red" href={MAPS} target="_blank" rel="noopener">Ouvrir dans Google Maps</a>
-          <a className="btn outline" href={TEL}>Appeler</a>
+function ModernFooter(){
+  return(
+    <footer className="modern-footer">
+      <div className="wrap">
+        <div className="modern-footer-inner">
+          <div className="modern-footer-brand">
+            <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+              <Logo/>
+            </div>
+            <p>{cfgB.name} · {cfgC.address.full}</p>
+            <p style={{color:'var(--red)',fontWeight:700,marginTop:6}}>📞 {cfgC.phone}</p>
+          </div>
+          <div className="modern-footer-legal">
+            <p style={{marginBottom:10}}>{cfgB.footerNote}</p>
+            <p style={{opacity:0.7,fontSize:11}}>{cfgB.mentions}</p>
+          </div>
         </div>
-      </motion.div>
-      <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:.1}}>
-        <div className="hrs">
-          <div><span>Horaires</span><span>{cfgS.displayText}</span></div>
-          <div className="today"><span style={{color:'var(--lime)'}}>Service</span><span>Sur place &amp; À emporter</span></div>
-        </div>
-        <p className="lnote">{cfgB.footerNote}</p>
-      </motion.div>
-    </div>
-  </section>
-)
-
+      </div>
+    </footer>
+  )
+}
 export default function App(){
   useEffect(()=>{
     if(RESTAURANT_CONFIG?.theme?.primaryColor){
@@ -630,19 +716,9 @@ export default function App(){
         <main id="top">
           <StorefrontHero/>
           <Menu/>
-          <Delivery/>
-          <Location/>
+          <RestaurantInfo/>
         </main>
-        <footer>
-          <div className="fi">
-            <div className="logo"><Logo/></div>
-            <p>{cfgB.name} · {cfgC.address.full} · {cfgC.phone}</p>
-            <details className="more">
-              <summary>Mentions</summary>
-              <p>{cfgB.mentions}</p>
-            </details>
-          </div>
-        </footer>
+        <ModernFooter/>
         <MobileBar tel={TEL}/>
         <CartDrawer/><OrderTracker/>
       </MotionConfig>

@@ -804,3 +804,222 @@
     gap: 8px;
   }
 }
+
+
+/* ===================================================================
+   MODERN UBER EATS / DELIVEROO STOREFRONT OVERHAUL
+   =================================================================== */
+
+/* Header Cart Pill & Mode Switcher */
+.header-mode-toggle {
+  display: inline-flex;
+  background: #f1ede8;
+  border-radius: 99px;
+  padding: 3px;
+  gap: 2px;
+}
+.header-mode-btn {
+  border: 0;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font: 700 13px var(--d, sans-serif);
+  color: var(--mute, #78716A);
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.header-mode-btn.active {
+  background: #fff;
+  color: var(--dark, #28231F);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.cart-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red, #A3785E);
+  color: #fff;
+  border: 0;
+  border-radius: 99px;
+  padding: 10px 18px;
+  font: 800 14px var(--d, sans-serif);
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 14px rgba(163, 120, 94, 0.28);
+}
+.cart-pill-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(163, 120, 94, 0.38);
+}
+.cart-pill-btn b {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 12px;
+}
+
+/* Sticky Category Header */
+.sticky-cat-nav {
+  position: sticky;
+  top: 72px;
+  z-index: 40;
+  background: rgba(245, 242, 235, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line, #eae5de);
+  padding: 14px 0 10px;
+}
+@media (max-width: 640px) {
+  .sticky-cat-nav {
+    top: 64px;
+    padding: 10px 0 8px;
+  }
+}
+
+/* Info Section (Uber Eats 3-card restaurant profile) */
+.storefront-info-section {
+  padding: 56px 0;
+  background: #ffffff;
+  border-top: 1px solid var(--line, #eae5de);
+}
+.info-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.info-card {
+  background: var(--bg, #F5F2EB);
+  border: 1.5px solid var(--line, #eae5de);
+  border-radius: 22px;
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+}
+.info-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.info-card-icon {
+  font-size: 26px;
+  flex: none;
+}
+.info-card-header h3 {
+  font: 800 18px var(--d, sans-serif);
+  color: var(--dark, #28231F);
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+.info-card-header p {
+  font: 500 13px/1.4 var(--d, sans-serif);
+  color: var(--mute, #78716A);
+  margin: 0;
+}
+.info-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 600 13.5px var(--d, sans-serif);
+  color: var(--mute, #78716A);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(40, 35, 31, 0.06);
+}
+.info-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.info-row strong {
+  color: var(--dark, #28231F);
+  font-weight: 800;
+}
+.info-row.highlight strong {
+  color: var(--red, #A3785E);
+  font-size: 14px;
+}
+.info-address-text {
+  font: 500 14px/1.5 var(--d, sans-serif);
+  color: var(--dark, #28231F);
+  margin-bottom: 16px;
+}
+.info-contact-links {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+.info-contact-links .btn {
+  padding: 10px 16px;
+  font-size: 13.5px;
+  border-radius: 12px;
+  flex: 1;
+  text-align: center;
+}
+.info-hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.info-hour-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 600 13px var(--d, sans-serif);
+  color: var(--dark, #28231F);
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(40, 35, 31, 0.05);
+}
+.info-hour-row:last-child {
+  border-bottom: 0;
+}
+.info-hour-row .closed-text {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .info-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Modern Minimalist Storefront Footer */
+.modern-footer {
+  background: #1c1815;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 44px 0 96px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.modern-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.modern-footer-brand b {
+  color: #fff;
+  font: 800 18px var(--d, sans-serif);
+  display: block;
+  margin-bottom: 6px;
+}
+.modern-footer-brand p {
+  font: 400 13px/1.5 var(--d, sans-serif);
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 40ch;
+}
+.modern-footer-legal {
+  font: 400 12px/1.6 var(--d, sans-serif);
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 50ch;
+}
