@@ -1071,6 +1071,22 @@ header {
   align-items: center;
   gap: 8px;
 }
+
+@media (max-width: 768px) {
+  .luxury-nav {
+    display: none !important;
+  }
+  #hd {
+    padding: 0 14px !important;
+  }
+  .luxury-logo-name {
+    font-size: 15px !important;
+    letter-spacing: 0.04em !important;
+  }
+  .luxury-phone-btn {
+    display: none !important;
+  }
+}
 .luxury-nav-link {
   padding: 8px 16px;
   border-radius: 99px;
