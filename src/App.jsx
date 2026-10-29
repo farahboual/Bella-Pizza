@@ -174,7 +174,7 @@ function Header(){
       {/* Right actions: phone icon (desktop shows number, mobile icon only) + cart */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <a className="luxury-phone-btn" href={TEL} aria-label={`Appeler le ${cfgC.phone}`}>
-          <span className="phone-icon">📞</span>
+          <span className="phone-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
           <span className="phone-number">{cfgC.phone}</span>
         </a>
         <button
@@ -182,7 +182,7 @@ function Header(){
           onClick={() => openCart(true)}
           aria-label="Voir le panier"
         >
-          <span>🛒</span>
+          <span className="cart-icon-svg" style={{display:'inline-flex',alignItems:'center'}}><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 7h12l-1 12H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>
           {count > 0 ? (
             <>
               <b>{count}</b>
@@ -404,23 +404,23 @@ function MinimalHero() {
         <p className="minimal-hero-sub">{cfgB.tagline}</p>
         <div className="minimal-hero-actions">
           <a className="minimal-hero-cta" href="#carte">Voir la carte →</a>
-          <a className="minimal-hero-tel" href={TEL}>📞 {cfgC.phone}</a>
+          <a className="minimal-hero-tel" href={TEL}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}} aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>{cfgC.phone}</a>
         </div>
 
         {/* Marketing Trust Proof Bar */}
         <div className="hero-trust-bar">
           <div className="trust-item">
             <span className="trust-star">★ 4.9</span>
-            <span className="trust-text">180+ avis Google</span>
+            <span className="trust-text">Avis Google vérifiés</span>
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
-            <span>🔥</span>
+            <span className="trust-subtle">Fait maison</span>
             <span className="trust-text">Pâte maturée 48h</span>
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
-            <span>⚡</span>
+            <span className="trust-subtle">Express</span>
             <span className="trust-text">Livraison 25–35 min</span>
           </div>
         </div>
@@ -445,7 +445,7 @@ const FoodCard = ({ n, d, p, id, img }) => {
   // Smart marketing highlight badges for video appeal
   const isBestSeller = cleanName.toLowerCase().includes('latina') || cleanName.toLowerCase().includes('margherita') || cleanName.toLowerCase().includes('bacon') || cleanName.toLowerCase().includes('double')
   const isChefsPick = cleanName.toLowerCase().includes('4 fromages') || cleanName.toLowerCase().includes('burrata') || cleanName.toLowerCase().includes('saumon')
-  const badgeText = isBestSeller ? '⭐ Best-Seller' : (isChefsPick ? '✨ Coup de cœur' : null)
+  const badgeText = isBestSeller ? 'Best-seller' : (isChefsPick ? 'Sélection du Chef' : null)
 
   return (
     <div className={'food-card-v' + (out ? ' food-card-out' : '')}>
@@ -458,7 +458,7 @@ const FoodCard = ({ n, d, p, id, img }) => {
         </div>
       ) : (
         <div className="food-card-v-img food-card-v-img-placeholder" aria-hidden="true">
-          <span>🍽️</span>
+          <span style={{color:'var(--nude-accent,#A3785E)',opacity:0.4}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2v20"/><path d="M18 8a3 3 0 0 0 3-3V2h-6v3a3 3 0 0 0 3 3z"/><path d="M6 2v20"/><path d="M3 2v6a3 3 0 0 0 3 3 3 3 0 0 0 3-3V2"/></svg></span>
         </div>
       )}
       <div className="food-card-v-body">
@@ -560,7 +560,7 @@ function Menu(){
         {cfgF.pizzaDeals && !q && (
           <div className="offer-strip-clean">
             <span className="badge">Offre</span>
-            <span>🍕 2 pizzas achetées = la 3ème offerte à emporter</span>
+            <span>2 pizzas achetées = la 3ème offerte à emporter</span>
           </div>
         )}
 
@@ -568,7 +568,7 @@ function Menu(){
         {!q && (
           <div className="cat-pills-bar" role="tablist">
             {allCats.map(x => {
-              const icon = x.id === 'pizzas' ? '🍕 ' : x.id === 'burgers' ? '🍔 ' : x.id === 'salades' ? '🥗 ' : x.id === 'texmex' ? '🍗 ' : x.id === 'desserts' ? '🍰 ' : x.id === 'boissons' ? '🥤 ' : '✨ '
+              const icon = ''
               return (
                 <button
                   key={x.id}
@@ -671,7 +671,7 @@ function RestaurantInfo(){
           {/* Card 1: Livraison & Conditions */}
           <div className="info-card">
             <div className="info-card-header">
-              <span className="info-card-icon">🚲</span>
+              <span className="info-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg></span>
               <div>
                 <h3>Livraison</h3>
                 <p>À domicile ou au bureau</p>
@@ -700,7 +700,7 @@ function RestaurantInfo(){
           {/* Card 2: Adresse & Contact */}
           <div className="info-card">
             <div className="info-card-header">
-              <span className="info-card-icon">📍</span>
+              <span className="info-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
               <div>
                 <h3>Adresse &amp; Contact</h3>
                 <p>{cfgB.name} · Paris</p>
@@ -712,8 +712,8 @@ function RestaurantInfo(){
                 {cfgC.address.postalCode} {cfgC.address.city}
               </p>
               <div className="info-contact-links">
-                <a className="btn outline" href={TEL}>📞 {cfgC.phone}</a>
-                <a className="btn red" href={MAPS} target="_blank" rel="noopener">🗺️ Google Maps</a>
+                <a className="btn outline" href={TEL}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}} aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>{cfgC.phone}</a>
+                <a className="btn red" href={MAPS} target="_blank" rel="noopener">Itinéraire Google Maps</a>
               </div>
             </div>
           </div>
@@ -721,7 +721,7 @@ function RestaurantInfo(){
           {/* Card 3: Horaires */}
           <div className="info-card">
             <div className="info-card-header">
-              <span className="info-card-icon">🕒</span>
+              <span className="info-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
               <div>
                 <h3>Horaires d’ouverture</h3>
                 <p>Service du midi &amp; du soir</p>

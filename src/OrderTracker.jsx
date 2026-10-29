@@ -141,13 +141,13 @@ export function OrderTracker() {
       badgeClass: 'blue'
     },
     accepted: {
-      title: '👨‍🍳 En préparation en cuisine',
+      title: 'En préparation en cuisine',
       desc: 'Nos cuisiniers préparent votre repas avec des ingrédients frais. Temps estimé : environ 20-30 min.',
       label: 'En cuisine',
       badgeClass: 'orange'
     },
     ready: {
-      title: order.type === 'livraison' ? '🛵 En cours de livraison !' : '🛍️ Votre commande est prête !',
+      title: order.type === 'livraison' ? 'En cours de livraison' : 'Votre commande est prête !',
       desc:
         order.type === 'livraison'
           ? 'Le livreur est en route vers votre adresse avec votre repas bien chaud.'
@@ -158,7 +158,7 @@ export function OrderTracker() {
       badgeClass: 'green'
     },
     done: {
-      title: '🎉 Commande terminée !',
+      title: 'Commande remise & terminée',
       desc: `Bon appétit et merci de votre commande chez ${cfgB.name || 'le restaurant'} !`,
       label: 'Terminée',
       badgeClass: 'green'

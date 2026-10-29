@@ -423,7 +423,7 @@ export function CartDrawer(){
     return (
       <div className="cart-upsell">
         <div className="cart-upsell-title">
-          <span>✨ Envie d'une douceur ou d'une boisson fraîche ?</span>
+          <span>Suggestions gourmandes & boissons fraîches</span>
         </div>
         <div className="cart-upsell-grid">
           {availableUpsells.map(u => {
@@ -450,10 +450,10 @@ export function CartDrawer(){
     )
    })()}
 
-   {offer>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🍕 3ème pizza offerte : -{eur(offer)}</p>}
-   {type!=='emporter'&&baseOffer>0&&<p className="note" style={{color:'var(--mute)'}}>ℹ️ L’offre 3ème pizza offerte est réservée aux commandes à emporter.</p>}
-   {drinkDeal>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>🥤 Canette à 1 € avec votre plat : -{eur(drinkDeal)}</p>}
-   {canetteAlone&&<p className="note">🥤 Canette seule : 1,50 €. Ajoutez un plat et elle passe à 1 €.</p>}
+   {offer>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>3ème pizza offerte : -{eur(offer)}</p>}
+   {type!=='emporter'&&baseOffer>0&&<p className="note" style={{color:'var(--mute)'}}>L’offre 3ème pizza offerte est réservée aux commandes à emporter.</p>}
+   {drinkDeal>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>Canette à 1 € avec votre plat : -{eur(drinkDeal)}</p>}
+   {canetteAlone&&<p className="note">Canette seule : 1,50 €. Passe à 1,00 € avec un plat.</p>}
 
    <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
 
@@ -464,7 +464,7 @@ export function CartDrawer(){
    <label>
      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
       <span style={{fontWeight:700,fontSize:13}}>Créneau horaire souhaité</span>
-      <span style={{fontSize:11.5,color:'var(--mute)'}}>{slot === 'asap' ? '⚡ Immédiat (~25-35 min)' : `⏰ Pour ${slot}`}</span>
+      <span style={{fontSize:11.5,color:'var(--mute)'}}>{slot === 'asap' ? 'Immédiat (~25-35 min)' : `Pour ${slot}`}</span>
      </div>
      <select value={slot} onChange={e=>setSlot(e.target.value)} style={{font:'600 14px var(--d)',padding:'11px 12px',borderRadius:12,border:'1.5px solid var(--line)',background:'#fff',width:'100%'}}>
       <option value="asap">Dès que possible (~25-35 min)</option>
