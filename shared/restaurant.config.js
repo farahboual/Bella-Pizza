@@ -25,13 +25,13 @@ export const RESTAURANT_CONFIG = {
 
   // ─── 1. BRAND & IDENTITY ──────────────────────────────────────────
   brand: {
-    name:          "L'Atelier Gourmand",
-    shortName:     "Atelier",         // shown under monogram & in footer
-    tagline:       "Cuisine authentique & produits frais",
-    subTagline:    "Des recettes généreuses préparées chaque jour avec des ingrédients frais, locaux et de saison.",
-    heroTitle:     "Le goût des",
-    heroHighlight: "bonnes choses.",
-    heroBadge:     "Cuisine artisanale & produits frais",
+    name:          "Tramonto",
+    shortName:     "Tramonto",         // shown under monogram & in footer
+    tagline:       "Pizzeria & Cuisine Italienne Artisanale · Cholet",
+    subTagline:    "Pizzas napolitaines cuites à la flamme, burrata crémeuse et recettes signatures préparées chaque jour avec passion.",
+    heroTitle:     "L'art de la pizza",
+    heroHighlight: "à Cholet.",
+    heroBadge:     "Pizzeria artisanale · Produits frais italiens",
     badgeFloat:    { title: "Livraison offerte", subtitle: "dès 25 €" },
 
     /**
@@ -56,8 +56,8 @@ export const RESTAURANT_CONFIG = {
 
   // ─── 2. THEME & COLORS ────────────────────────────────────────────
   theme: {
-    primaryColor:    "#A3785E",   // Warm Sandstone — buttons, pills, active states
-    primaryHover:    "#8B5E45",   // Deeper tone for hover
+    primaryColor:    "#A35334",   // Warm Sandstone — buttons, pills, active states
+    primaryHover:    "#863E24",   // Deeper tone for hover
     primaryLight:    "#FAF6F1",   // Very light tint — card backgrounds, etc.
     backgroundColor: "#F5F2EB",  // Page background
     textColor:       "#28231F",   // Body text
@@ -66,16 +66,16 @@ export const RESTAURANT_CONFIG = {
 
   // ─── 3. CONTACT & LOCATION ────────────────────────────────────────
   contact: {
-    phone:    "01 42 68 55 00",
-    phoneRaw: "+33142685500",     // E.164 format for tel: links
-    email:    "contact@latelier-gourmand.fr",
+    phone:    "02 44 09 82 10",
+    phoneRaw: "+33244098210",     // E.164 format for tel: links
+    email:    "contact@tramonto-cholet.fr",
     address: {
-      street:     "18 Rue des Gourmets",
-      postalCode: "75002",
-      city:       "Paris",
-      full:       "18 Rue des Gourmets, 75002 Paris"
+      street:     "172 Rue Nationale",
+      postalCode: "49300",
+      city:       "Cholet",
+      full:       "172 Rue Nationale, 49300 Cholet"
     },
-    mapsUrl: "https://maps.google.com/?q=Paris"
+    mapsUrl: "https://www.google.com/maps/place/Tramonto/@47.0621019,-0.8821661,17z/data=!3m1!4b1!4m6!3m5!1s0x4806470039569a47:0xfd2b4535d3a02516!8m2!3d47.0621019!4d-0.8821661!16s%2Fg%2F11yprwvxmy"
   },
 
   // ─── 4. FEATURE TOGGLES ───────────────────────────────────────────
@@ -95,13 +95,13 @@ export const RESTAURANT_CONFIG = {
     minOrderCents:          2000,  // 20.00 € minimum
     freeDeliveryAboveCents: 2500,  // 25.00 € → free delivery
     deliveryFeeCents:        250,  // 2.50 € fee below threshold
-    allowedPostcodes:          [], // [] = all postcodes accepted (demo mode)
+    allowedPostcodes: ["49300", "49280", "49450"], // [] = all postcodes accepted (demo mode)
     conditionText: "Livraison offerte à partir de 25 € de commande. Préparation soignée et livraison rapide dans des emballages éco-responsables."
   },
 
   // ─── 6. OPENING SCHEDULE ──────────────────────────────────────────
   schedule: {
-    displayText: "Mardi au Dimanche · 11h30 à 14h30 & 18h30 à 23h00",
+    displayText: "Mardi au Dimanche · 11h30–14h00 & 18h30–00h00",
     weekly: {
       lun: { open: false, lunchStart: '11:30', lunchEnd: '14:30', eveStart: '18:30', eveEnd: '23:00' },
       mar: { open: true,  lunchStart: '11:30', lunchEnd: '14:30', eveStart: '18:30', eveEnd: '23:00' },
@@ -131,6 +131,13 @@ export const RESTAURANT_CONFIG = {
 
     // Specific dish photos for variety across the menu
     items: {
+      // Tramonto Signature Pizzas
+      'burratissima':          '/client-assets/burratissima.jpg',
+      'panamera':              '/client-assets/panamera.jpg',
+      'thon-de-passion':       '/client-assets/thon-passion.jpg',
+      '4-fromages-tramonto':   '/client-assets/4-fromages-tramonto.jpg',
+      'tiramisu-maison-tramonto': '/client-assets/tiramisu-tramonto.jpg',
+      'tiramisu':              '/client-assets/tiramisu-tramonto.jpg',
       // Pizzas
       'classica':        '/client-assets/pizza.jpg',
       'regina':          '/client-assets/story-4-plated.jpg',

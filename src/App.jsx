@@ -410,18 +410,18 @@ function MinimalHero() {
         {/* Marketing Trust Proof Bar */}
         <div className="hero-trust-bar">
           <div className="trust-item">
-            <span className="trust-star">★ 4.9</span>
-            <span className="trust-text">Avis Google vérifiés</span>
+            <span className="trust-star">★ 4.7</span>
+            <span className="trust-text">145+ avis Google</span>
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
             <span className="trust-subtle">Fait maison</span>
-            <span className="trust-text">Pâte maturée 48h</span>
+            <span className="trust-text">Pâte napolitaine 48h</span>
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
-            <span className="trust-subtle">Express</span>
-            <span className="trust-text">Livraison 25–35 min</span>
+            <span className="trust-subtle">Cholet</span>
+            <span className="trust-text">Livraison &amp; À emporter</span>
           </div>
         </div>
       </div>
@@ -443,8 +443,8 @@ const FoodCard = ({ n, d, p, id, img }) => {
     : n
 
   // Smart marketing highlight badges for video appeal
-  const isBestSeller = cleanName.toLowerCase().includes('latina') || cleanName.toLowerCase().includes('margherita') || cleanName.toLowerCase().includes('bacon') || cleanName.toLowerCase().includes('double')
-  const isChefsPick = cleanName.toLowerCase().includes('4 fromages') || cleanName.toLowerCase().includes('burrata') || cleanName.toLowerCase().includes('saumon')
+  const isBestSeller = cleanName.toLowerCase().includes('burratissima') || cleanName.toLowerCase().includes('panamera') || cleanName.toLowerCase().includes('double') || cleanName.toLowerCase().includes('margherita')
+  const isChefsPick = cleanName.toLowerCase().includes('thon de passion') || cleanName.toLowerCase().includes('4 fromages') || cleanName.toLowerCase().includes('tiramisu')
   const badgeText = isBestSeller ? 'Best-seller' : (isChefsPick ? 'Sélection du Chef' : null)
 
   return (
