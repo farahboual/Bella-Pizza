@@ -452,14 +452,17 @@ const FoodCard = ({ n, d, p, id, img }) => {
   const isChefsPick = cleanName.toLowerCase().includes('charcuterie') || cleanName.toLowerCase().includes('for life') || cleanName.toLowerCase().includes('panuozzo') || cleanName.toLowerCase().includes('4 formaggi') || cleanName.toLowerCase().includes('spaghetti fruit') || cleanName.toLowerCase().includes('tiramisu')
   const badgeText = isBestSeller ? 'Best-seller' : (isChefsPick ? 'Sélection du Chef' : null)
 
+  const baseSlug = id ? (id.split(':')[1] || '') : ''
+  const liveImg = (id && cfg?.itemImages?.[id]) || (baseSlug && cfg?.itemImages?.[baseSlug]) || (id && cfg?.overrides?.[id]?.img) || img
+
   return (
     <div className={'food-card-v' + (out ? ' food-card-out' : '')}>
       {badgeText && (
         <span className="food-badge-marketing">{badgeText}</span>
       )}
-      {img && !thumbErr ? (
+      {liveImg && !thumbErr ? (
         <div className="food-card-v-img">
-          <img src={img} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
+          <img src={liveImg} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
         </div>
       ) : (
         <div className="food-card-v-img food-card-v-img-placeholder" aria-hidden="true">
@@ -530,7 +533,7 @@ function Menu(){
       p: eur(it.price),
       id: it.id,
       cat: 'special',
-      img: it.img || getItemImg('special', slug(it.name))
+      img: it.img || (cfg?.itemImages && cfg.itemImages[it.id]) || getItemImg('special', slug(it.name))
     }))
   ]
 

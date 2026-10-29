@@ -7,13 +7,21 @@ export const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCa
 export const eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
 export function buildCatalog(){
  const m={}
- const add=(id,name,desc,cat,price)=>{if(price)m[id]={id,name,desc:desc||'',cat,price}}
+ const catImgs=RESTAURANT_CONFIG?.images||{}
+ const itemImgs=catImgs.items||{}
+ const getImg=(catId,s)=>itemImgs[s]||catImgs[catId]||catImgs.pizzas||'/client-assets/pizza.jpg'
+ const add=(id,name,desc,cat,price,img)=>{if(price)m[id]={id,name,desc:desc||'',cat,price,img:img||getImg(cat.toLowerCase(),slug(name))}}
  SZ.forEach(([sz,p],i)=>{
   const all=[...pz(tom,T),...pz(cre,C),['LATINA','Sauce BBQ, fromage, viande hachée, merguez']]
-  all.forEach(([n,d])=>add(`pizzas:${slug(n)}:${slug(sz)}`,`Pizza ${n} · ${sz}`,d,'Pizzas',cents(p)))
+  all.forEach(([n,d])=>{
+   const s=slug(n)
+   add(`pizzas:${s}:${slug(sz)}`,`Pizza ${n} · ${sz}`,d,'Pizzas',cents(p),getImg('pizzas',s))
+  })
  })
- CATS.filter(c=>!c.pizza).forEach(c=>c.items.forEach(([n,d,p])=>
-  add(`${c.id}:${slug(n)}`,`${c.t==='Boissons'?'':c.t.replace(/s$/,'')+' '}${n}`.trim(),d,c.t,cents(p||c.p))))
+ CATS.filter(c=>!c.pizza).forEach(c=>c.items.forEach(([n,d,p])=>{
+  const s=slug(n)
+  add(`${c.id}:${s}`,`${c.t==='Boissons'?'':c.t.replace(/s$/,'')+' '}${n}`.trim(),d,c.t,cents(p||c.p),getImg(c.id,s))
+ }))
  return m
 }
 export const CATALOG=buildCatalog()
