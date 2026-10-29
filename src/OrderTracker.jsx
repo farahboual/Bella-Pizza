@@ -233,22 +233,22 @@ export function OrderTracker() {
 
                 <div className="tracker-steps">
                   <div className={`tracker-step ${currentStep > 0 ? 'completed' : currentStep === 0 ? 'current' : ''}`}>
-                    <div className="tracker-step-icon">{currentStep > 0 ? '✓' : '📝'}</div>
+                    <div className="tracker-step-icon">{currentStep > 0 ? '✓' : '1'}</div>
                     <span className="tracker-step-label">Reçue</span>
                   </div>
 
                   <div className={`tracker-step ${currentStep > 1 ? 'completed' : currentStep === 1 ? 'current' : ''}`}>
-                    <div className="tracker-step-icon">{currentStep > 1 ? '✓' : '👨‍🍳'}</div>
+                    <div className="tracker-step-icon">{currentStep > 1 ? '✓' : '2'}</div>
                     <span className="tracker-step-label">Cuisine</span>
                   </div>
 
                   <div className={`tracker-step ${currentStep > 2 ? 'completed' : currentStep === 2 ? 'current' : ''}`}>
-                    <div className="tracker-step-icon">{currentStep > 2 ? '✓' : order.type === 'livraison' ? '🛵' : '🛍️'}</div>
+                    <div className="tracker-step-icon">{currentStep > 2 ? '✓' : '3'}</div>
                     <span className="tracker-step-label">{order.type === 'livraison' ? 'Livraison' : 'Prête'}</span>
                   </div>
 
                   <div className={`tracker-step ${currentStep === 3 ? 'completed' : ''}`}>
-                    <div className="tracker-step-icon">✨</div>
+                    <div className="tracker-step-icon">4</div>
                     <span className="tracker-step-label">Servie</span>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ export function OrderTracker() {
               <div className="tracker-status-desc">{currentInfo.desc}</div>
               {slotTime && (
                 <div style={{ marginTop: 6, fontSize: 12.5, fontWeight: 800, color: '#b45309', background: '#fef3c7', padding: '4px 10px', borderRadius: 8, alignSelf: 'center' }}>
-                  ⏰ Heure souhaitée : {slotTime}
+                  Heure souhaitée : {slotTime}
                 </div>
               )}
               {order.paid && (
@@ -275,7 +275,7 @@ export function OrderTracker() {
             {order.status === 'done' && cfgC.mapsUrl && (
               <div style={{ background: '#fffbeb', border: '1.5px solid #fef3c7', borderRadius: 16, padding: 14, textAlign: 'center' }}>
                 <p style={{ fontWeight: 800, fontSize: 13.5, marginBottom: 6, color: '#92400e' }}>
-                  ⭐ Votre avis compte pour nous !
+                  Votre avis compte pour nous !
                 </p>
                 <a
                   href={cfgC.mapsUrl}
@@ -305,7 +305,7 @@ export function OrderTracker() {
                 className="btn outline"
                 style={{ fontSize: 13, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
               >
-                📞 Appeler le resto
+                Appeler le restaurant
               </a>
             </div>
 
