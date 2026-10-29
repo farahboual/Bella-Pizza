@@ -411,7 +411,7 @@ function MinimalHero() {
         <div className="hero-trust-bar">
           <div className="trust-item">
             <span className="trust-star">★ 4.7</span>
-            <span className="trust-text">145+ avis Google</span>
+            <span className="trust-text">147 avis Google</span>
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
@@ -420,8 +420,13 @@ function MinimalHero() {
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
-            <span className="trust-subtle">Cholet</span>
-            <span className="trust-text">Livraison &amp; À emporter</span>
+            <span className="trust-subtle">Cholet (5 km)</span>
+            <span className="trust-text">Livraison 19h–23h</span>
+          </div>
+          <span className="trust-sep">•</span>
+          <div className="trust-item">
+            <span className="trust-subtle">Viandes</span>
+            <span className="trust-text">Certifiées Halal</span>
           </div>
         </div>
       </div>
@@ -443,8 +448,8 @@ const FoodCard = ({ n, d, p, id, img }) => {
     : n
 
   // Smart marketing highlight badges for video appeal
-  const isBestSeller = cleanName.toLowerCase().includes('burratissima') || cleanName.toLowerCase().includes('panamera') || cleanName.toLowerCase().includes('double') || cleanName.toLowerCase().includes('margherita')
-  const isChefsPick = cleanName.toLowerCase().includes('thon de passion') || cleanName.toLowerCase().includes('4 fromages') || cleanName.toLowerCase().includes('tiramisu')
+  const isBestSeller = cleanName.toLowerCase().includes('burratissima') || cleanName.toLowerCase().includes('panamera') || cleanName.toLowerCase().includes('tramonto') || cleanName.toLowerCase().includes('margherita')
+  const isChefsPick = cleanName.toLowerCase().includes('charcuterie') || cleanName.toLowerCase().includes('for life') || cleanName.toLowerCase().includes('panuozzo') || cleanName.toLowerCase().includes('4 formaggi') || cleanName.toLowerCase().includes('spaghetti fruit') || cleanName.toLowerCase().includes('tiramisu')
   const badgeText = isBestSeller ? 'Best-seller' : (isChefsPick ? 'Sélection du Chef' : null)
 
   return (
@@ -502,7 +507,7 @@ function Menu(){
       return { n, d, p: pizzaPrice, id: 'pizzas:' + s + ':' + slug(SZ[size][0]), cat: 'pizzas', img: getItemImg('pizzas', s) }
     }),
     { n: 'Latina', d: 'Sauce BBQ, fromage, viande hachée, merguez', p: pizzaPrice, id: 'pizzas:latina:' + slug(SZ[size][0]), cat: 'pizzas', img: getItemImg('pizzas', 'latina') }
-  ].slice(0, 5)
+  ]
 
   const allItems = [
     ...pizzaList,
@@ -550,7 +555,7 @@ function Menu(){
           <input
             type="search"
             className="menu-search-input"
-            placeholder="Rechercher une pizza, un burger, un ingrédient..."
+            placeholder="Rechercher une pizza, des pâtes, un gratin, un panuozzo..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -560,7 +565,7 @@ function Menu(){
         {cfgF.pizzaDeals && !q && (
           <div className="offer-strip-clean">
             <span className="badge">Offre</span>
-            <span>2 pizzas achetées = la 3ème offerte à emporter</span>
+            <span>Dimanche au Jeudi : 1 pizza achetée = la 2ème à -50% (ou 2 achetées = 1 offerte à emporter)</span>
           </div>
         )}
 
@@ -764,7 +769,10 @@ function ModernFooter(){
               <Logo/>
             </div>
             <p>{cfgB.name} · {cfgC.address.full}</p>
-            <p style={{color:'var(--red)',fontWeight:700,marginTop:6}}>📞 {cfgC.phone}</p>
+            <p style={{color:'var(--red)',fontWeight:700,marginTop:6,display:'inline-flex',alignItems:'center',gap:6}}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              {cfgC.phone}
+            </p>
           </div>
           <div className="modern-footer-legal">
             <p style={{marginBottom:10}}>{cfgB.footerNote}</p>

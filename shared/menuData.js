@@ -1,22 +1,33 @@
-const T="Sauce tomate maison aux herbes, mozzarella fior di latte, ",C="Crème fraîche d'Isigny, mozzarella fior di latte, ";
-const tom="BURRATISSIMA|Burrata crémeuse entière, roquette fraîche, tomates cerises, copeaux de parmesan, crème balsamique;PANAMERA|Crevettes sautées, saumon mariné, mozzarella di bufala, basilic frais, quartier de citron vert;THON DE PASSION|Thon germon mariné, poivrons marinés, tomates cerises confites, olives, basilic frais;4 FROMAGES TRAMONTO|Gorgonzola AOP, mozzarella fior di latte, parmesan affiné 24 mois, chèvre crémeux;CLASSICA|basilic frais, huile d'olive vierge, mozzarella fior di latte;REGINA|champignons de Paris frais, jambon blanc aux herbes, mozzarella;CALZONE (Soufflée)|jambon blanc, œuf bio, mozzarella fondante;CHORIZO|tomates cerises confites, chorizo ibérique, olives;VÉGÉTARIENNE|champignons, poivrons marinés, tomates fraîches, oignons, olives;ORIENTALE|merguez de bœuf/agneau, oignons, poivrons, œuf bio, olives";
-const cre="SAVOYARDE|bacon croustillant, champignons de Paris, œuf bio;MONTAGNARDE|fromage à raclette affiné, bacon, pommes de terre;CARNIVORE|bœuf haché, merguez, jambon blanc, poulet mariné;TARTIFLETTE|lardons fumés, pommes grenailles, reblochon fermier AOP;MIEL|fromage de chèvre affiné, filet de miel de fleurs;CURRY|sauce curry douce maison, poulet rôti fermier";
+const T="Sauce tomate maison, mozzarella Fior di Latte, ";
+const C="Crème fraîche, mozzarella Fior di Latte, ";
+
+// Pizzas Classiques – sauce tomate
+const tom="MARGHERITA|Tomate pelée, mozzarella Fior di Latte, huile d'olive, basilic frais;REGINA|Tomate pelée, mozzarella Fior di Latte, champignons frais, jambon, origan;POLLO|Crème fraîche, mozzarella Fior di Latte, émincé de poulet, oignons, champignons, parmesan;4 FORMAGGI|Tomate pelée, mozzarella Fior di Latte, gorgonzola, brie, stracciatella di burrata, persil;ORIENTAL|Tomate pelée, mozzarella Fior di Latte, merguez, poivrons, oignons, olives, oeuf;VÉGÉTARIENNE|Tomate pelée, mozzarella Fior di Latte, champignons, poivron, artichauts, roquette, tomate cerise;BOURSIN|Crème Boursin, mozzarella Fior di Latte, viande hachée, oeuf;MEXICAINE|Tomate pelée, mozzarella Fior di Latte, merguez, viande hachée, oeuf;PEPPERONI|Tomate pelée, mozzarella Fior di Latte, pepperoni, gorgonzola;REALTO|Tomate pelée, mozzarella Fior di Latte, merguez, chorizo, poivron, oignon, chèvre;INDIENNE|Crème fraîche, mozzarella Fior di Latte, poulet curry, sauce curry, oignon;4 SEASONS|Tomate pelée, mozzarella, artichaut, poivrons, olives, champignon, jambon, origan;THONO|Tomate pelée, mozzarella Fior di Latte, thon, poivrons, câpres, oignons, olives";
+
+// Pizzas Signature du Chef – crème ou sauce spéciale
+const cre="BURRATISSIMA|Burrata crémeuse entière, roquette fraîche, tomates cerises, copeaux de parmesan, crème balsamique;TRAMONTO|Sauce Beach (tomate, persillade), mozzarella Fior di Latte, crevettes royales, mix fruit de mer;FOR LIFE|Tomate pelée, mozzarella Fior di Latte, merguez, chorizo, jambon, viande hachée, sauce barbecue;CHARCUTERIE|Tomate pelée, mozzarella Fior di Latte, chorizo, jambon, lardons;PANAMERA|Crevettes sautées, saumon mariné, mozzarella di bufala, basilic frais, quartier de citron vert;CALZONE (Soufflée)|Tomate pelée, mozzarella, champignons, jambon, origan, oeuf (servie avec salade)";
+
 const pz=(s,b)=>s.split(";").map(x=>{const[n,e]=x.split("|");return[n,e||b.replace(/, $/,"")]});
 const SZ=[["Junior","9 €","+1 €"],["Sénior","14 €","+1,50 €"],["Méga","19 €","+2 €"]];
 const P=(a)=>a.map(([n,d,p])=>[n,d,p]);
 const CATS=[
   {id:"pizzas",t:"Pizzas Artisanales",pizza:1},
-  {id:"burgers",t:"Burgers Gourmets",notes:["Pain brioché artisanal · Frites fraîches incluses","+1 € avec boisson fraîche 33cl"],items:[
-    ["Cheese","Steak façon bouchère 150g, cheddar affiné, oignons caramélisés, sauce maison","9,50 €"],
-    ["DB Cheese","2 Steaks façon bouchère, double cheddar affiné, sauce fumée maison","11,50 €"],
-    ["Triple Cheese","3 Steaks façon bouchère, triple cheddar affiné, cornichons doux","13,50 €"],
-    ["Fish","Filet de cabillaud pané croustillant, sauce tartare maison, cheddar","9,50 €"],
-    ["Chicken","Filet de poulet croustillant mariné maison, cheddar fondu, sauce ciboulette","9,50 €"],
-    ["Royal Chèvre","Steak boucher 150g, chèvre chaud au miel de fleurs, roquette, oignons rouges","12,00 €"],
-    ["Royal Chicken","Poulet croustillant, galette de pomme de terre dorée, œuf au plat, cheddar","12,50 €"]
+  {id:"pates",t:"Les Pâtes",notes:["Penne ou Spaghetti au choix selon la recette"],items:[
+    ["Carbonara (Penne)","Lardons, jaunes d'œufs, parmesan","11,90 €"],
+    ["4 Formaggi (Pâte au choix)","Brie, gorgonzola, parmesan, emmental","12,50 €"],
+    ["Bolognaise (Spaghetti)","Sauce tomate maison, viande hachée, oignons, ail, herbes","11,90 €"],
+    ["Pâte Saumon (Penne)","Crème, saumon, herbes fraîches, touche de citron","13,90 €"],
+    ["Spaghetti Fruit de Mer","Sauce Beach, crevettes royales, mix fruit de mer, piment, basilic frais","15,90 €"],
+    ["Forestière (Penne)","Crème, parmesan, poulet, champignons","12,90 €"],
+    ["Pâte Curry (Penne)","Sauce curry, parmesan, poulet curry","12,90 €"]
+  ]},
+  {id:"gratins",t:"Gratins & Spécialités",items:[
+    ["Gratin Fondant Savoyard","Viande au choix (lardons, poulet, chorizo, jambon, viande hachée, merguez), pommes de terre fondantes, crème fraîche, emmental et parmesan","10,90 €"],
+    ["Le Gratin du Chef","Pâte penne, crème maison, jambon de dinde, mozzarella, emmental gratiné","10,50 €"],
+    ["Panuozzo","Huile d'olive, stracciatella di burrata, tomate cerise, roquette, parmesan, sauce pisto — jambon de dinde, jambon fumé, bacon, chorizo ou saucisson","11,90 €"],
+    ["Petite Salade","Laitue verte, tomate cerise, concombre, parmesan","3,00 €"]
   ]},
   {id:"salades",t:"Salades & Bowls",h:"Nos salades fraîches maison",p:"8,50 €",items:[
-    ["Pacifique","Mesclun croquant, saumon fumé d'Écosse, avocat frais, graines de sésame dorées","9,50 €"],
     ["Niçoise","Mesclun, thon germon, pommes grenailles, œufs mollets, olives taggiasche","8,50 €"],
     ["Chèvre chaud","Mesclun, toasts dorés au chèvre chaud, miel de fleurs, cerneaux de noix","9,00 €"],
     ["Exotique","Mesclun, crevettes marinées, avocat frais, mangue, sauce cocktail douce","9,50 €"],

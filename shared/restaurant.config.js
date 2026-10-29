@@ -27,12 +27,12 @@ export const RESTAURANT_CONFIG = {
   brand: {
     name:          "Tramonto",
     shortName:     "Tramonto",         // shown under monogram & in footer
-    tagline:       "Pizzeria & Cuisine Italienne Artisanale · Cholet",
-    subTagline:    "Pizzas napolitaines cuites à la flamme, burrata crémeuse et recettes signatures préparées chaque jour avec passion.",
-    heroTitle:     "L'art de la pizza",
-    heroHighlight: "à Cholet.",
-    heroBadge:     "Pizzeria artisanale · Produits frais italiens",
-    badgeFloat:    { title: "Livraison offerte", subtitle: "dès 25 €" },
+    tagline:       "La Napolitaine de Cholet · Pizzas & Pâtes Fraîches",
+    subTagline:    "Pizzas napolitaines artisanales, pâtes fraîches au choix, gratins maison et panuozzo préparés avec passion.",
+    heroTitle:     "La Napolitaine",
+    heroHighlight: "de Cholet.",
+    heroBadge:     "Pâte maturée 48h · Viandes Certifiées Halal",
+    badgeFloat:    { title: "Livraison gratuite", subtitle: "19h–23h (zone 5 km)" },
 
     /**
      * LOGO: drop your file in public/client-assets/ and set the path below.
@@ -85,7 +85,7 @@ export const RESTAURANT_CONFIG = {
     dineIn:      true,   // On-site / QR code ordering (Sur place)
     pizzaDeals:  true,   // "2 pizzas achetées = 3ème offerte" strip
     drinkDeals:  true,   // "Canette à prix réduit avec un plat"
-    halalBadge:  false,  // Show Halal badge in delivery section
+    halalBadge:  true,   // Show Halal badge in delivery section
     promoBanner: true,   // Highlight banner for specials
     bestsellers: true    // "Nos incontournables" section
   },
@@ -96,7 +96,7 @@ export const RESTAURANT_CONFIG = {
     freeDeliveryAboveCents: 2500,  // 25.00 € → free delivery
     deliveryFeeCents:        250,  // 2.50 € fee below threshold
     allowedPostcodes: ["49300", "49280", "49450"], // [] = all postcodes accepted (demo mode)
-    conditionText: "Livraison offerte à partir de 25 € de commande. Préparation soignée et livraison rapide dans des emballages éco-responsables."
+    conditionText: "Livraison gratuite de 19h à 23h (zone 5 km à Cholet). Préparation soignée et livraison rapide."
   },
 
   // ─── 6. OPENING SCHEDULE ──────────────────────────────────────────
@@ -123,7 +123,8 @@ export const RESTAURANT_CONFIG = {
   images: {
     // Category cover photos (fallback for all items in that category)
     pizzas:   "/client-assets/pizza.jpg",
-    burgers:  "/client-assets/burgers.jpg",
+    pates:    "/client-assets/pizza.jpg",
+    gratins:  "/client-assets/tapas.jpg",
     salades:  "/client-assets/salades.jpg",
     texmex:   "/client-assets/tapas.jpg",
     desserts: "/client-assets/desserts.jpg",
@@ -132,53 +133,68 @@ export const RESTAURANT_CONFIG = {
     // Specific dish photos for variety across the menu
     items: {
       // Tramonto Signature Pizzas
-      'burratissima':          '/client-assets/burratissima.jpg',
-      'panamera':              '/client-assets/panamera.jpg',
-      'thon-de-passion':       '/client-assets/thon-passion.jpg',
-      '4-fromages-tramonto':   '/client-assets/4-fromages-tramonto.jpg',
-      'tiramisu-maison-tramonto': '/client-assets/tiramisu-tramonto.jpg',
-      'tiramisu':              '/client-assets/tiramisu-tramonto.jpg',
-      // Pizzas
-      'classica':        '/client-assets/pizza.jpg',
-      'regina':          '/client-assets/story-4-plated.jpg',
-      'campione':        '/client-assets/pizza.jpg',
-      '4-fromages':      '/client-assets/pizza-4fromages.jpg',
-      'latina':          '/client-assets/story-4-plated.jpg',
-
-      // Burgers
-      'cheese':          '/client-assets/burgers.jpg',
-      'db-cheese':       '/client-assets/burgers.jpg',
-      'triple-cheese':   '/client-assets/burgers.jpg',
-      'chicken':         '/client-assets/burger-chicken.jpg',
-      'royal-chicken':   '/client-assets/burger-chicken.jpg',
-      'royal-chevre':    '/client-assets/burgers.jpg',
-      'fish':            '/client-assets/burgers.jpg',
+      'burratissima':              '/client-assets/burratissima.jpg',
+      'panamera':                  '/client-assets/panamera.jpg',
+      'tramonto':                  '/client-assets/panamera.jpg',
+      'thon-de-passion':           '/client-assets/thon-passion.jpg',
+      'thono':                     '/client-assets/thon-passion.jpg',
+      '4-fromages-tramonto':       '/client-assets/4-fromages-tramonto.jpg',
+      '4-formaggi':                '/client-assets/4-fromages-tramonto.jpg',
+      '4-fromages':                '/client-assets/4-fromages-tramonto.jpg',
+      '4-seasons':                 '/client-assets/pizza.jpg',
+      'tiramisu-maison-tramonto':  '/client-assets/tiramisu-tramonto.jpg',
+      'tiramisu':                  '/client-assets/tiramisu-tramonto.jpg',
+      // Pizzas Classiques
+      'margherita':          '/client-assets/pizza.jpg',
+      'alla-regina':         '/client-assets/pizza.jpg',
+      'pollo':               '/client-assets/pizza.jpg',
+      'oriental':            '/client-assets/pizza.jpg',
+      'vegetarienne':        '/client-assets/pizza.jpg',
+      'boursin':             '/client-assets/pizza.jpg',
+      'mexicaine':           '/client-assets/pizza.jpg',
+      'pepperoni':           '/client-assets/pizza.jpg',
+      'realto':              '/client-assets/pizza.jpg',
+      'indienne':            '/client-assets/pizza.jpg',
+      // Signature
+      'charcuterie':         '/client-assets/pizza.jpg',
+      'for-life':            '/client-assets/pizza.jpg',
+      'calzone-soufflee':    '/client-assets/pizza.jpg',
+      // Pâtes & Gratins
+      'carbonara-penne':           '/client-assets/pizza.jpg',
+      'bolognaise-spaghetti':      '/client-assets/pizza.jpg',
+      'pate-saumon-penne':         '/client-assets/salades.jpg',
+      'spaghetti-fruit-de-mer':    '/client-assets/panamera.jpg',
+      'forestiere-penne':          '/client-assets/pizza.jpg',
+      'pate-curry-penne':          '/client-assets/pizza.jpg',
+      'gratin-fondant-savoyard':   '/client-assets/tapas.jpg',
+      'le-gratin-du-chef':         '/client-assets/tapas.jpg',
+      'panuozzo':                  '/client-assets/tapas.jpg',
+      'petite-salade':             '/client-assets/salades.jpg',
 
       // Salades
-      'pacifique':       '/client-assets/salades.jpg',
-      'nicoise':         '/client-assets/salades.jpg',
-      'chevre-chaud':    '/client-assets/salades.jpg',
-      'exotique':        '/client-assets/salades.jpg',
-      'campagnarde':     '/client-assets/salades.jpg',
+      'nicoise':             '/client-assets/salades.jpg',
+      'chevre-chaud':        '/client-assets/salades.jpg',
+      'exotique':            '/client-assets/salades.jpg',
+      'campagnarde':         '/client-assets/salades.jpg',
 
       // Tapas & Entrées
-      'mozza-sticks':    '/client-assets/tapas.jpg',
-      'chicken-wings':   '/client-assets/tapas.jpg',
-      'tenders':         '/client-assets/tapas.jpg',
-      'calamars':        '/client-assets/tapas.jpg',
-      'onion-rings':     '/client-assets/tapas.jpg',
-      'frites':          '/client-assets/tapas.jpg',
-      'potatoes':        '/client-assets/tapas.jpg',
+      'mozza-sticks':        '/client-assets/tapas.jpg',
+      'chicken-wings':       '/client-assets/tapas.jpg',
+      'tenders':             '/client-assets/tapas.jpg',
+      'calamars':            '/client-assets/tapas.jpg',
+      'onion-rings':         '/client-assets/tapas.jpg',
+      'frites':              '/client-assets/tapas.jpg',
+      'potatoes':            '/client-assets/tapas.jpg',
 
       // Desserts
-      'brownies':        '/client-assets/desserts.jpg',
-      'tarte-citron-ou-pommes': '/client-assets/desserts.jpg',
-      'glace-haagen-dazs':      '/client-assets/desserts.jpg',
+      'brownies':                  '/client-assets/desserts.jpg',
+      'tarte-citron-ou-pommes':    '/client-assets/desserts.jpg',
+      'glace-haagen-dazs':         '/client-assets/desserts.jpg',
 
       // Boissons
-      'canettes-33cl':   '/client-assets/boissons.jpg',
-      'maxi-15l':        '/client-assets/boissons.jpg',
-      'maxi-oasis-2l':   '/client-assets/boissons.jpg'
+      'canettes-33cl':       '/client-assets/boissons.jpg',
+      'maxi-15l':            '/client-assets/boissons.jpg',
+      'maxi-oasis-2l':       '/client-assets/boissons.jpg'
     }
   },
 
