@@ -118,14 +118,14 @@ const Logo = () => {
           src={cfgB.logoUrl}
           alt={cfgB.name}
           onError={() => setErr(true)}
-          style={{ height: 42, width: 'auto', borderRadius: 8, objectFit: 'contain', flex: 'none' }}
+          style={{ height: 46, width: 46, borderRadius: '50%', objectFit: 'cover', flex: 'none', border: '1.5px solid rgba(163, 83, 52, 0.3)', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
         />
       ) : (
         <div
           style={{
-            width: 38,
-            height: 38,
-            borderRadius: 10,
+            width: 42,
+            height: 42,
+            borderRadius: '50%',
             background: 'var(--red, #A3785E)',
             display: 'grid',
             placeItems: 'center',
@@ -137,12 +137,12 @@ const Logo = () => {
           }}
           aria-hidden="true"
         >
-          {(cfgB.name || 'A').charAt(0)}
+          {(cfgB.name || 'T').charAt(0)}
         </div>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
         <span className="luxury-logo-title">{cfgB.name}</span>
-        <span className="luxury-logo-sub">{cfgB.shortName || 'RESTAURANT'}</span>
+        <span className="luxury-logo-sub">PIZZERIA · CUCINA</span>
       </div>
     </div>
   )

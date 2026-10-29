@@ -171,7 +171,6 @@ export const RESTAURANT_CONFIG = {
       'potatoes':        '/client-assets/tapas.jpg',
 
       // Desserts
-      'tiramisu':        '/client-assets/desserts.jpg',
       'brownies':        '/client-assets/desserts.jpg',
       'tarte-citron-ou-pommes': '/client-assets/desserts.jpg',
       'glace-haagen-dazs':      '/client-assets/desserts.jpg',
