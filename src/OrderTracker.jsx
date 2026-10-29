@@ -323,8 +323,7 @@ export function OrderTracker() {
               </button>
             ) : (
               <button
-                className="btn ghost"
-                style={{ width: '100%', fontSize: 12.5, color: 'var(--mute)' }}
+                className="tracker-btn-minimize"
                 onClick={() => setOpen(false)}
               >
                 Réduire cette fenêtre (le suivi reste actif)

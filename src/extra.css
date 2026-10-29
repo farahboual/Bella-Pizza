@@ -3424,3 +3424,22 @@ html, body {
   background: #FFFFFF !important;
   border-radius: 99px !important;
 }
+
+.tracker-btn-minimize {
+  width: 100% !important;
+  padding: 12px 14px !important;
+  border-radius: 99px !important;
+  border: 1.5px solid rgba(163, 120, 94, 0.25) !important;
+  background: rgba(163, 120, 94, 0.08) !important;
+  color: var(--nude-text, #28231F) !important;
+  font: 700 13px 'Plus Jakarta Sans', sans-serif !important;
+  cursor: pointer !important;
+  transition: all .2s ease !important;
+  text-align: center !important;
+}
+
+.tracker-btn-minimize:hover {
+  background: rgba(163, 120, 94, 0.16) !important;
+  border-color: var(--nude-accent, #A3785E) !important;
+  color: var(--nude-accent, #A3785E) !important;
+}
