@@ -443,16 +443,19 @@ const FoodCard = ({ n, d, p, id, img }) => {
   const displayPrice = livePrice ? eur(livePrice) : p
   const out = id && isOut ? isOut(id, cfg) : false
 
-  const cleanName = (n.includes(' ') && n === n.toUpperCase())
-    ? n.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
-    : n
+  const baseSlug = id ? (id.split(':')[1] || '') : ''
+  const liveDetails = (id && cfg?.itemDetails?.[id]) || (baseSlug && cfg?.itemDetails?.[baseSlug]) || {}
+  const rawName = liveDetails.name || n
+  const cleanName = (rawName.includes(' ') && rawName === rawName.toUpperCase())
+    ? rawName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    : rawName
+  const displayDesc = liveDetails.desc !== undefined ? liveDetails.desc : d
 
   // Smart marketing highlight badges for video appeal
   const isBestSeller = cleanName.toLowerCase().includes('burratissima') || cleanName.toLowerCase().includes('panamera') || cleanName.toLowerCase().includes('tramonto') || cleanName.toLowerCase().includes('margherita')
   const isChefsPick = cleanName.toLowerCase().includes('charcuterie') || cleanName.toLowerCase().includes('for life') || cleanName.toLowerCase().includes('panuozzo') || cleanName.toLowerCase().includes('4 formaggi') || cleanName.toLowerCase().includes('spaghetti fruit') || cleanName.toLowerCase().includes('tiramisu')
   const badgeText = isBestSeller ? 'Best-seller' : (isChefsPick ? 'Sélection du Chef' : null)
 
-  const baseSlug = id ? (id.split(':')[1] || '') : ''
   const liveImg = (id && cfg?.itemImages?.[id]) || (baseSlug && cfg?.itemImages?.[baseSlug]) || (id && cfg?.overrides?.[id]?.img) || img
 
   return (
@@ -471,7 +474,7 @@ const FoodCard = ({ n, d, p, id, img }) => {
       )}
       <div className="food-card-v-body">
         <h4 className="food-card-v-title">{cleanName}</h4>
-        {d && <p className="food-card-v-desc">{d}</p>}
+        {displayDesc && <p className="food-card-v-desc">{displayDesc}</p>}
         <div className="food-card-v-bottom">
           <span className="food-card-v-price">{displayPrice}</span>
           {out ? (
