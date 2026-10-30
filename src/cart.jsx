@@ -55,7 +55,12 @@ export function CartProvider({children}){
     }))
   }catch{return[]}
  })
- const[open,setOpen]=useState(false),[cfg,setCfg]=useState(null)
+ const[open,setOpen]=useState(false)
+
+ // Seed cfg from localStorage immediately (eliminates photo flash on load)
+ const [cfg,setCfg]=useState(()=>{
+  try{const c=localStorage.getItem('cfg_cache');return c?JSON.parse(c):null}catch{return null}
+ })
 
  useEffect(()=>{try{localStorage.setItem(KEY,JSON.stringify(lines))}catch{}},[lines])
 
@@ -65,6 +70,8 @@ export function CartProvider({children}){
    .then(data=>{
     if(!data)return
     setCfg(data)
+    // Keep a fresh copy in localStorage so next load is instant
+    try{localStorage.setItem('cfg_cache',JSON.stringify(data))}catch{}
     if(data?.customItems){
      setLines(l=>l.filter(a=>CATALOG[a.id]||(a.id.startsWith('custom:')&&!!data.customItems[a.id])))
     }
