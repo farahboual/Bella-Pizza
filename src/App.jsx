@@ -457,6 +457,7 @@ const FoodCard = ({ n, d, p, id, img }) => {
   const badgeText = isBestSeller ? 'Best-seller' : (isChefsPick ? 'Sélection du Chef' : null)
 
   const liveImg = (id && cfg?.itemImages?.[id]) || (baseSlug && cfg?.itemImages?.[baseSlug]) || (id && cfg?.overrides?.[id]?.img) || img
+  const [imgLoaded, setImgLoaded] = useState(false)
 
   return (
     <div className={'food-card-v' + (out ? ' food-card-out' : '')}>
@@ -465,7 +466,14 @@ const FoodCard = ({ n, d, p, id, img }) => {
       )}
       {liveImg && !thumbErr ? (
         <div className="food-card-v-img">
-          <img src={liveImg} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
+          <img
+            src={liveImg}
+            alt={cleanName}
+            loading="lazy"
+            onError={() => setThumbErr(true)}
+            onLoad={() => setImgLoaded(true)}
+            style={{ opacity: imgLoaded ? 1 : 0, transition: 'opacity 0.35s ease' }}
+          />
         </div>
       ) : (
         <div className="food-card-v-img food-card-v-img-placeholder" aria-hidden="true">

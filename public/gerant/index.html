@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Espace Gérant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1631,6 +1631,7 @@ if($('#items-list')) $('#items-list').onchange=async e=>{
    const j=await res.json()
    if(j.itemImages) itemImages=j.itemImages
    else itemImages[id]=dataUrl
+   try{localStorage.removeItem('cfg_cache')}catch{}
    renderMenu($('#search-item') ? $('#search-item').value : '')
    showToast('Photo mise à jour avec succès !')
   } else {
@@ -1706,6 +1707,7 @@ if($('#items-list')) $('#items-list').onclick=async e=>{
     const j=await res.json()
     if(j.itemImages) itemImages=j.itemImages
     else delete itemImages[id]
+    try{localStorage.removeItem('cfg_cache')}catch{}
     renderMenu($('#search-item') ? $('#search-item').value : '')
     showToast('Photo par défaut rétablie')
    }
@@ -1730,6 +1732,7 @@ if($('#items-list')) $('#items-list').onclick=async e=>{
     const j=await res.json()
     if(j.itemDetails) itemDetails=j.itemDetails
     if(j.customItems) customItems=j.customItems
+    try{localStorage.removeItem('cfg_cache')}catch{}
     panel.classList.remove('open')
     renderMenu($('#search-item')?$('#search-item').value:'')
     showToast('Détails mis à jour avec succès !')
