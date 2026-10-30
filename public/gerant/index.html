@@ -1080,7 +1080,7 @@ function renderMenu(query=''){
   const defaultImg = item.img || (catalog[id] && catalog[id].img) || '/client-assets/pizza.jpg'
   const displayImg = customImg || defaultImg
   const hasCustomImg = !!(itemImages[id] || (baseSlug && itemImages[baseSlug]))
-  const liveDetails = itemDetails[id] || {}
+  const liveDetails = itemDetails[id] || (baseSlug && itemDetails[baseSlug]) || {}
   const displayName = liveDetails.name || item.name
   const displayDesc = liveDetails.desc !== undefined ? liveDetails.desc : (item.desc || '')
   const hasDetailOverride = !!(liveDetails.name || (liveDetails.desc !== undefined && liveDetails.desc !== (item.desc || '')))
@@ -1734,12 +1734,20 @@ if($('#items-list')) $('#items-list').onclick=async e=>{
     renderMenu($('#search-item')?$('#search-item').value:'')
     showToast('Détails mis à jour avec succès !')
    } else {
-    showToast('Erreur lors de la sauvegarde')
+    if(res.status===401){
+     showToast('Session expirée, reconnexion...')
+     setTimeout(()=>{ location.reload() }, 1200)
+     return
+    }
+    const errBody=await res.json().catch(()=>({}))
+    const msg = errBody.error || ('Erreur serveur (' + res.status + ')')
+    showToast(msg)
    }
    return
   }
   if(btn.dataset.act==='reset-details'){
    if(!confirm('Rétablir le nom et la description originaux ?')) return
+   showToast('Rétablissement des détails originaux...')
    const res=await api({action:'saveDetails',data:{id,name:'',desc:''}})
    if(res.ok){
     const j=await res.json()
@@ -1747,6 +1755,14 @@ if($('#items-list')) $('#items-list').onclick=async e=>{
     if(j.customItems) customItems=j.customItems
     renderMenu($('#search-item')?$('#search-item').value:'')
     showToast('Détails originaux rétablis')
+   } else {
+    if(res.status===401){
+     showToast('Session expirée, reconnexion...')
+     setTimeout(()=>{ location.reload() }, 1200)
+     return
+    }
+    const errBody=await res.json().catch(()=>({}))
+    showToast(errBody.error || ('Erreur serveur (' + res.status + ')'))
    }
    return
   }
