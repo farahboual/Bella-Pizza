@@ -866,9 +866,13 @@ textarea.edit-field-input{resize:vertical;min-height:54px}
 const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'}),esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
 let key='',config={},overrides={},promos={},catalog={},customItems={},sales=[],itemImages={},itemDetails={},kitchenKey='',newProdImgDataUrl=''
 
-function compressImage(file, maxW=640, maxH=640, quality=0.82){
+function compressImage(file, maxW=480, maxH=480, quality=0.72){
  return new Promise((resolve, reject)=>{
   if(!file){ resolve(''); return }
+  if(file.type && !file.type.startsWith('image/')){
+   reject(new Error('Fichier invalide : veuillez sélectionner une image (JPG, PNG, WebP)'))
+   return
+  }
   const reader=new FileReader()
   reader.onload=e=>{
    const img=new Image()
@@ -883,12 +887,23 @@ function compressImage(file, maxW=640, maxH=640, quality=0.82){
     canvas.height=h
     const ctx=canvas.getContext('2d')
     ctx.drawImage(img,0,0,w,h)
-    resolve(canvas.toDataURL('image/jpeg',quality))
+    let dataUrl=''
+    try {
+     dataUrl=canvas.toDataURL('image/webp', quality)
+     if(!dataUrl || !dataUrl.startsWith('data:image/webp')){
+      dataUrl=canvas.toDataURL('image/jpeg', quality)
+     }
+    } catch {
+     dataUrl=canvas.toDataURL('image/jpeg', quality)
+    }
+    resolve(dataUrl)
    }
-   img.onerror=reject
+   img.onerror=()=>{
+    reject(new Error('Format non reconnu. Pour les photos iPhone, assurez-vous d\'exporter en JPG standard.'))
+   }
    img.src=e.target.result
   }
-  reader.onerror=reject
+  reader.onerror=()=>reject(new Error('Erreur de lecture du fichier'))
   reader.readAsDataURL(file)
  })
 }
@@ -1059,10 +1074,12 @@ function renderMenu(query=''){
   const currentPrice=typeof ov.price==='number'&&ov.price>0?ov.price:item.price
   const isOut=!!ov.outOfStock
   const isHid=!!ov.hidden
-  const customImg = itemImages[id] || (isCustom && item.img)
+  const parts = String(id).split(':')
+  const baseSlug = parts[1] || ''
+  const customImg = itemImages[id] || (baseSlug && itemImages[baseSlug]) || (isCustom && item.img)
   const defaultImg = item.img || (catalog[id] && catalog[id].img) || '/client-assets/pizza.jpg'
   const displayImg = customImg || defaultImg
-  const hasCustomImg = !!customImg
+  const hasCustomImg = !!(itemImages[id] || (baseSlug && itemImages[baseSlug]))
   const liveDetails = itemDetails[id] || {}
   const displayName = liveDetails.name || item.name
   const displayDesc = liveDetails.desc !== undefined ? liveDetails.desc : (item.desc || '')
@@ -1606,8 +1623,9 @@ if($('#items-list')) $('#items-list').onchange=async e=>{
  const f=fileInput.files && fileInput.files[0]
  if(!f) return
  try{
-  showToast('Optimisation et enregistrement de la photo...')
+  showToast('Optimisation de la photo...')
   const dataUrl=await compressImage(f)
+  showToast('Envoi au serveur...')
   const res=await api({action:'saveOverride',data:{id,img:dataUrl}})
   if(res.ok){
    const j=await res.json()
@@ -1616,11 +1634,20 @@ if($('#items-list')) $('#items-list').onchange=async e=>{
    renderMenu($('#search-item') ? $('#search-item').value : '')
    showToast('Photo mise à jour avec succès !')
   } else {
-   showToast('Erreur lors de l\'enregistrement')
+   if(res.status===401){
+    showToast('Session expirée, reconnexion...')
+    setTimeout(()=>{ location.reload() }, 1200)
+    return
+   }
+   const errBody=await res.json().catch(()=>({}))
+   const msg = errBody.error === 'too big' ? 'Image trop volumineuse pour le serveur' : (errBody.error || ('Erreur serveur (' + res.status + ')'))
+   showToast(msg)
   }
  }catch(err){
   console.error(err)
-  showToast('Erreur lors du traitement de la photo')
+  showToast(err.message || 'Erreur lors du traitement de la photo')
+ }finally{
+  fileInput.value=''
  }
 }
 
