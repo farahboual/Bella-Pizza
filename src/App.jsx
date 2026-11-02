@@ -410,24 +410,32 @@ function MinimalHero() {
         {/* Marketing Trust Proof Bar */}
         <div className="hero-trust-bar">
           <div className="trust-item">
-            <span className="trust-star">★ 4.7</span>
-            <span className="trust-text">147 avis Google</span>
+            <span className="trust-star">★ 4.8</span>
+            <span className="trust-text">Avis Clients Vérifiés</span>
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
             <span className="trust-subtle">Fait maison</span>
-            <span className="trust-text">Pâte napolitaine 48h</span>
+            <span className="trust-text">Produits Frais du Jour</span>
           </div>
-          <span className="trust-sep">•</span>
-          <div className="trust-item">
-            <span className="trust-subtle">Cholet (5 km)</span>
-            <span className="trust-text">Livraison 19h–23h</span>
-          </div>
-          <span className="trust-sep">•</span>
-          <div className="trust-item">
-            <span className="trust-subtle">Viandes</span>
-            <span className="trust-text">Certifiées Halal</span>
-          </div>
+          {cfgF.delivery && (
+            <>
+              <span className="trust-sep">•</span>
+              <div className="trust-item">
+                <span className="trust-subtle">{cfgC?.address?.city || 'Livraison'}</span>
+                <span className="trust-text">Livraison Rapide</span>
+              </div>
+            </>
+          )}
+          {cfgF.halalBadge && (
+            <>
+              <span className="trust-sep">•</span>
+              <div className="trust-item">
+                <span className="trust-subtle">Viandes</span>
+                <span className="trust-text">Certifiées Halal</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
@@ -451,10 +459,10 @@ const FoodCard = ({ n, d, p, id, img }) => {
     : rawName
   const displayDesc = liveDetails.desc !== undefined ? liveDetails.desc : d
 
-  // Smart marketing highlight badges for video appeal
-  const isBestSeller = cleanName.toLowerCase().includes('burratissima') || cleanName.toLowerCase().includes('panamera') || cleanName.toLowerCase().includes('tramonto') || cleanName.toLowerCase().includes('margherita')
-  const isChefsPick = cleanName.toLowerCase().includes('charcuterie') || cleanName.toLowerCase().includes('for life') || cleanName.toLowerCase().includes('panuozzo') || cleanName.toLowerCase().includes('4 formaggi') || cleanName.toLowerCase().includes('spaghetti fruit') || cleanName.toLowerCase().includes('tiramisu')
-  const badgeText = isBestSeller ? 'Best-seller' : (isChefsPick ? 'Sélection du Chef' : null)
+  // Optional marketing highlight badges driven by config or item tags
+  const bList = RESTAURANT_CONFIG?.brand?.bestsellerItems || ['margherita', 'burrata', 'burger', 'tiramisu']
+  const isBestSeller = bList.some(item => cleanName.toLowerCase().includes(item.toLowerCase()))
+  const badgeText = isBestSeller ? 'Best-seller' : null
 
   const liveImg = (id && cfg?.itemImages?.[id]) || (baseSlug && cfg?.itemImages?.[baseSlug]) || (id && cfg?.overrides?.[id]?.img) || img
   const [imgLoaded, setImgLoaded] = useState(false)
