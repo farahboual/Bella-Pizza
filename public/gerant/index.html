@@ -1,92 +1,68 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Espace Gérant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F8F4EE;
+  --bg:#F8FAFC;
   --white:#FFFFFF;
   --card-bg:#FFFFFF;
-  --red:#B87958;
-  --red2:#9E6446;
-  --dark:#34251F;
-  --mute:#8C7E75;
-  --line:#EAE1D7;
-  --gold:#D9B98C;
-  --font:'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
-  --serif:'Playfair Display', Georgia, serif;
+  --red:#7A1C1C;
+  --red2:#5C1414;
+  --dark:#0F172A;
+  --mute:#64748B;
+  --line:#E2E8F0;
+  --line-strong:#CBD5E1;
+  --font:'General Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 *{box-sizing:border-box;margin:0}
 body{
-  font:14.5px/1.4 var(--font);
-  background:transparent !important;
+  font:14px/1.45 var(--font);
+  background:var(--bg) !important;
   color:var(--dark);
   -webkit-font-smoothing:antialiased;
   min-height:100vh;
 }
 
-/* Global Full-Page Culinary Photo Background */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background-image: url('/client-assets/hero.jpg');
-  background-size: cover;
-  background-position: center 25%;
-  background-repeat: no-repeat;
-  opacity: 0.88;
-  filter: saturate(1.15) brightness(0.94);
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(244, 239, 235, 0.25) 0%,
-    rgba(244, 239, 235, 0.42) 40%,
-    rgba(244, 239, 235, 0.65) 100%
-  );
-  backdrop-filter: blur(5px);
-}
-
-h1, h2, .sh-page-title {
-  font-family:var(--serif) !important;
+h1, h2, h3, .sh-page-title {
+  font-family:var(--font) !important;
+  font-weight:700 !important;
+  letter-spacing:-0.02em;
 }
 header{
-  background:rgba(244, 239, 235, 0.92) !important;
-  backdrop-filter:blur(16px);
+  background:#FFFFFF !important;
   border-bottom:1px solid var(--line) !important;
 }
 .app-sidebar{
-  background:rgba(255, 255, 255, 0.6) !important;
-  backdrop-filter:blur(12px);
+  background:#FFFFFF !important;
   border-right:1px solid var(--line) !important;
 }
 .card, .sh-card, .dash-stat-card{
-  background:var(--card-bg) !important;
-  backdrop-filter:blur(14px);
+  background:#FFFFFF !important;
   border:1px solid var(--line) !important;
-  border-radius:18px !important;
-  box-shadow:0 6px 20px rgba(40, 35, 31, 0.05) !important;
+  border-radius:10px !important;
+  box-shadow:0 1px 3px rgba(15, 23, 42, 0.04) !important;
+}
+.sidebar-nav .tab{
+  border-radius:6px !important;
 }
 .sidebar-nav .tab.active{
-  background:rgba(163, 120, 94, 0.12) !important;
+  background:rgba(122, 28, 28, 0.08) !important;
   color:var(--red) !important;
+  font-weight:600 !important;
+}
+.sidebar-nav .tab.active svg{
+  stroke:var(--red) !important;
 }
 #f{
-  background:var(--card-bg) !important;
-  backdrop-filter:blur(20px);
+  background:#FFFFFF !important;
   border:1px solid var(--line) !important;
-  box-shadow:0 24px 60px rgba(40, 35, 31, 0.15) !important;
+  box-shadow:0 12px 36px rgba(15, 23, 42, 0.1) !important;
+  border-radius:12px !important;
 }
-a{color:var(--red);text-decoration:none;font-weight:700}
+a{color:var(--red);text-decoration:none;font-weight:600}
 
 /* Top Navigation Bar */
 header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 24px;background:var(--white);border-bottom:1px solid var(--line);height:56px}
@@ -98,26 +74,26 @@ header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center
 #db-indicator{display:none!important}
 
 /* Buttons */
-.btn{font:700 13px var(--font);border:0;border-radius:99px;padding:9px 18px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
-.btn:active{transform:scale(.97)}
-.btn.red{background:var(--red);color:#fff}
-.btn.red:hover{background:var(--red2);box-shadow:0 4px 12px rgba(196,30,23,.25)}
+.btn{font:600 13px var(--font);border:1px solid transparent;border-radius:6px;padding:7px 14px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btn:active{transform:scale(.98)}
+.btn.red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.red:hover{background:var(--red2);border-color:var(--red2)}
 .btn.ink{background:var(--dark);color:#fff}
-.btn.ink:hover{box-shadow:0 4px 12px rgba(0,0,0,.25)}
-.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--dark)}
-.btn.ghost:hover{background:var(--bg)}
+.btn.ink:hover{background:#000}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--dark)}
+.btn.ghost:hover{background:var(--bg);border-color:var(--line-strong)}
 .btn.ok{background:#16a34a;color:#fff}
 .btn.warn{background:#dc2626;color:#fff}
 
 /* Password Gate */
-#gate{position:fixed;inset:0;z-index:50;background:rgba(244, 239, 235, 0.65);backdrop-filter:blur(8px);display:grid;place-items:center;padding:24px}
-#f{background:var(--white);padding:40px 36px;border-radius:24px;box-shadow:0 16px 40px -10px rgba(0,0,0,.08);text-align:center;max-width:400px;width:100%;border:1px solid var(--line)}
+#gate{position:fixed;inset:0;z-index:50;background:rgba(15, 23, 42, 0.45);backdrop-filter:blur(4px);display:grid;place-items:center;padding:24px}
+#f{background:var(--white);padding:36px 32px;border-radius:12px;box-shadow:0 12px 36px rgba(15, 23, 42, 0.12);text-align:center;max-width:380px;width:100%;border:1px solid var(--line)}
 #f .logo{justify-content:center;margin-bottom:16px}
-#f h1{font:900 24px var(--font);letter-spacing:-.03em;margin-bottom:6px;color:var(--dark)}
-#f p{margin:0 0 20px;color:var(--mute);font-size:13.5px;line-height:1.4}
-#pw{display:block;margin:0 auto 10px;font:600 15px var(--font);padding:12px 18px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);width:100%;text-align:center}
-#pw:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
-#er{color:var(--red);min-height:20px;margin-bottom:10px;font-weight:700;font-size:13px}
+#f h1{font:700 20px var(--font);letter-spacing:-.02em;margin-bottom:6px;color:var(--dark)}
+#f p{margin:0 0 20px;color:var(--mute);font-size:13px;line-height:1.4}
+#pw{display:block;margin:0 auto 10px;font:500 14px var(--font);padding:10px 14px;border-radius:6px;border:1px solid var(--line);background:#fff;width:100%;text-align:center}
+#pw:focus{outline:2px solid var(--red);border-color:var(--red)}
+#er{color:var(--red);min-height:20px;margin-bottom:10px;font-weight:600;font-size:12.5px}
 
 /* App Layout & Sidebar */
 .app-layout{display:flex;min-height:calc(100vh - 56px);width:100%;background:transparent !important;}

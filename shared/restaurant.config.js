@@ -1,6 +1,6 @@
 /**
  * ===================================================================
- * RESTAURANT CONFIG — BELLA PIZZA (PREMIUM ITALIAN MINIMALISM)
+ * RESTAURANT CONFIG — BELLA PIZZA (L'ATELIER NAPOLETANO)
  * ===================================================================
  */
 
@@ -11,30 +11,31 @@ export const RESTAURANT_CONFIG = {
     name:          "Bella Pizza",
     shortName:     "Bella Pizza",
     tagline:       "Pizzeria Napolitaine & Smash Burgers Artisanaux",
-    subTagline:    "Farine italienne type 00, fermentation 72h, cuisson au feu de bois à 480°C. Produits nobles d'Italie et viande française.",
+    subTagline:    "Pâte pétrie chaque jour, fermentation lente, cuisson vive à haute température. Produits frais d'Italie et viandes sélectionnées.",
     heroTitle:     "L'Art de la Napolitaine",
     heroHighlight: "au Feu de Bois.",
-    heroBadge:     "Pâte au levain 72h · Cuisson 90 sec à 480°C",
-    badgeFloat:    { title: "Livraison Chaude", subtitle: "En moins de 30 min" },
+    heroBadge:     "Cuisine artisanale & cuissons minute",
+    badgeFloat:    { title: "Préparation Minute", subtitle: "Sur place & Livraison" },
 
     logoUrl:   "/client-assets/logo.png",
     heroImage: "/client-assets/hero.jpg",
 
-    metaDescription: "Bella Pizza — Pizzeria napolitaine artisanale & smash burgers gourmets. Commande en ligne, livraison rapide et à emporter.",
-    footerNote:      "Tous nos produits sont préparés à la commande avec des ingrédients frais importés d'Italie.",
+    metaDescription: "Bella Pizza — Pizzeria napolitaine artisanale & smash burgers gourmets. Commande en ligne, livraison soignée et à emporter.",
+    footerNote:      "Tous nos plats sont préparés à la commande à partir de produits bruts et sélectionnés.",
     mentions:        "Bella Pizza Pizzeria · Pour votre santé, pratiquez une activité physique régulière — www.mangerbouger.fr"
   },
 
-  // ─── 2. THEME & COLORS (MODERN ITALIAN MINIMALISM) ───────────────
+  // ─── 2. THEME & COLORS (L'ATELIER NAPOLETANO) ─────────────────────
   theme: {
-    primaryColor:    "#B87958",   // Warm Terracotta
-    primaryHover:    "#9E6446",   // Deep Terracotta Roast
-    primaryLight:    "#FFFFFF",   // Pure White card
-    backgroundColor: "#F8F4EE",  // Warm Cream Background
-    textColor:       "#34251F",   // Dark Espresso Text
-    accentGold:      "#D9B98C",   // Muted Gold
-    borderColor:     "#EAE1D7",   // Soft Beige Border
-    fontFamily:      "'Inter', 'Plus Jakarta Sans', system-ui, sans-serif"
+    primaryColor:    "#7A1C1C",   // Deep Oxblood
+    primaryHover:    "#5C1414",   // Dark Barolo
+    primaryLight:    "#FFFFFF",   // Pure Alabaster card
+    backgroundColor: "#FBF9F5",   // Warm Alabaster Background
+    textColor:       "#181513",   // Deep Espresso Text
+    accentGold:      "#C8A97E",   // Antique Gold
+    borderColor:     "#EAE4DC",   // Limestone Border
+    fontFamily:      "'General Sans', 'Plus Jakarta Sans', system-ui, sans-serif",
+    fontSerif:       "'Fraunces', Georgia, serif"
   },
 
   // ─── 3. CONTACT & LOCATION ────────────────────────────────────────

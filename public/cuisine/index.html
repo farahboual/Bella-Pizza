@@ -1,316 +1,405 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Écran Cuisine — Bella Pizza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
 <style>
+/* ==========================================================================
+   KITCHEN DASHBOARD — NIGHT SHIFT (OPERATIONAL HIGH-CONTRAST DISPLAY)
+   - Background:    #100E0D
+   - Order Tickets: #24211F
+   - Text:          #FFFFFF
+   - Brand Accent:  #A52A2A
+   - Border:        #36322F
+   ========================================================================== */
+
 :root{
-  --bg:#F8F4EE;
+  --bg:#100E0D;
+  --ticket:#24211F;
+  --ticket-inner:#1B1917;
   --white:#FFFFFF;
-  --card-bg:#FFFFFF;
-  --red:#B87958;
-  --red2:#9E6446;
-  --dark:#34251F;
-  --mute:#8C7E75;
-  --line:#EAE1D7;
-  --gold:#D9B98C;
-  --green:#B87958;
-  --green-bg:rgba(184, 121, 88, 0.12);
-  --font:'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
-  --serif:'Playfair Display', Georgia, serif;
+  --text:#FFFFFF;
+  --mute:#A19891;
+  --line:#36322F;
+  --red:#A52A2A;
+  --red-hover:#852222;
+  --amber:#F59E0B;
+  --amber-bg:rgba(245, 158, 11, 0.15);
+  --green:#10B981;
+  --green-bg:rgba(16, 185, 129, 0.15);
+  --blue:#3B82F6;
+  --blue-bg:rgba(59, 130, 246, 0.15);
+  --font:'General Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
-*{box-sizing:border-box;margin:0}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
 body{
-  font:14.5px/1.4 var(--font);
-  background:var(--bg);
-  color:var(--dark);
+  font:15px/1.4 var(--font);
+  background:var(--bg) !important;
+  color:var(--white) !important;
   -webkit-font-smoothing:antialiased;
   min-height:100vh;
 }
 
-/* Global Full-Page Culinary Photo Background */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background-image: url('/client-assets/hero.jpg');
-  background-size: cover;
-  background-position: center 20%;
-  background-repeat: no-repeat;
-  opacity: 0.75;
-  filter: saturate(1.15) brightness(0.92);
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(244, 239, 235, 0.40) 0%,
-    rgba(244, 239, 235, 0.55) 40%,
-    rgba(244, 239, 235, 0.75) 100%
-  );
-  backdrop-filter: blur(8px);
-}
-
-header h1, #f h1, .top b{
-  font-family:var(--serif) !important;
-}
+/* Header bar */
 header{
-  background:rgba(244, 239, 235, 0.92) !important;
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--line) !important;
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  gap:16px;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 24px;
+  background:#181513 !important;
+  border-bottom:1.5px solid var(--line) !important;
 }
-.o{
-  background:var(--card-bg) !important;
-  backdrop-filter:blur(14px);
-  border:1px solid var(--line) !important;
-  border-radius:20px !important;
-  box-shadow:0 8px 24px rgba(40, 35, 31, 0.06) !important;
+
+header h1{
+  font:800 20px var(--font);
+  letter-spacing:-0.02em;
+  color:#FFFFFF !important;
+  display:flex;
+  align-items:center;
 }
-.o.new{
+header h1 span{
+  color:var(--red) !important;
+  margin-left:6px;
+}
+.st{
+  font-size:12px;
+  font-weight:600;
+  color:var(--mute);
+  margin-top:2px;
+}
+
+/* Buttons */
+.btn{
+  font:700 14px var(--font);
+  border:1px solid transparent;
+  border-radius:8px;
+  padding:10px 18px;
+  cursor:pointer;
+  transition:all 0.15s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  text-decoration:none;
+}
+.btn:active{transform:scale(0.97)}
+.btn.red{
+  background:var(--red) !important;
+  color:#FFFFFF !important;
   border-color:var(--red) !important;
-  box-shadow:0 12px 32px -6px rgba(163, 120, 94, 0.28) !important;
 }
-ul{
-  background:rgba(255, 255, 255, 0.6) !important;
-  border:1px solid var(--line) !important;
+.btn.red:hover{
+  background:var(--red-hover) !important;
 }
-.cust{
-  background:rgba(255, 255, 255, 0.6) !important;
+.btn.ink{
+  background:#36322F !important;
+  color:#FFFFFF !important;
+  border-color:var(--line) !important;
+}
+.btn.ink:hover{
+  background:#48433F !important;
+}
+.btn.ok{
+  background:#10B981 !important;
+  color:#FFFFFF !important;
+}
+.btn.ok:hover{
+  background:#059669 !important;
+}
+.btn.ghost{
+  background:transparent !important;
   border:1px solid var(--line) !important;
+  color:var(--white) !important;
+}
+.btn.ghost:hover{
+  background:rgba(255,255,255,0.06) !important;
+}
+
+/* Password Gate */
+#gate{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:rgba(16, 14, 13, 0.95);
+  display:grid;
+  place-items:center;
+  padding:24px;
 }
 #f{
-  background:var(--card-bg) !important;
-  backdrop-filter:blur(20px);
+  background:var(--ticket) !important;
+  padding:40px 36px;
+  border-radius:16px;
   border:1px solid var(--line) !important;
-  box-shadow:0 24px 60px rgba(40, 35, 31, 0.15) !important;
+  box-shadow:0 24px 60px rgba(0,0,0,0.6) !important;
+  text-align:center;
+  max-width:420px;
+  width:100%;
 }
-a{color:var(--red);text-decoration:none;font-weight:700}
-header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--white);border-bottom:1px solid var(--line);box-shadow:0 4px 24px rgba(0,0,0,.04)}
-header h1{font:900 22px var(--font);letter-spacing:-.03em} header h1 span{color:var(--red)}
-.st{font-size:13px;font-weight:600;color:var(--mute);margin-top:2px}
-.btn{font:700 15px var(--font);border:0;border-radius:99px;padding:12px 20px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
-.btn:active{transform:scale(.96)}
-.btn.red{background:var(--red);color:#fff} .btn.red:hover{background:var(--red2);box-shadow:0 8px 20px -8px rgba(196,30,23,.5)}
-.btn.ink{background:var(--dark);color:#fff} .btn.ink:hover{box-shadow:0 8px 20px -8px rgba(0,0,0,.4)}
-.btn.ok{background:#22c55e;color:#fff}
-.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--dark)} .btn.ghost:hover{background:var(--bg)}
-#gate{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:24px}
-#f{background:var(--white);padding:48px 40px;border-radius:32px;box-shadow:0 24px 48px -12px rgba(0,0,0,.08);text-align:center;max-width:440px;width:100%;border:1px solid var(--line)}
-#f h1{font:900 32px var(--font);letter-spacing:-.04em;margin-bottom:12px} #f h1 span{color:var(--red)}
-#f p{margin:0 0 24px;color:var(--mute);font-size:15px}
-#pw{display:block;margin:0 auto 12px;font:600 16px var(--font);padding:14px 20px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg);width:100%;text-align:center}
-#pw:focus{outline:3px solid rgba(196,30,23,.2);border-color:var(--red)}
-#er{color:var(--red);min-height:22px;margin-bottom:12px;font-weight:700;font-size:14px}
-#go{width:100%;padding:16px;font-size:16px}
-main{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;padding:24px}
-.o{background:#fff;border-radius:24px;padding:24px;border:2px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.03);display:flex;flex-direction:column;gap:16px;transition:all .3s}
-.o.new{border-color:var(--red);box-shadow:0 12px 32px -12px rgba(196,30,23,.25);animation:bl 2s infinite}
-.o.accepted{border-color:var(--line)} .o.ready{border-color:#22c55e}
-@keyframes bl{0%,100%{background:#fff}50%{background:#fff8f7}}
-.top{display:flex;justify-content:space-between;align-items:baseline}
-.top b{font:900 32px var(--font);letter-spacing:-.04em;color:var(--dark)}
-.top span{font:700 15px var(--font);color:var(--mute)}
-.tags{display:flex;gap:6px;flex-wrap:wrap}
-.tag{display:inline-flex;padding:5px 12px;border-radius:9px;font:800 12px var(--font);text-transform:uppercase;letter-spacing:.05em}
-.tag.mod{background:var(--bg);color:var(--mute)}
-.tag.pay{background:var(--green-bg);color:var(--green)}
-.tag.due{background:#fff0ef;color:var(--red)}
-ul{list-style:none;padding:8px 12px;margin:0;background:var(--bg);border-radius:16px;border:1px solid var(--line)}
-li{padding:10px 0;border-bottom:1px solid rgba(26,21,17,.06);display:flex;align-items:flex-start;gap:10px} li:last-child{border:0}
-li b{font-weight:900;color:var(--red);font-size:16px;min-width:24px}
-li div{flex:1}
-li i{display:block;font:600 13px var(--font);color:#b25;margin-top:4px;font-style:normal;background:#ffe0e0;padding:4px 8px;border-radius:6px;width:fit-content}
-.cust{background:var(--bg);padding:14px;border-radius:16px;font-size:14px;line-height:1.5}
-.cust b{font-size:16px;font-weight:800}
-.note{padding:12px;border-radius:12px;background:#fff8e1;border:1px solid #ffe082;color:#8f6c00;font-weight:600}
-.acts{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap;padding-top:8px} .acts .btn{flex:1}
-.empty{grid-column:1/-1;text-align:center;padding:120px 20px;color:var(--mute);font:800 24px var(--font);letter-spacing:-.03em}
+#f h1{
+  font:800 26px var(--font);
+  color:#FFFFFF;
+  margin-bottom:8px;
+}
+#f h1 span{
+  color:var(--red);
+}
+#f p{
+  color:var(--mute);
+  font-size:14px;
+  margin-bottom:24px;
+}
+#pw{
+  display:block;
+  margin:0 auto 12px;
+  font:600 16px var(--font);
+  padding:12px 18px;
+  border-radius:8px;
+  border:1.5px solid var(--line);
+  background:var(--ticket-inner);
+  color:#FFFFFF;
+  width:100%;
+  text-align:center;
+}
+#pw:focus{
+  outline:none;
+  border-color:var(--red);
+}
+#er{
+  color:#EF4444;
+  min-height:22px;
+  margin-bottom:12px;
+  font-weight:700;
+  font-size:13px;
+}
+#go{
+  width:100%;
+  padding:14px;
+  font-size:15px;
+}
+
+/* Kitchen Ticket Grid */
+main#list{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(360px, 1fr));
+  gap:20px;
+  padding:24px;
+}
+
+/* Order Ticket Card */
+.o{
+  background:var(--ticket) !important;
+  border:2px solid var(--line) !important;
+  border-radius:14px !important;
+  padding:20px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:16px !important;
+  box-shadow:0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  transition:all 0.2s ease !important;
+}
+
+/* State: New order (flashing red accent) */
+.o.new{
+  border-color:var(--red) !important;
+  box-shadow:0 0 20px rgba(165, 42, 42, 0.45) !important;
+  animation:kdsPulse 2s infinite !important;
+}
+@keyframes kdsPulse{
+  0%, 100%{ border-color:var(--red); }
+  50%{ border-color:#EF4444; box-shadow:0 0 28px rgba(239, 68, 68, 0.6); }
+}
+
+/* State: In preparation */
+.o.accepted{
+  border-color:var(--amber) !important;
+}
+
+/* State: Ready */
+.o.ready{
+  border-color:var(--green) !important;
+}
+
+/* Ticket Top Header */
+.top{
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:flex-start !important;
+}
+.top b{
+  font:800 36px var(--font) !important;
+  letter-spacing:-0.03em !important;
+  color:#FFFFFF !important;
+  line-height:1 !important;
+}
+.top span{
+  font:700 16px var(--font) !important;
+  color:var(--amber) !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:6px !important;
+}
+
+/* Order Mode & Payment Badges */
+.tags{
+  display:flex !important;
+  gap:8px !important;
+  flex-wrap:wrap !important;
+}
+.tag{
+  display:inline-flex !important;
+  padding:6px 12px !important;
+  border-radius:6px !important;
+  font:800 12.5px var(--font) !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.06em !important;
+}
+
+/* Mode: À emporter */
+.tag.mod{
+  background:#1E293B !important;
+  color:#93C5FD !important;
+  border:1px solid #3B82F6 !important;
+}
+
+/* Payment Status */
+.tag.pay{
+  background:var(--green-bg) !important;
+  color:#34D399 !important;
+  border:1px solid #10B981 !important;
+}
+.tag.due{
+  background:rgba(239, 68, 68, 0.15) !important;
+  color:#FCA5A5 !important;
+  border:1px solid #EF4444 !important;
+}
+
+/* Items List */
+ul{
+  list-style:none !important;
+  padding:12px 14px !important;
+  margin:0 !important;
+  background:var(--ticket-inner) !important;
+  border-radius:10px !important;
+  border:1px solid var(--line) !important;
+}
+li{
+  padding:10px 0 !important;
+  border-bottom:1px solid rgba(255,255,255,0.08) !important;
+  display:flex !important;
+  align-items:flex-start !important;
+  gap:12px !important;
+}
+li:last-child{
+  border:0 !important;
+}
+li b{
+  font-weight:900 !important;
+  color:#F87171 !important;
+  font-size:20px !important;
+  min-width:28px !important;
+  line-height:1.2 !important;
+}
+li div{
+  flex:1 !important;
+}
+li div > span, li div > strong{
+  font-size:16.5px !important;
+  font-weight:700 !important;
+  color:#FFFFFF !important;
+  line-height:1.3 !important;
+}
+li i{
+  display:block !important;
+  font:700 13px var(--font) !important;
+  color:#FDE047 !important;
+  margin-top:6px !important;
+  font-style:normal !important;
+  background:#362818 !important;
+  border:1px solid #CA8A04 !important;
+  padding:4px 9px !important;
+  border-radius:6px !important;
+  width:fit-content !important;
+}
+
+/* Customer & Table details */
+.cust{
+  background:var(--ticket-inner) !important;
+  padding:12px 14px !important;
+  border-radius:10px !important;
+  border:1px solid var(--line) !important;
+  font-size:13.5px !important;
+  line-height:1.5 !important;
+  color:var(--mute) !important;
+}
+.cust b{
+  font-size:15px !important;
+  font-weight:700 !important;
+  color:#FFFFFF !important;
+}
+
+/* Instructions / Allergy Note */
+.note{
+  padding:12px 14px !important;
+  border-radius:8px !important;
+  background:#3E2914 !important;
+  border:1.5px solid #F59E0B !important;
+  color:#FEF3C7 !important;
+  font-weight:700 !important;
+  font-size:14px !important;
+}
+
+/* Action Buttons Footer */
+.acts{
+  display:flex !important;
+  gap:10px !important;
+  margin-top:auto !important;
+  padding-top:6px !important;
+}
+.acts .btn{
+  flex:1 !important;
+  min-height:50px !important;
+  font-size:15px !important;
+  font-weight:800 !important;
+}
+
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding:140px 20px;
+  color:var(--mute);
+  font:700 24px var(--font);
+  letter-spacing:-0.02em;
+}
+
 #ticket{display:none}
+
 @media print{
- @page{size:80mm auto;margin:0}
- body>*:not(#ticket){display:none!important}
- #ticket{display:block;width:72mm;margin:0 auto;padding:4mm 0;font:13px/1.35 'Courier New',monospace;color:#000;background:#fff}
- #ticket h2{font-size:22px;text-align:center}#ticket hr{border:0;border-top:1px dashed #000;margin:6px 0}
- #ticket .l{display:flex;justify-content:space-between;gap:8px}#ticket .big{font-size:16px;font-weight:700}#ticket .c{text-align:center}
+  @page{size:80mm auto;margin:0}
+  body>*:not(#ticket){display:none!important}
+  #ticket{display:block;width:72mm;margin:0 auto;padding:4mm 0;font:13px/1.35 'Courier New',monospace;color:#000;background:#fff}
+  #ticket h2{font-size:22px;text-align:center}
+  #ticket hr{border:0;border-top:1px dashed #000;margin:6px 0}
+  #ticket .l{display:flex;justify-content:space-between;gap:8px}
+  #ticket .big{font-size:16px;font-weight:700}
+  #ticket .c{text-align:center}
 }
-.tag.sp{background:#e0e7ff;color:#3730a3}
 
-/* Mobile Responsive Overhauls for Kitchen Display */
-@media (max-width: 768px) {
-  header {
-    padding: 12px 14px !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
+@media (max-width: 768px){
+  main#list{
+    grid-template-columns:1fr;
+    padding:16px;
+    gap:16px;
   }
-  header h1 {
-    font-size: 18px !important;
+  .acts{
+    flex-direction:column;
   }
-  .st {
-    font-size: 11px !important;
-  }
-  header > div:last-child {
-    width: 100% !important;
-    justify-content: space-between !important;
-  }
-  header .btn {
-    padding: 8px 12px !important;
-    font-size: 12px !important;
-    flex: 1 !important;
-  }
-  main {
-    grid-template-columns: 1fr !important;
-    padding: 14px 10px !important;
-    gap: 14px !important;
-  }
-  .o {
-    padding: 16px 14px !important;
-    border-radius: 18px !important;
-  }
-  .top b {
-    font-size: 24px !important;
-  }
-  .acts {
-    flex-direction: column !important;
-  }
-  .acts .btn {
-    width: 100% !important;
-    padding: 12px !important;
-  }
-  #f {
-    padding: 28px 18px !important;
-    border-radius: 22px !important;
-  }
-  #f h1 {
-    font-size: 24px !important;
-  }
-}
-
-/* Modern Italian Kitchen Display Card Overhaul */
-body {
-  background: #F8F4EE !important;
-  color: #34251F !important;
-}
-
-body::before {
-  opacity: 0.12 !important;
-}
-
-body::after {
-  background: rgba(248, 244, 238, 0.88) !important;
-}
-
-header {
-  background: rgba(248, 244, 238, 0.95) !important;
-  border-bottom: 1px solid #EAE1D7 !important;
-}
-
-header h1 {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  color: #34251F !important;
-}
-
-header h1 span {
-  color: #B87958 !important;
-}
-
-.o {
-  background: #FFFFFF !important;
-  border: 1px solid #EAE1D7 !important;
-  border-radius: 18px !important;
-  box-shadow: 0 4px 18px rgba(52, 37, 31, 0.05) !important;
-}
-
-.o.new {
-  border: 2px solid #B87958 !important;
-  box-shadow: 0 8px 24px rgba(184, 121, 88, 0.22) !important;
-}
-
-.o.accepted {
-  border: 1.5px solid #D9B98C !important;
-}
-
-.o.ready {
-  border: 1.5px solid #34251F !important;
-}
-
-.top b {
-  color: #34251F !important;
-  font-family: 'Playfair Display', Georgia, serif !important;
-}
-
-ul {
-  background: #F8F4EE !important;
-  border: 1px solid #EAE1D7 !important;
-  border-radius: 14px !important;
-}
-
-li {
-  border-bottom: 1px solid #EAE1D7 !important;
-}
-
-li b {
-  color: #B87958 !important;
-}
-
-li i {
-  background: rgba(184, 121, 88, 0.12) !important;
-  color: #B87958 !important;
-  border-radius: 8px !important;
-}
-
-.cust {
-  background: #F8F4EE !important;
-  border: 1px solid #EAE1D7 !important;
-  border-radius: 14px !important;
-  color: #34251F !important;
-}
-
-.btn.red {
-  background: #B87958 !important;
-  border: none !important;
-  color: #FFFFFF !important;
-  border-radius: 12px !important;
-}
-
-.btn.red:hover {
-  background: #9E6446 !important;
-}
-
-.btn.ink {
-  background: #34251F !important;
-  color: #FFFFFF !important;
-  border-radius: 12px !important;
-}
-
-.btn.ok {
-  background: #34251F !important;
-  color: #FFFFFF !important;
-  border-radius: 12px !important;
-}
-
-.tag.pay {
-  background: rgba(184, 121, 88, 0.12) !important;
-  color: #B87958 !important;
-  border: 1px solid rgba(184, 121, 88, 0.25) !important;
-}
-
-.tag.due {
-  background: #F8F4EE !important;
-  color: #34251F !important;
-  border: 1px solid #EAE1D7 !important;
-}
-
-.tag.mod {
-  background: #F8F4EE !important;
-  color: #6A5B53 !important;
-  border: 1px solid #EAE1D7 !important;
 }
 </style></head><!-- Écran cuisine --><body>
 <div id="gate"><form id="f"><h1>Écran<span>Cuisine</span></h1><p><b>Gestion des commandes en direct</b><br>Entrez le mot de passe, touchez pour activer le son et mettez le volume au maximum.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red">Se connecter et activer le son</button></form></div>
