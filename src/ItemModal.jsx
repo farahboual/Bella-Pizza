@@ -4,7 +4,7 @@ import { eur } from '../shared/catalog.js'
 import { useCart } from './cart.jsx'
 import { useLang } from './i18n.jsx'
 
-// Artisanal House Sauces with realistic visual culinary gradients & textures
+// Artisanal House Sauces with realistic culinary photography & textures
 const SAUCE_DATA = [
   {
     id: 'sauce-secrete',
@@ -13,6 +13,7 @@ const SAUCE_DATA = [
     tagEn: 'House Signature',
     desc: 'Tomates San Marzano réduites, pointe d\'ail doux & origan sauvage',
     descEn: 'Slow-reduced San Marzano tomatoes, sweet garlic & wild oregano',
+    img: '/client-assets/sauce-secrete.jpg',
     gradient: 'radial-gradient(circle at 35% 35%, #DC3826 0%, #A31E12 60%, #6E1007 100%)',
     specks: true
   },
@@ -23,6 +24,7 @@ const SAUCE_DATA = [
     tagEn: 'Italian Truffles',
     desc: 'Mayonnaise soyeuse émulsionnée à l\'huile de truffe noire d\'Alba',
     descEn: 'Silky mayonnaise infused with Alba black truffle oil',
+    img: '/client-assets/mayo-truffe.jpg',
     gradient: 'radial-gradient(circle at 35% 35%, #FBF3DC 0%, #E6D4A5 55%, #C2AB6C 100%)',
     truffleFlecks: true
   },
@@ -33,6 +35,7 @@ const SAUCE_DATA = [
     tagEn: 'Smoked Wood',
     desc: 'Réduction fumée au bois de hêtre, miel de fleur d\'oranger & mélasse',
     descEn: 'Beechwood smoked glaze, orange blossom honey & gentle molasses',
+    img: '/client-assets/smoky-bbq.jpg',
     gradient: 'radial-gradient(circle at 35% 35%, #6B2412 0%, #3D1208 65%, #200803 100%)',
     honeyGleam: true
   },
@@ -43,6 +46,7 @@ const SAUCE_DATA = [
     tagEn: 'Calabrian Chili',
     desc: 'Piments calabrais marinés à froid, poivrons rouges doux & paprika',
     descEn: 'Cold-steeped Calabrian chilis, sweet peppers & smoked paprika',
+    img: '/client-assets/spicy-chili.jpg',
     gradient: 'radial-gradient(circle at 35% 35%, #F04124 0%, #B81F0E 60%, #750F04 100%)',
     chiliFlecks: true
   },
@@ -53,25 +57,45 @@ const SAUCE_DATA = [
     tagEn: 'Garden Chives',
     desc: 'Crème légère fouettée, zeste de citron de Sorrente & ciboulette ciselée',
     descEn: 'Whipped light cream, Sorrento lemon zest & fresh garden chives',
+    img: '/client-assets/ciboulette.jpg',
     gradient: 'radial-gradient(circle at 35% 35%, #FCFAF2 0%, #EFE9D7 60%, #D8CDB6 100%)',
     chiveFlecks: true
   }
 ]
 
-// Visual culinary ramekin component
-const SauceRamekin = ({ sauce }) => (
-  <div className="sauce-ramekin" aria-hidden="true">
-    <div className="sauce-ramekin-rim" />
-    <div className="sauce-ramekin-fill" style={{ background: sauce.gradient }}>
-      <div className="sauce-ramekin-gloss" />
-      {sauce.truffleFlecks && <div className="sauce-specks sauce-specks-truffle" />}
-      {sauce.specks && <div className="sauce-specks sauce-specks-herbs" />}
-      {sauce.chiliFlecks && <div className="sauce-specks sauce-specks-chili" />}
-      {sauce.chiveFlecks && <div className="sauce-specks sauce-specks-chives" />}
-      {sauce.honeyGleam && <div className="sauce-honey-gleam" />}
+// Visual culinary ramekin component with real food photography & graceful fallback
+const SauceRamekin = ({ sauce }) => {
+  const [imgErr, setImgErr] = useState(false)
+
+  if (sauce.img && !imgErr) {
+    return (
+      <div className="sauce-photo-frame" aria-hidden="true">
+        <img
+          src={sauce.img}
+          alt={sauce.name}
+          className="sauce-photo-img"
+          loading="lazy"
+          onError={() => setImgErr(true)}
+        />
+        <div className="sauce-photo-overlay" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="sauce-ramekin" aria-hidden="true">
+      <div className="sauce-ramekin-rim" />
+      <div className="sauce-ramekin-fill" style={{ background: sauce.gradient }}>
+        <div className="sauce-ramekin-gloss" />
+        {sauce.truffleFlecks && <div className="sauce-specks sauce-specks-truffle" />}
+        {sauce.specks && <div className="sauce-specks sauce-specks-herbs" />}
+        {sauce.chiliFlecks && <div className="sauce-specks sauce-specks-chili" />}
+        {sauce.chiveFlecks && <div className="sauce-specks sauce-specks-chives" />}
+        {sauce.honeyGleam && <div className="sauce-honey-gleam" />}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 // Pizza Extras
 const PIZZA_EXTRAS = [
