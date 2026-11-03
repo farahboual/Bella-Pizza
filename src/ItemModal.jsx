@@ -266,7 +266,7 @@ export const ItemModal = ({ item, onClose }) => {
             <span className="item-modal-drag-bar" />
           </div>
 
-          {/* Hero Header */}
+          {/* Left / Hero Column: Cinematic visual + Provenance info */}
           <div className="item-modal-hero">
             {item.img && (
               <img
@@ -301,10 +301,24 @@ export const ItemModal = ({ item, onClose }) => {
               <h2 className="item-modal-title">{item.name}</h2>
               {item.desc && <p className="item-modal-desc">{item.desc}</p>}
             </div>
+
+            {/* Desktop Provenance Pillars */}
+            <div className="item-modal-desktop-notes" aria-hidden="true">
+              <div className="modal-note-item">
+                <span className="modal-note-dot" />
+                <span>{isPizza ? 'Four napolitain à 485°C' : 'Smashed minute sur plancha'}</span>
+              </div>
+              <div className="modal-note-item">
+                <span className="modal-note-dot" />
+                <span>{isPizza ? 'Maturation lente 48 heures' : 'Pur bœuf français sélectionné'}</span>
+              </div>
+            </div>
           </div>
 
-          {/* Scrollable Customization Flow */}
-          <div className="item-modal-scroll-body">
+          {/* Right Column: Customization Flow & Action Bar */}
+          <div className="item-modal-right-col">
+            {/* Scrollable Customization Flow */}
+            <div className="item-modal-scroll-body">
 
             {/* SECTION 1: Pizza Crust Selection */}
             {isPizza && (
@@ -545,38 +559,39 @@ export const ItemModal = ({ item, onClose }) => {
 
           </div>
 
-          {/* Sticky Bottom Summary & Action Bar (NEVER overlaps content) */}
-          <div className="item-modal-footer">
-            <div className="modal-footer-price-col">
-              <div className="modal-footer-breakdown">
-                <span className="modal-footer-base">{t('modalBasePrice')} {eur(basePrice)}</span>
-                {totalPrice > basePrice && (
-                  <span className="modal-footer-extras-pill">
-                    +{eur(totalPrice - basePrice)} {t('modalExtrasPrice')}
-                  </span>
-                )}
+            {/* Sticky Bottom Summary & Action Bar (NEVER overlaps content) */}
+            <div className="item-modal-footer">
+              <div className="modal-footer-price-col">
+                <div className="modal-footer-breakdown">
+                  <span className="modal-footer-base">{t('modalBasePrice')} {eur(basePrice)}</span>
+                  {totalPrice > basePrice && (
+                    <span className="modal-footer-extras-pill">
+                      +{eur(totalPrice - basePrice)} {t('modalExtrasPrice')}
+                    </span>
+                  )}
+                </div>
+                <div className="modal-footer-total-row">
+                  <span className="modal-footer-total-label">{t('modalTotalCustom')} :</span>
+                  <span className="modal-footer-total-val">{eur(totalPrice)}</span>
+                </div>
               </div>
-              <div className="modal-footer-total-row">
-                <span className="modal-footer-total-label">{t('modalTotalCustom')} :</span>
-                <span className="modal-footer-total-val">{eur(totalPrice)}</span>
-              </div>
-            </div>
 
-            <motion.button
-              type="button"
-              className="modal-confirm-btn"
-              onClick={handleConfirm}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span>{t('modalAddToCart')}</span>
-              <span className="btn-divider" />
-              <span className="btn-price">{eur(totalPrice)}</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4 }}>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </motion.button>
+              <motion.button
+                type="button"
+                className="modal-confirm-btn"
+                onClick={handleConfirm}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span>{t('modalAddToCart')}</span>
+                <span className="btn-divider" />
+                <span className="btn-price">{eur(totalPrice)}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4 }}>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </motion.button>
+            </div>
           </div>
         </motion.div>
       </div>

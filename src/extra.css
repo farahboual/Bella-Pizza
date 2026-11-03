@@ -3815,7 +3815,7 @@ html, body {
 }
 
 .item-modal-card {
-  width: min(580px, 100%) !important;
+  width: min(940px, 100%) !important;
   max-height: 88vh !important;
   background: #FBF9F5 !important;
   border: 1px solid #EAE4DC !important;
@@ -3823,13 +3823,15 @@ html, body {
   color: #181513 !important;
   box-shadow: 0 28px 70px -10px rgba(24, 21, 19, 0.35) !important;
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: row !important;
   overflow: hidden !important;
   position: relative !important;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .item-modal-card {
+    width: min(580px, 100%) !important;
+    flex-direction: column !important;
     max-height: 92vh !important;
     border-radius: 24px 24px 0 0 !important;
     border-bottom: none !important;
@@ -3845,7 +3847,7 @@ html, body {
   background: #FBF9F5 !important;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .item-modal-drag-indicator {
     display: flex !important;
   }
@@ -3858,33 +3860,40 @@ html, body {
   background: rgba(24, 21, 19, 0.22) !important;
 }
 
-/* Hero Header */
+/* Left Hero Header / Column */
 .item-modal-hero {
   position: relative !important;
-  height: 220px !important;
+  width: 44% !important;
   flex-shrink: 0 !important;
   overflow: hidden !important;
   background: #181513 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 768px) {
   .item-modal-hero {
-    height: 240px !important;
+    width: 100% !important;
+    height: 220px !important;
+    justify-content: flex-start !important;
   }
 }
 
 .item-modal-img {
+  position: absolute !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
   display: block !important;
-  transform: scale(1.02) !important;
+  transform: scale(1.04) !important;
 }
 
 .item-modal-overlay {
   position: absolute !important;
   inset: 0 !important;
-  background: linear-gradient(180deg, rgba(24, 21, 19, 0.15) 0%, rgba(24, 21, 19, 0.45) 50%, rgba(24, 21, 19, 0.92) 100%) !important;
+  background: linear-gradient(180deg, rgba(24, 21, 19, 0.15) 0%, rgba(24, 21, 19, 0.5) 45%, rgba(24, 21, 19, 0.95) 100%) !important;
 }
 
 .item-modal-close {
@@ -3903,7 +3912,7 @@ html, body {
   display: grid !important;
   place-items: center !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  z-index: 5 !important;
+  z-index: 10 !important;
 }
 
 .item-modal-close:hover {
@@ -3913,12 +3922,20 @@ html, body {
 }
 
 .item-modal-title-wrap {
-  position: absolute !important;
-  bottom: 16px !important;
-  left: 20px !important;
-  right: 20px !important;
+  position: relative !important;
+  padding: 24px 24px 16px !important;
   color: #FFFFFF !important;
   z-index: 2 !important;
+}
+
+@media (max-width: 768px) {
+  .item-modal-title-wrap {
+    position: absolute !important;
+    bottom: 16px !important;
+    left: 20px !important;
+    right: 20px !important;
+    padding: 0 !important;
+  }
 }
 
 .item-modal-badge {
@@ -3933,7 +3950,7 @@ html, body {
 
 .item-modal-title {
   font-family: 'Fraunces', Georgia, serif !important;
-  font-size: 24px !important;
+  font-size: 26px !important;
   font-weight: 600 !important;
   color: #FFFFFF !important;
   line-height: 1.2 !important;
@@ -3942,10 +3959,60 @@ html, body {
 }
 
 .item-modal-desc {
-  font-size: 12.5px !important;
-  color: rgba(255, 255, 255, 0.85) !important;
-  margin: 4px 0 0 !important;
-  line-height: 1.35 !important;
+  font-size: 13px !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  margin: 6px 0 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* Provenance notes visible on desktop column */
+.item-modal-desktop-notes {
+  position: relative !important;
+  z-index: 2 !important;
+  padding: 0 24px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+@media (max-width: 768px) {
+  .item-modal-desktop-notes {
+    display: none !important;
+  }
+}
+
+.modal-note-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 12px !important;
+  color: #C8A97E !important;
+  font-weight: 500 !important;
+}
+
+.modal-note-dot {
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: #C8A97E !important;
+}
+
+/* Right Column Wrapper */
+.item-modal-right-col {
+  flex: 1 1 56% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  max-height: 88vh !important;
+  background: #FBF9F5 !important;
+}
+
+@media (max-width: 768px) {
+  .item-modal-right-col {
+    flex: 1 1 auto !important;
+    max-height: calc(92vh - 220px) !important;
+  }
 }
 
 /* Independent Scroll Body */
@@ -3954,7 +4021,7 @@ html, body {
   min-height: 0 !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
-  padding: 22px 20px 28px !important;
+  padding: 24px 24px 28px !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 26px !important;

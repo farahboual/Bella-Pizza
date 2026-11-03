@@ -194,68 +194,73 @@ function AtelierHero() {
   const status = useStatus()
 
   return (
-    <section className="atelier-hero" id="top">
-      <div className="wrap">
-        <div className="atelier-hero-grid">
-          <div>
-            <div className="atelier-eyebrow">
-              <span className="dot-live" />
-              <span>{status.t}</span>
-            </div>
+    <section className="atelier-hero" id="top" aria-label="Présentation">
+      {/* Provenance top-bar */}
+      <div className="atelier-hero-topbar" aria-hidden="true">
+        <span>Farine Tipo 00 — Naples</span>
+        <span className="topbar-dot" />
+        <span>Fermentation 48h</span>
+        <span className="topbar-dot" />
+        <span>Tomate San Marzano DOP</span>
+        <span className="topbar-dot" />
+        <span>Four à bois 485°C</span>
+        <span className="topbar-dot" />
+        <span>{cfgC?.address?.city || 'Paris'}</span>
+      </div>
 
-            <h1 className="atelier-hero-title">
-              {t('heroTitle')}
-              <em>{t('heroHighlight')}</em>
-            </h1>
-
-            <p className="atelier-hero-desc">
-              {t('heroSubtitle')}
-            </p>
-
-            <div className="atelier-hero-actions">
-              <a className="btn red" href="#carte">
-                {t('orderOnline')} →
-              </a>
-              <a className="btn outline" href={TEL}>
-                {t('callToOrder')} ({cfgC.phone})
-              </a>
-            </div>
-
-            <div className="atelier-metadata-bar">
-              <span className="atelier-meta-item">Farine italienne tipo 00</span>
-              <span className="atelier-meta-sep">•</span>
-              <span className="atelier-meta-item">Fermentation lente</span>
-              <span className="atelier-meta-sep">•</span>
-              <span className="atelier-meta-item">{cfgC?.address?.city || 'Paris 2e'}</span>
-            </div>
+      {/* Cinematic full-bleed hero */}
+      <div className="atelier-hero-cinematic">
+        <img
+          src="/client-assets/hero.jpg"
+          alt="Pizza napolitaine artisanale Bella Pizza"
+          loading="eager"
+        />
+        <div className="atelier-hero-cinematic-overlay" />
+        <div className="atelier-hero-cinematic-content">
+          <div className="atelier-eyebrow">
+            <span className="dot-live" />
+            <span>{status.t}</span>
           </div>
-
-          <div>
-            <div className="atelier-showcase-frame">
-              <img
-                src="/client-assets/hero.jpg"
-                alt="Pizza napolitaine artisanale Bella Pizza"
-                loading="eager"
-              />
-              <div className="atelier-showcase-caption">
-                <div>
-                  <div className="atelier-caption-title">Margherita DOP</div>
-                  <div className="atelier-caption-sub">Tomate San Marzano · Mozzarella Fior di Latte · Basilic</div>
-                </div>
-                <a href="#carte" className="btn outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)', padding: '8px 16px', fontSize: 13 }}>
-                  Voir
-                </a>
-              </div>
-            </div>
+          <h1 className="atelier-hero-title">
+            {t('heroTitle')}
+            <em>{t('heroHighlight')}</em>
+          </h1>
+          <p className="atelier-hero-desc">{t('heroSubtitle')}</p>
+          <div className="atelier-hero-actions">
+            <a className="btn red" href="#carte">
+              {t('orderOnline')} →
+            </a>
+            <a className="btn outline" href={TEL}>
+              {t('callToOrder')} — {cfgC.phone}
+            </a>
           </div>
+        </div>
+      </div>
+
+      {/* Provenance strip */}
+      <div className="atelier-hero-provenance" aria-hidden="true">
+        <div className="atelier-provenance-col">
+          <span className="atelier-provenance-label">Origine</span>
+          <span className="atelier-provenance-value">Naples, Italie</span>
+          <span className="atelier-provenance-sub">Recette napolitaine traditionnelle</span>
+        </div>
+        <div className="atelier-provenance-col">
+          <span className="atelier-provenance-label">Fermentation</span>
+          <span className="atelier-provenance-value">48 heures</span>
+          <span className="atelier-provenance-sub">Pâte à maturation lente en chambre froide</span>
+        </div>
+        <div className="atelier-provenance-col">
+          <span className="atelier-provenance-label">Cuisson</span>
+          <span className="atelier-provenance-value">Four à bois 485°C</span>
+          <span className="atelier-provenance-sub">90 secondes — croûte alvéolée et légèrement brûlée</span>
         </div>
       </div>
     </section>
   )
 }
 
-// Editorial Dish Component
-const AtelierDish = ({ n, d, p, id, img, onSelect }) => {
+// Editorial Dish Component — supports featured (full-width) variant
+const AtelierDish = ({ n, d, p, id, img, onSelect, featured = false }) => {
   const { cfg, getPrice, isOut, isHidden } = useCart()
   const [thumbErr, setThumbErr] = useState(false)
   if (id && isHidden && isHidden(id, cfg)) return null
@@ -285,6 +290,38 @@ const AtelierDish = ({ n, d, p, id, img, onSelect }) => {
         img: liveImg
       })
     }
+  }
+
+  if (featured) {
+    // Full-width featured dish — used as section opener
+    return (
+      <motion.div
+        className="atelier-dish-featured"
+        onClick={handleClick}
+        whileHover={{ y: -2, transition: { duration: 0.2 } }}
+        whileTap={{ scale: 0.99 }}
+        style={{ opacity: out ? 0.6 : 1 }}
+      >
+        <div className="atelier-dish-featured-img">
+          {liveImg && !thumbErr ? (
+            <img src={liveImg} alt={cleanName} loading="lazy" onError={() => setThumbErr(true)} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', background: 'var(--limestone)' }} />
+          )}
+          {out && <span className="atelier-dish-out-badge">Rupture</span>}
+        </div>
+        <div className="atelier-dish-featured-content">
+          <div>
+            <h3 className="atelier-dish-featured-name">{cleanName}</h3>
+            {displayDesc && <p className="atelier-dish-featured-desc">{displayDesc}</p>}
+          </div>
+          <div className="atelier-dish-featured-footer" onClick={(e) => e.stopPropagation()}>
+            <span className="atelier-dish-featured-price">{displayPrice}</span>
+            {!out && id && <AddBtn id={id} />}
+          </div>
+        </div>
+      </motion.div>
+    )
   }
 
   return (
@@ -531,7 +568,7 @@ function Menu() {
               </div>
             )}
 
-            {/* Remaining Pizzas in Editorial Grid */}
+            {/* Remaining Pizzas in Editorial Grid — every 4th item is full-width featured */}
             <motion.div
               key={`pizzas-${size}`}
               className="atelier-dish-grid"
@@ -539,28 +576,44 @@ function Menu() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              {otherPizzas.map(it => (
-                <AtelierDish
-                  key={it.id}
-                  n={it.n}
-                  d={it.d}
-                  p={it.p}
-                  id={it.id}
-                  img={it.img}
-                  onSelect={setSelectedItem}
-                />
-              ))}
+              {otherPizzas.map((it, idx) =>
+                idx % 4 === 3 ? (
+                  <div key={it.id} className="atelier-dish-grid-full">
+                    <AtelierDish
+                      n={it.n}
+                      d={it.d}
+                      p={it.p}
+                      id={it.id}
+                      img={it.img}
+                      onSelect={setSelectedItem}
+                      featured
+                    />
+                  </div>
+                ) : (
+                  <AtelierDish
+                    key={it.id}
+                    n={it.n}
+                    d={it.d}
+                    p={it.p}
+                    id={it.id}
+                    img={it.img}
+                    onSelect={setSelectedItem}
+                  />
+                )
+              )}
             </motion.div>
           </div>
         ) : (
           /* Burgers, Boissons, Desserts */
           <div>
             {cat === 'burgers' && (
-              <div className="atelier-cat-banner">
-                <div className="atelier-cat-banner-text">
-                  <h3>Smash Burgers d'Exception</h3>
-                  <p>Bœuf frais smashé à la commande sur plancha brûlante, pain brioché beurré toasté minute &amp; frites maison.</p>
-                </div>
+              <div className="atelier-editorial-intro">
+                <div className="atelier-editorial-intro-label">Notre sélection</div>
+                <h2 className="atelier-editorial-intro-title">Smash Burgers d'Exception</h2>
+                <p className="atelier-editorial-intro-desc">
+                  Bœuf frais smashé à la commande sur plancha brûlante — pain brioché beurré toasté minute, sauces artisanales maison.
+                </p>
+                <div className="atelier-editorial-intro-rule" aria-hidden="true" />
               </div>
             )}
 
