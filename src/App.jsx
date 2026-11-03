@@ -11,6 +11,7 @@ import {CartProvider,CartButton,CartDrawer,AddBtn,OrderBtn,MobileBar,OrderBanner
 import {slug,CATALOG,eur,getParisTime,DEFAULT_SCHEDULE,isInSlot} from '../shared/catalog.js'
 import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
 import {LangProvider, useLang, LanguageToggle} from './i18n.jsx'
+import {ItemModal} from './ItemModal.jsx'
 
 const cfgB = RESTAURANT_CONFIG.brand
 const cfgC = RESTAURANT_CONFIG.contact
@@ -201,10 +202,10 @@ function Header(){
 }
 function CinematicHero(){
   const slides = [
-    { id: 'pizza', name: 'Pizza Artisanale Napolitaine', img: '/client-assets/pizza.jpg', label: '🍕 Pizzas' },
-    { id: 'burger', name: 'Double Smash Burger Gourmet', img: '/client-assets/burgers.jpg', label: '🍔 Burgers' },
-    { id: 'salade', name: 'Salade Fraîcheur & Saumon', img: '/client-assets/salades.jpg', label: '🥗 Salades' },
-    { id: 'table', name: 'La Table Gourmande', img: '/client-assets/hero.jpg', label: '✨ La Table' }
+    { id: 'pizza', name: 'Pizza Artisanale Napolitaine', img: '/client-assets/pizza.jpg', label: 'Pizzas' },
+    { id: 'burger', name: 'Double Smash Burger Gourmet', img: '/client-assets/burgers.jpg', label: 'Burgers' },
+    { id: 'salade', name: 'Salade Fraîcheur & Saumon', img: '/client-assets/salades.jpg', label: 'Salades' },
+    { id: 'table', name: 'La Table Gourmande', img: '/client-assets/hero.jpg', label: 'La Table' }
   ]
   const [currentSlide, setCurrentSlide] = useState(0)
 
@@ -243,7 +244,7 @@ function CinematicHero(){
             />
             <div className="luxury-photo-overlay" />
             <div className="luxury-floating-pill">
-              <strong>★ 4.9</strong>
+              <strong>4.9 / 5</strong>
               <span>180+ avis clients vérifiés</span>
               <span style={{opacity:0.4}}>•</span>
               <span style={{color:'#D9B59F'}}>{active.name}</span>
@@ -275,7 +276,7 @@ function CinematicHero(){
             Commander en ligne →
           </a>
           <a className="luxury-btn-secondary" href={TEL}>
-            📞 {cfgC.phone}
+            {cfgC.phone}
           </a>
         </div>
       </div>
@@ -414,7 +415,7 @@ function MinimalHero() {
         {/* Marketing Trust Proof Bar */}
         <div className="hero-trust-bar">
           <div className="trust-item">
-            <span className="trust-star">★ 4.9</span>
+            <span className="trust-star">4.9 / 5</span>
             <span className="trust-text">{t('badgeReviews')}</span>
           </div>
           <span className="trust-sep">•</span>
@@ -446,9 +447,10 @@ function MinimalHero() {
   )
 }
 
-// FoodCard (Uber Eats / Deliveroo style clean card)
-const FoodCard = ({ n, d, p, id, img }) => {
+// FoodCard (Uber Eats / Deliveroo style clean card with customization click)
+const FoodCard = ({ n, d, p, id, img, onSelect }) => {
   const { cfg, getPrice, isOut, isHidden } = useCart()
+  const { t } = useLang()
   const [thumbErr, setThumbErr] = useState(false)
   if (id && isHidden && isHidden(id, cfg)) return null
   const livePrice = id && getPrice ? getPrice(id, cfg) : null
@@ -463,16 +465,27 @@ const FoodCard = ({ n, d, p, id, img }) => {
     : rawName
   const displayDesc = liveDetails.desc !== undefined ? liveDetails.desc : d
 
-  // Optional marketing highlight badges driven by config or item tags
+  // Optional marketing highlight badges
   const bList = RESTAURANT_CONFIG?.brand?.bestsellerItems || ['margherita', 'burrata', 'burger', 'tiramisu']
   const isBestSeller = bList.some(item => cleanName.toLowerCase().includes(item.toLowerCase()))
-  const badgeText = isBestSeller ? 'Best-seller' : null
+  const badgeText = isBestSeller ? t('badgeBestSeller') : null
 
   const liveImg = (id && cfg?.itemImages?.[id]) || (baseSlug && cfg?.itemImages?.[baseSlug]) || (id && cfg?.overrides?.[id]?.img) || img
   const [imgLoaded, setImgLoaded] = useState(false)
 
+  const handleCardClick = () => {
+    if (out) return
+    if (onSelect) {
+      onSelect({ id, name: cleanName, desc: displayDesc, price: livePrice || (typeof p === 'number' ? p : 0), img: liveImg })
+    }
+  }
+
   return (
-    <div className={'food-card-v' + (out ? ' food-card-out' : '')}>
+    <div
+      className={'food-card-v' + (out ? ' food-card-out' : '')}
+      onClick={handleCardClick}
+      style={{ cursor: out ? 'default' : 'pointer' }}
+    >
       {badgeText && (
         <span className="food-badge-marketing">{badgeText}</span>
       )}
@@ -495,7 +508,7 @@ const FoodCard = ({ n, d, p, id, img }) => {
       <div className="food-card-v-body">
         <h4 className="food-card-v-title">{cleanName}</h4>
         {displayDesc && <p className="food-card-v-desc">{displayDesc}</p>}
-        <div className="food-card-v-bottom">
+        <div className="food-card-v-bottom" onClick={(e) => e.stopPropagation()}>
           <span className="food-card-v-price">{displayPrice}</span>
           {out ? (
             <span className="tag-out">Rupture</span>
@@ -510,11 +523,13 @@ const FoodCard = ({ n, d, p, id, img }) => {
 
 function Menu(){
   const { cfg, getPrice, isOut, isHidden } = useCart()
+  const { t } = useLang()
   const customList = Object.values(cfg?.customItems || {})
   const allCats = customList.length ? [{ id: 'special', t: 'Spécialités' }, ...CATS] : CATS
   const [cat, setCat] = useState('pizzas')
   const [size, setSize] = useState(1)
   const [search, setSearch] = useState('')
+  const [selectedItem, setSelectedItem] = useState(null)
   const bgImages = {
     pizzas: getItemImg('pizzas', 'pizza') || pizzaImg,
     burgers: getItemImg('burgers', 'burger') || burgersImg,
@@ -531,9 +546,8 @@ function Menu(){
     ...pz(cre, C).map(([n, d]) => {
       const s = slug(n)
       return { n, d, p: pizzaPrice, id: 'pizzas:' + s + ':' + slug(SZ[size][0]), cat: 'pizzas', img: getItemImg('pizzas', s) }
-    }),
-    { n: 'Latina', d: 'Sauce BBQ, fromage, viande hachée, merguez', p: pizzaPrice, id: 'pizzas:latina:' + slug(SZ[size][0]), cat: 'pizzas', img: getItemImg('pizzas', 'latina') }
-  ]
+    })
+  ].filter(p => Boolean(p.n))
 
   const allItems = [
     ...pizzaList,
@@ -567,6 +581,14 @@ function Menu(){
 
   const activeCat = allCats.find(x => x.id === cat)
 
+  const getCatLabel = (cid) => {
+    if (cid === 'pizzas') return t('catPizzas')
+    if (cid === 'burgers') return t('catBurgers')
+    if (cid === 'boissons') return t('catBoissons')
+    if (cid === 'desserts') return t('catDesserts')
+    return cid
+  }
+
   return (
     <section className="menu luxury-menu-section" id="carte" style={{ '--menu-bg-img': `url(${activeBgImg})` }}>
       <div className="menu-bg-soft" aria-hidden="true" />
@@ -581,37 +603,26 @@ function Menu(){
           <input
             type="search"
             className="menu-search-input"
-            placeholder="Rechercher une pizza, des pâtes, un gratin, un panuozzo..."
+            placeholder={t('searchPlaceholder')}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
 
-        {/* Promo banner strip */}
-        {cfgF.pizzaDeals && !q && (
-          <div className="offer-strip-clean">
-            <span className="badge">Offre</span>
-            <span>Dimanche au Jeudi : 1 pizza achetée = la 2ème à -50% (ou 2 achetées = 1 offerte à emporter)</span>
-          </div>
-        )}
-
         {/* Category Pills (horizontal scroll) */}
         {!q && (
           <div className="cat-pills-bar" role="tablist">
-            {allCats.map(x => {
-              const icon = ''
-              return (
-                <button
-                  key={x.id}
-                  className={`cat-pill ${x.id === cat ? 'active' : ''}`}
-                  onClick={() => setCat(x.id)}
-                  role="tab"
-                  aria-selected={x.id === cat}
-                >
-                  {icon}{x.t}
-                </button>
-              )
-            })}
+            {allCats.map(x => (
+              <button
+                key={x.id}
+                className={`cat-pill ${x.id === cat ? 'active' : ''}`}
+                onClick={() => setCat(x.id)}
+                role="tab"
+                aria-selected={x.id === cat}
+              >
+                {getCatLabel(x.id)}
+              </button>
+            ))}
           </div>
         )}
 
@@ -619,14 +630,14 @@ function Menu(){
         {q ? (
           <div>
             <div style={{ marginBottom: 16, fontWeight: 700, fontSize: 15 }}>
-              Résultats pour « {search} » ({filteredItems.length})
+              {filteredItems.length} {t('modalCustomizeTitle').toLowerCase()}
             </div>
             {filteredItems.length === 0 ? (
-              <p style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>Aucun plat ne correspond à votre recherche.</p>
+              <p style={{ padding: 40, textAlign: 'center', color: 'var(--mute)' }}>{t('cartEmptySub')}</p>
             ) : (
               <div className="food-grid">
                 {filteredItems.map(it => (
-                  <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={it.img || CAT_IMG[it.cat] || pizzaImg} />
+                  <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={it.img || CAT_IMG[it.cat] || pizzaImg} onSelect={setSelectedItem} />
                 ))}
               </div>
             )}
@@ -646,19 +657,12 @@ function Menu(){
 
             <motion.div className="food-grid" key={"pizzas-"+size} initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.35,ease:[.16,1,.3,1]}}>
               {pizzaList.map(it => (
-                <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={it.img} />
+                <FoodCard key={it.id} n={it.n} d={it.d} p={it.p} id={it.id} img={it.img} onSelect={setSelectedItem} />
               ))}
             </motion.div>
           </div>
-        ) : cat === 'special' ? (
-          /* Custom chef items */
-          <motion.div className="food-grid" key="special" initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.35,ease:[.16,1,.3,1]}}>
-            {customList.map(it => (
-              <FoodCard key={it.id} n={it.name} d={it.desc || it.cat} p={eur(it.price)} id={it.id} img={it.img || getItemImg('special', slug(it.name))} />
-            ))}
-          </motion.div>
         ) : (
-          /* Generic category (burgers, salades, texmex, desserts, boissons) */
+          /* Generic category (burgers, desserts, boissons) */
           <div>
             {(activeCat?.notes || []).map(n => <p className="note" key={n} style={{ marginBottom: 12 }}>{n}</p>)}
             <motion.div className="food-grid" key={cat} initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.35,ease:[.16,1,.3,1]}}>
@@ -672,6 +676,7 @@ function Menu(){
                     p={i[2] || activeCat.p}
                     id={activeCat.id + ':' + s}
                     img={getItemImg(activeCat.id, s)}
+                    onSelect={setSelectedItem}
                   />
                 )
               })}
@@ -679,23 +684,29 @@ function Menu(){
           </div>
         )}
       </div>
+
+      {/* 2026 Interactive Customization Modal */}
+      {selectedItem && (
+        <ItemModal item={selectedItem} onClose={() => setSelectedItem(null)} />
+      )}
     </section>
   )
 }
 
 function RestaurantInfo(){
+  const { t } = useLang()
   return(
     <section className="storefront-info-section" id="restaurant">
       <div className="wrap">
         <div className="menu-header" style={{ marginBottom: 44 }}>
           <div className="menu-eyebrow">
-            <span>Accueil &amp; Informations</span>
+            <span>{t('navDelivery')}</span>
           </div>
           <h2 className="menu-title">
-            Le <em>Restaurant</em>
+            {cfgB.name}
           </h2>
           <p className="menu-subtitle">
-            Dégustez sur place, commandez à emporter ou profitez de notre livraison soignée à domicile.
+            {t('heroSubtitle')}
           </p>
         </div>
         <div className="info-cards-grid">
@@ -704,26 +715,26 @@ function RestaurantInfo(){
             <div className="info-card-header">
               <span className="info-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg></span>
               <div>
-                <h3>Livraison</h3>
-                <p>À domicile ou au bureau</p>
+                <h3>{t('infoDeliveryTitle')}</h3>
+                <p>{t('infoDeliverySub')}</p>
               </div>
             </div>
             <div className="info-card-body">
               <div className="info-row">
-                <span>Minimum de commande</span>
+                <span>{t('infoMinOrder')}</span>
                 <strong>{eur(cfgD.minOrderCents)}</strong>
               </div>
               <div className="info-row">
-                <span>Frais de livraison</span>
+                <span>{t('infoFee')}</span>
                 <strong>{eur(cfgD.deliveryFeeCents)}</strong>
               </div>
               <div className="info-row highlight">
-                <span>Livraison offerte</span>
-                <strong>dès {eur(cfgD.freeDeliveryAboveCents)}</strong>
+                <span>{t('infoFreeAbove')}</span>
+                <strong>{eur(cfgD.freeDeliveryAboveCents)}</strong>
               </div>
               <div className="info-row">
-                <span>Moyens de paiement</span>
-                <span style={{textAlign:'right'}}>CB, Visa, Mastercard, Tickets resto</span>
+                <span>{t('infoPayments')}</span>
+                <span style={{textAlign:'right'}}>{t('infoPaymentsVal')}</span>
               </div>
             </div>
           </div>
@@ -733,8 +744,8 @@ function RestaurantInfo(){
             <div className="info-card-header">
               <span className="info-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
               <div>
-                <h3>Adresse &amp; Contact</h3>
-                <p>{cfgB.name} · Paris</p>
+                <h3>{t('infoAddressTitle')}</h3>
+                <p>{cfgB.name} · {cfgC?.address?.city || 'Paris'}</p>
               </div>
             </div>
             <div className="info-card-body">
@@ -744,7 +755,7 @@ function RestaurantInfo(){
               </p>
               <div className="info-contact-links">
                 <a className="btn outline" href={TEL}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}} aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>{cfgC.phone}</a>
-                <a className="btn red" href={MAPS} target="_blank" rel="noopener">Itinéraire Google Maps</a>
+                <a className="btn red" href={MAPS} target="_blank" rel="noopener">{t('infoDirections')}</a>
               </div>
             </div>
           </div>
@@ -754,27 +765,19 @@ function RestaurantInfo(){
             <div className="info-card-header">
               <span className="info-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
               <div>
-                <h3>Horaires d’ouverture</h3>
-                <p>Service du midi &amp; du soir</p>
+                <h3>{t('infoHoursTitle')}</h3>
+                <p>{t('infoHoursSub')}</p>
               </div>
             </div>
             <div className="info-card-body">
               <div className="info-hours-list">
                 <div className="info-hour-row">
-                  <span>Lundi</span>
-                  <span className="closed-text">Fermé</span>
+                  <span>{t('dayMon')}</span>
+                  <span className="closed-text">{t('statusClosed')}</span>
                 </div>
                 <div className="info-hour-row">
-                  <span>Mardi – Jeudi</span>
+                  <span>{t('dayTueSun')}</span>
                   <span>11h30–14h30 &amp; 18h30–23h00</span>
-                </div>
-                <div className="info-hour-row">
-                  <span>Vendredi – Samedi</span>
-                  <span>11h30–15h00 &amp; 18h30–23h30</span>
-                </div>
-                <div className="info-hour-row">
-                  <span>Dimanche</span>
-                  <span>11h30–15h00 &amp; 18h30–00h00</span>
                 </div>
               </div>
             </div>

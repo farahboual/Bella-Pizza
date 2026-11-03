@@ -1,3 +1,4 @@
+﻿import {useLang} from './i18n.jsx'
 import {createContext,useContext,useEffect,useState} from 'react'
 import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,SUPP_MAX,MEATS,cleanSupp,hasOpts,optExtra,pizzaOffer,canetteDeal,hasFood,CANETTE_ID,getParisTime,DEFAULT_SCHEDULE} from '../shared/catalog.js'
 import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
@@ -179,13 +180,14 @@ function getAvailableSlots(){
 }
 
 const UPSELL_CANDIDATES = [
-  { id: 'boissons:canettes-33cl', name: 'Canette 33cl', icon: '🥤', fallbackPrice: 200 },
-  { id: 'desserts:tiramisu', name: 'Tiramisu', icon: '🍰', fallbackPrice: 450 },
-  { id: 'desserts:brownies', name: 'Brownie fondant', icon: '🍫', fallbackPrice: 300 },
-  { id: 'desserts:glace-haagen-dazs', name: 'Häagen-Dazs', icon: '🍨', fallbackPrice: 390 }
+  { id: 'boissons:san-pellegrino-limonata', name: 'San Pellegrino Limonata', icon: '', fallbackPrice: 350 },
+  { id: 'boissons:coca-cola-vintage-bouteille-verre', name: 'Coca-Cola Vintage', icon: '', fallbackPrice: 300 },
+  { id: 'desserts:tiramisu-maison-tradizionale', name: 'Tiramisu Tradizionale', icon: '', fallbackPrice: 550 },
+  { id: 'desserts:pizza-choco-noisette-pistache', name: 'Pizza Choco & Pistache', icon: '', fallbackPrice: 650 }
 ]
 
 export function CartDrawer(){
+ const { t } = useLang()
  const{lines,add,setQty,setNote,setOpt,unit,subtotal,offer:baseOffer,drinkDeal,canetteAlone,clear,total,count,open,setOpen,cfg,getPrice,isOut,isHidden}=useCart()
  const[type,setType]=useState('emporter'),[slot,setSlot]=useState('asap'),[pay,setPay]=useState(''),[f,setF]=useState(()=>{try{const s=localStorage.getItem('tp_customer');if(s)return JSON.parse(s)}catch{}return{name:'',phone:'',email:'',address:'',postcode:''}}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
 
@@ -286,7 +288,7 @@ export function CartDrawer(){
  const close=()=>{setOpen(false);setDone(null)}
 
  return <div className="cart-ov" onClick={close}><aside className="cart" role="dialog" aria-modal="true" aria-label="Votre commande" onClick={e=>e.stopPropagation()}>
-  <div className="cart-h"><h2>{done?'Merci !':'Votre commande'}</h2><div style={{display:'flex',gap:12,alignItems:'center'}}>{count>0&&!done&&<button type="button" onClick={clear} style={{background:'none',border:'none',color:'var(--mute)',fontSize:12,cursor:'pointer',textDecoration:'underline',padding:'4px 6px'}} title="Vider tout le panier">Vider</button>}<button className="x" onClick={close} aria-label="Fermer">×</button></div></div>
+  <div className="cart-h"><h2>{done ? 'Merci !' : t('cartTitle')}</h2><div style={{display:'flex',gap:12,alignItems:'center'}}>{count>0&&!done&&<button type="button" onClick={clear} style={{background:'none',border:'none',color:'var(--mute)',fontSize:12,cursor:'pointer',textDecoration:'underline',padding:'4px 6px'}} title="Vider tout le panier">Vider</button>}<button className="x" onClick={close} aria-label={t('cartClose')}>×</button></div></div>
 
   {done?<div className="cart-b">
    <p className="big">Commande n° {done} envoyée.</p>
@@ -301,7 +303,7 @@ export function CartDrawer(){
    <button className="btn ghost" onClick={close} style={{width:'100%'}}>Fermer</button>
   </div>
 
-  :!count?<div className="cart-b"><p>Votre panier est vide. Ajoutez des plats avec le bouton <b>+</b> sur la carte.</p></div>
+  :!count?<div className="cart-b"><p>{t('cartEmpty')}. {t('cartEmptySub')}</p></div>
 
   :<form className="cart-b" onSubmit={submit}>
    <ul className="cl">
@@ -413,7 +415,7 @@ export function CartDrawer(){
        <button type="button" onClick={()=>setQty(l.u,l.qty-1)} aria-label="Retirer un">−</button>
        <span aria-live="polite">{l.qty}</span>
        <button type="button" onClick={()=>setQty(l.u,l.qty+1)} aria-label="Ajouter un">+</button>
-       <input value={l.note} maxLength={120} onChange={e=>setNote(l.u,e.target.value)} placeholder="Précisions (sans oignon…)" aria-label={`Précisions pour ${c.name}`}/>
+       <input value={l.note} maxLength={120} onChange={e=>setNote(l.u,e.target.value)} placeholder={t('cartNotePlaceholder')} aria-label={`Précisions pour ${c.name}`}/>
       </div>
      </li>
     })}
@@ -430,7 +432,7 @@ export function CartDrawer(){
     return (
       <div className="cart-upsell">
         <div className="cart-upsell-title">
-          <span>Suggestions gourmandes & boissons fraîches</span>
+          <span>{t('upsellTitle')}</span>
         </div>
         <div className="cart-upsell-grid">
           {availableUpsells.map(u => {
@@ -514,7 +516,7 @@ export function CartDrawer(){
    {err&&<p className="warn" role="alert">{err}</p>}
 
    <div className="cart-f">
-    {(discount>0||offer>0||drinkDeal>0)&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--mute)'}}><span>Sous-total</span><span>{eur(subtotal)}</span></div>}
+    {(discount>0||offer>0||drinkDeal>0)&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--mute)'}}><span>{t('subtotal')}</span><span>{eur(subtotal)}</span></div>}
     {offer>0&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--green)'}}><span>3ème pizza offerte</span><span>-{eur(offer)}</span></div>}
     {drinkDeal>0&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--green)'}}><span>Canette à 1 € avec un plat</span><span>-{eur(drinkDeal)}</span></div>}
     {discount>0&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--green)'}}><span>Réduction</span><span>-{eur(discount)}</span></div>}
@@ -575,7 +577,7 @@ export function OrderBanner(){
  },[])
 
  return m
-  ? <div className={'obanner '+m.k} role="status">{m.t}<button onClick={()=>setM(null)} aria-label="Fermer">×</button></div>
+  ? <div className={'obanner '+m.k} role="status">{m.t}<button onClick={()=>setM(null)} aria-label={t('cartClose')}>×</button></div>
   : null
 }
 
