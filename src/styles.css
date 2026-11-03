@@ -303,3 +303,83 @@ footer .more p, footer .more summary { color: rgba(255,255,255,.55) }
   .row { gap: 10px }
 }
 @media(prefers-reduced-motion:reduce) { *, *::before, *::after { animation: none!important; transition: none!important } html { scroll-behavior: auto } }
+
+/* ==========================================================================
+   BELLA PIZZA - LUXURY CINEMATIC & ANIMATED STYLES
+   ========================================================================== */
+
+/* Language Toggle Button Group */
+.lang-toggle-container {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 99px;
+  padding: 3px;
+  gap: 2px;
+}
+.lang-btn {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 5px 9px;
+  border-radius: 99px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lang-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+.lang-btn.active {
+  background: var(--red, #C81D25);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(200, 29, 37, 0.45);
+  transform: scale(1.03);
+}
+.lang-flag {
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Enhanced Animated Sauce & Option Pills */
+.cart-sauce-pill {
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  cursor: pointer !important;
+}
+.cart-sauce-pill:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+.cart-sauce-pill.is-selected {
+  background: linear-gradient(135deg, #0D6838 0%, #16a34a 100%) !important;
+  color: #ffffff !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 4px 14px rgba(13, 104, 56, 0.38) !important;
+  transform: translateY(-1px) scale(1.04);
+}
+.cart-sauce-pill.is-selected::after {
+  content: " ?";
+  font-weight: 800;
+  margin-left: 4px;
+}
+
+/* Italian Tricolor Top Glow Stripe */
+.global-page-photo-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0D6838 0%, #0D6838 33%, #FDFBF7 33%, #FDFBF7 66%, #C81D25 66%, #C81D25 100%);
+  z-index: 10;
+  opacity: 0.9;
+}
+

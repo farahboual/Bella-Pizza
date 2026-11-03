@@ -1,4 +1,4 @@
-// Single source of truth for orderable items + prices (in cents).
+﻿// Single source of truth for orderable items + prices (in cents).
 // The server recomputes every total from this file; the browser never decides the price.
 import {pz,tom,cre,T,C,SZ,CATS} from './menuData.js'
 import {RESTAURANT_CONFIG} from './restaurant.config.js'
@@ -12,7 +12,7 @@ export function buildCatalog(){
  const getImg=(catId,s)=>itemImgs[s]||catImgs[catId]||catImgs.pizzas||'/client-assets/pizza.jpg'
  const add=(id,name,desc,cat,price,img)=>{if(price)m[id]={id,name,desc:desc||'',cat,price,img:img||getImg(cat.toLowerCase(),slug(name))}}
  SZ.forEach(([sz,p],i)=>{
-  const all=[...pz(tom,T),...pz(cre,C),['LATINA','Sauce BBQ, fromage, viande hachée, merguez']]
+  const all=[...pz(tom,T),...(cre?pz(cre,C):[])].filter(([n])=>Boolean(n));
   all.forEach(([n,d])=>{
    const s=slug(n)
    add(`pizzas:${s}:${slug(sz)}`,`Pizza ${n} · ${sz}`,d,'Pizzas',cents(p),getImg('pizzas',s))

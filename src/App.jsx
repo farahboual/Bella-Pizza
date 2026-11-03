@@ -10,6 +10,7 @@ import saladesImg from './assets/salades.webp'
 import {CartProvider,CartButton,CartDrawer,AddBtn,OrderBtn,MobileBar,OrderBanner,useCart} from './cart.jsx'
 import {slug,CATALOG,eur,getParisTime,DEFAULT_SCHEDULE,isInSlot} from '../shared/catalog.js'
 import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
+import {LangProvider, useLang, LanguageToggle} from './i18n.jsx'
 
 const cfgB = RESTAURANT_CONFIG.brand
 const cfgC = RESTAURANT_CONFIG.contact
@@ -150,6 +151,7 @@ const Logo = () => {
 function Header(){
   const [on, setOn] = useState(false)
   const { count, total, setOpen: openCart } = useCart()
+  const { t } = useLang()
 
   useEffect(() => {
     const f = () => setOn(scrollY > 10)
@@ -166,13 +168,14 @@ function Header(){
 
       {/* Clean luxury navigation */}
       <nav className="luxury-nav" aria-label="Navigation principale">
-        <a href="#carte" className="luxury-nav-link">La Carte</a>
-        <a href="#restaurant" className="luxury-nav-link">Livraison &amp; Accès</a>
-        <a href="#restaurant" className="luxury-nav-link">Horaires</a>
+        <a href="#carte" className="luxury-nav-link">{t('navCarte')}</a>
+        <a href="#restaurant" className="luxury-nav-link">{t('navDelivery')}</a>
+        <a href="#restaurant" className="luxury-nav-link">{t('navHours')}</a>
       </nav>
 
-      {/* Right actions: phone icon (desktop shows number, mobile icon only) + cart */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      {/* Right actions: Language toggle + phone + cart */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <LanguageToggle />
         <a className="luxury-phone-btn" href={TEL} aria-label={`Appeler le ${cfgC.phone}`}>
           <span className="phone-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
           <span className="phone-number">{cfgC.phone}</span>
@@ -390,40 +393,41 @@ function ScrollytellingSection() {
 }
 
 function MinimalHero() {
+  const { t } = useLang()
   return (
     <section className="minimal-hero" id="top">
       <div className="minimal-hero-content">
         <span className="minimal-hero-badge">
           <span className="dot-live" />
-          Cuisine artisanale · Produits frais
+          {t('badgeHomemade')} · {t('badgeHalal')}
         </span>
         <h1 className="minimal-hero-title">
-          {cfgB.heroTitle || 'Le goût des'}{' '}
-          <em>{cfgB.heroHighlight || 'bonnes choses.'}</em>
+          {t('heroTitle')}{' '}
+          <em>{t('heroHighlight')}</em>
         </h1>
-        <p className="minimal-hero-sub">{cfgB.tagline}</p>
+        <p className="minimal-hero-sub">{t('heroSubtitle')}</p>
         <div className="minimal-hero-actions">
-          <a className="minimal-hero-cta" href="#carte">Voir la carte →</a>
+          <a className="minimal-hero-cta" href="#carte">{t('viewMenu')}</a>
           <a className="minimal-hero-tel" href={TEL}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}} aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>{cfgC.phone}</a>
         </div>
 
         {/* Marketing Trust Proof Bar */}
         <div className="hero-trust-bar">
           <div className="trust-item">
-            <span className="trust-star">★ 4.8</span>
-            <span className="trust-text">Avis Clients Vérifiés</span>
+            <span className="trust-star">★ 4.9</span>
+            <span className="trust-text">{t('badgeReviews')}</span>
           </div>
           <span className="trust-sep">•</span>
           <div className="trust-item">
-            <span className="trust-subtle">Fait maison</span>
-            <span className="trust-text">Produits Frais du Jour</span>
+            <span className="trust-subtle">72h Sourdough</span>
+            <span className="trust-text">{t('badgeHomemade')}</span>
           </div>
           {cfgF.delivery && (
             <>
               <span className="trust-sep">•</span>
               <div className="trust-item">
-                <span className="trust-subtle">{cfgC?.address?.city || 'Livraison'}</span>
-                <span className="trust-text">Livraison Rapide</span>
+                <span className="trust-subtle">{cfgC?.address?.city || 'Paris'}</span>
+                <span className="trust-text">{t('deliveryNotice')}</span>
               </div>
             </>
           )}
@@ -432,7 +436,7 @@ function MinimalHero() {
               <span className="trust-sep">•</span>
               <div className="trust-item">
                 <span className="trust-subtle">Viandes</span>
-                <span className="trust-text">Certifiées Halal</span>
+                <span className="trust-text">{t('badgeHalal')}</span>
               </div>
             </>
           )}
@@ -819,22 +823,24 @@ export default function App(){
   },[])
 
   return(
-    <CartProvider>
-      <MotionConfig reducedMotion="user">
-        <a href="#carte" className="skip">Aller à la carte</a>
-        <Header/>
-        <main className="app-main-canvas">
-          {/* Global fixed full-viewport culinary photo that unifies the whole website */}
-          <div className="global-page-photo-bg" aria-hidden="true" />
-          <div className="global-nude-vignette" aria-hidden="true" />
-          <MinimalHero/>
-          <Menu/>
-          <RestaurantInfo/>
-        </main>
-        <ModernFooter/>
-        <MobileBar tel={TEL}/>
-        <CartDrawer/><OrderTracker/>
-      </MotionConfig>
-    </CartProvider>
+    <LangProvider>
+      <CartProvider>
+        <MotionConfig reducedMotion="user">
+          <a href="#carte" className="skip">Aller à la carte</a>
+          <Header/>
+          <main className="app-main-canvas">
+            {/* Global fixed full-viewport culinary photo that unifies the whole website */}
+            <div className="global-page-photo-bg" aria-hidden="true" />
+            <div className="global-nude-vignette" aria-hidden="true" />
+            <MinimalHero/>
+            <Menu/>
+            <RestaurantInfo/>
+          </main>
+          <ModernFooter/>
+          <MobileBar tel={TEL}/>
+          <CartDrawer/><OrderTracker/>
+        </MotionConfig>
+      </CartProvider>
+    </LangProvider>
   )
 }
