@@ -617,3 +617,494 @@ footer .more p, footer .more summary { color: rgba(255,255,255,.55) }
   box-shadow: 0 6px 20px rgba(200, 29, 37, 0.5);
 }
 
+
+/* ==========================================================================
+   BELLA PIZZA - MODERN ITALIAN MINIMALISM PALETTE OVERHAUL
+   Palette:
+     - Background: #F8F4EE (Warm Cream)
+     - Cards:      #FFFFFF (Pure White)
+     - Terracotta: #B87958 (Primary Brand)
+     - Espresso:   #34251F (Dark Contrast Text)
+     - Muted Gold: #D9B98C (Subtle Luxe Accent)
+     - Borders:    #EAE1D7 (Soft Beige)
+   ========================================================================== */
+
+:root {
+  --red: #B87958 !important;
+  --red2: #9E6446 !important;
+  --dark: #34251F !important;
+  --bg: #F8F4EE !important;
+  --white: #FFFFFF !important;
+  --mute: #8C7E75 !important;
+  --line: #EAE1D7 !important;
+  --gold: #D9B98C !important;
+  --r: 16px !important;
+}
+
+html, body {
+  background: #F8F4EE !important;
+  color: #34251F !important;
+  font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif !important;
+}
+
+/* Global full viewport overlay - soft warm tone */
+.global-page-photo-bg {
+  opacity: 0.18 !important;
+  filter: saturate(0.9) brightness(1.05) !important;
+}
+
+.global-page-photo-bg::before {
+  display: none !important;
+}
+
+.global-nude-vignette {
+  background: radial-gradient(circle at 50% 20%, rgba(248, 244, 238, 0.4) 0%, rgba(248, 244, 238, 0.96) 80%) !important;
+}
+
+/* Header */
+#hd {
+  background: rgba(248, 244, 238, 0.9) !important;
+  border-bottom: 1px solid #EAE1D7 !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.hd-glass-scrolled {
+  background: rgba(248, 244, 238, 0.96) !important;
+  box-shadow: 0 4px 20px rgba(52, 37, 31, 0.05) !important;
+}
+
+.luxury-nav-link {
+  color: #34251F !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+.luxury-nav-link:hover {
+  color: #B87958 !important;
+}
+
+.luxury-phone-btn {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  border-radius: 99px !important;
+}
+
+.luxury-phone-btn:hover {
+  border-color: #B87958 !important;
+  color: #B87958 !important;
+}
+
+.luxury-cart-btn {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 99px !important;
+  box-shadow: 0 4px 16px rgba(184, 121, 88, 0.35) !important;
+}
+
+.luxury-cart-btn:hover {
+  background: #9E6446 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Language Toggle in Header */
+.lang-toggle-container {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+}
+
+.lang-btn {
+  color: #8C7E75 !important;
+}
+
+.lang-btn.active {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(184, 121, 88, 0.35) !important;
+}
+
+/* Minimal Hero Section */
+.minimal-hero {
+  background: transparent !important;
+  padding: 120px 20px 60px !important;
+}
+
+.minimal-hero-badge {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 10px rgba(52, 37, 31, 0.04) !important;
+}
+
+.minimal-hero-badge .dot-live {
+  background: #B87958 !important;
+}
+
+.minimal-hero-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(2.4rem, 6vw, 4rem) !important;
+  color: #34251F !important;
+  font-weight: 700 !important;
+}
+
+.minimal-hero-title em {
+  font-style: italic !important;
+  color: #B87958 !important;
+}
+
+.minimal-hero-sub {
+  color: #6A5B53 !important;
+  font-size: 1.1rem !important;
+}
+
+.minimal-hero-cta {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 99px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 6px 20px rgba(184, 121, 88, 0.35) !important;
+}
+
+.minimal-hero-cta:hover {
+  background: #9E6446 !important;
+  transform: translateY(-2px) !important;
+}
+
+.minimal-hero-tel {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  border-radius: 99px !important;
+  font-weight: 700 !important;
+}
+
+.minimal-hero-tel:hover {
+  border-color: #B87958 !important;
+  color: #B87958 !important;
+}
+
+/* Trust Bar */
+.hero-trust-bar {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  border-radius: 99px !important;
+  box-shadow: 0 4px 18px rgba(52, 37, 31, 0.04) !important;
+}
+
+.trust-star {
+  color: #B87958 !important;
+  font-weight: 800 !important;
+}
+
+.trust-text {
+  color: #34251F !important;
+  font-weight: 600 !important;
+}
+
+.trust-subtle {
+  color: #8C7E75 !important;
+}
+
+/* Menu Section */
+.menu {
+  background: transparent !important;
+  color: #34251F !important;
+}
+
+.menu-search-wrap {
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE1D7 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 16px rgba(52, 37, 31, 0.03) !important;
+}
+
+.menu-search-input {
+  color: #34251F !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+.menu-search-icon {
+  color: #B87958 !important;
+}
+
+/* Category Pills */
+.cat-pills-bar {
+  display: flex !important;
+  gap: 8px !important;
+  padding: 6px 0 16px !important;
+  overflow-x: auto !important;
+}
+
+.cat-pill {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #6A5B53 !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  padding: 10px 18px !important;
+  border-radius: 99px !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cat-pill:hover {
+  border-color: #D9B98C !important;
+  color: #34251F !important;
+  background: #FDFBF7 !important;
+}
+
+.cat-pill.active {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border-color: #B87958 !important;
+  box-shadow: 0 4px 14px rgba(184, 121, 88, 0.3) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* Pizza Size Toggle */
+.sizes {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+  background: #EAE1D7 !important;
+  padding: 4px !important;
+  border-radius: 16px !important;
+}
+
+.sz {
+  background: transparent !important;
+  border: none !important;
+  color: #6A5B53 !important;
+  border-radius: 12px !important;
+  padding: 12px 10px !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+}
+
+.sz strong {
+  color: #B87958 !important;
+}
+
+.szbg {
+  background: #FFFFFF !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 10px rgba(52, 37, 31, 0.08) !important;
+}
+
+/* Food Cards (White, Subtle Border, Terracotta Highlights) */
+.food-card-v {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 16px rgba(52, 37, 31, 0.04) !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.food-card-v:hover {
+  border-color: #D9B98C !important;
+  box-shadow: 0 8px 26px rgba(184, 121, 88, 0.12) !important;
+  transform: translateY(-3px) !important;
+}
+
+.food-badge-marketing {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  padding: 4px 8px !important;
+  border-radius: 8px !important;
+}
+
+.food-card-v-title {
+  color: #34251F !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+}
+
+.food-card-v-desc {
+  color: #6A5B53 !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+.food-card-v-price {
+  color: #B87958 !important;
+  font-weight: 800 !important;
+  font-size: 1.15rem !important;
+}
+
+.add {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 12px !important;
+  width: 38px !important;
+  height: 38px !important;
+  box-shadow: 0 3px 10px rgba(184, 121, 88, 0.3) !important;
+}
+
+.add:hover {
+  background: #9E6446 !important;
+  transform: scale(1.05) !important;
+}
+
+.add.ok {
+  background: #D9B98C !important;
+  color: #34251F !important;
+}
+
+/* Storefront Info Section */
+.storefront-info-section {
+  background: transparent !important;
+}
+
+.menu-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 2.2rem !important;
+  color: #34251F !important;
+}
+
+.menu-eyebrow span {
+  color: #B87958 !important;
+  font-weight: 800 !important;
+}
+
+.info-card {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 18px rgba(52, 37, 31, 0.04) !important;
+}
+
+.info-card h3 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  color: #34251F !important;
+  font-size: 18px !important;
+}
+
+.info-card-icon {
+  background: #F8F4EE !important;
+  color: #B87958 !important;
+  border: 1px solid #EAE1D7 !important;
+}
+
+.info-row {
+  border-bottom: 1px solid #F2ECE3 !important;
+  color: #6A5B53 !important;
+}
+
+.info-row strong {
+  color: #34251F !important;
+}
+
+.info-row.highlight strong {
+  color: #B87958 !important;
+}
+
+.modern-footer {
+  background: #281D17 !important;
+  color: #EAE1D7 !important;
+  border-top: 1px solid #3E2F27 !important;
+}
+
+/* ==========================================================================
+   INTERACTIVE DISH MODAL - ITALIAN MINIMALIST UPGRADE
+   ========================================================================== */
+
+.item-modal-card {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  box-shadow: 0 24px 60px rgba(52, 37, 31, 0.25) !important;
+}
+
+.item-modal-hero {
+  background: #F8F4EE !important;
+}
+
+.item-modal-overlay {
+  background: linear-gradient(180deg, rgba(248, 244, 238, 0.1) 0%, rgba(255, 255, 255, 0.95) 90%, #FFFFFF 100%) !important;
+}
+
+.item-modal-title {
+  color: #34251F !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+.item-modal-desc {
+  color: #6A5B53 !important;
+}
+
+.item-modal-badge {
+  background: rgba(184, 121, 88, 0.12) !important;
+  color: #B87958 !important;
+  border-color: rgba(184, 121, 88, 0.3) !important;
+}
+
+.modal-section-label {
+  color: #8C7E75 !important;
+}
+
+.modal-option-btn {
+  background: #F8F4EE !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+}
+
+.modal-option-btn:hover {
+  border-color: #D9B98C !important;
+  background: #FFFFFF !important;
+}
+
+.modal-option-btn.active {
+  background: rgba(184, 121, 88, 0.1) !important;
+  border-color: #B87958 !important;
+  color: #34251F !important;
+}
+
+.option-check {
+  color: #B87958 !important;
+}
+
+.sauce-pill-animated {
+  background: #F8F4EE !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+}
+
+.sauce-pill-animated:hover {
+  border-color: #D9B98C !important;
+}
+
+.sauce-pill-animated.active {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border-color: #B87958 !important;
+  box-shadow: 0 4px 14px rgba(184, 121, 88, 0.35) !important;
+}
+
+.item-modal-footer {
+  background: #F8F4EE !important;
+  border-top: 1px solid #EAE1D7 !important;
+}
+
+.modal-footer-price {
+  color: #B87958 !important;
+}
+
+.modal-confirm-btn {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(184, 121, 88, 0.4) !important;
+}
+
+.modal-confirm-btn:hover {
+  background: #9E6446 !important;
+}
+

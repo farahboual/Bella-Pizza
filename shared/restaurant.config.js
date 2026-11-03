@@ -1,6 +1,6 @@
 /**
  * ===================================================================
- * RESTAURANT CONFIG — BELLA PIZZERIA (DEMO FLAGSHIP)
+ * RESTAURANT CONFIG — BELLA PIZZA (PREMIUM ITALIAN MINIMALISM)
  * ===================================================================
  */
 
@@ -25,14 +25,16 @@ export const RESTAURANT_CONFIG = {
     mentions:        "Bella Pizza Pizzeria · Pour votre santé, pratiquez une activité physique régulière — www.mangerbouger.fr"
   },
 
-  // ─── 2. THEME & COLORS (ITALIAN TRICOLOR & LUXURY DARK SLATE) ─────
+  // ─── 2. THEME & COLORS (MODERN ITALIAN MINIMALISM) ───────────────
   theme: {
-    primaryColor:    "#C81D25",   // Italian Tomato Red
-    primaryHover:    "#A7151C",   // Deep Crimson hover
-    primaryLight:    "#FDFBF7",   // Warm Fior di Latte background
-    backgroundColor: "#111413",  // Dark Slate / Wood Oven Ambiance
-    textColor:       "#F5F2EB",   // Creamy warm text
-    fontFamily:      "'Plus Jakarta Sans', 'Playfair Display', sans-serif"
+    primaryColor:    "#B87958",   // Warm Terracotta
+    primaryHover:    "#9E6446",   // Deep Terracotta Roast
+    primaryLight:    "#FFFFFF",   // Pure White card
+    backgroundColor: "#F8F4EE",  // Warm Cream Background
+    textColor:       "#34251F",   // Dark Espresso Text
+    accentGold:      "#D9B98C",   // Muted Gold
+    borderColor:     "#EAE1D7",   // Soft Beige Border
+    fontFamily:      "'Inter', 'Plus Jakarta Sans', system-ui, sans-serif"
   },
 
   // ─── 3. CONTACT & LOCATION ────────────────────────────────────────
