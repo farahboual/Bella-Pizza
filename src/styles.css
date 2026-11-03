@@ -486,16 +486,21 @@ a {
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  position: relative;
 }
 .atelier-cat-btn:hover {
   color: var(--dark);
-  background: var(--limestone);
 }
 .atelier-cat-btn.active {
-  background: var(--dark);
   color: #FFFFFF;
-  border-color: var(--dark);
+}
+.atelier-cat-active-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background: var(--dark);
+  z-index: 1;
 }
 
 /* Search Input */
@@ -557,9 +562,14 @@ a {
   border-color: var(--gold);
 }
 .atelier-size-pill.active {
-  background: var(--red);
   color: #FFFFFF;
-  border-color: var(--red);
+}
+.atelier-size-active-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background: var(--red);
+  z-index: 1;
 }
 .atelier-size-pill strong {
   font-size: 12.5px;

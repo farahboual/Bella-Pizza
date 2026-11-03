@@ -94,17 +94,22 @@ export const RESTAURANT_CONFIG = {
     boissons: "/client-assets/boissons.jpg",
     desserts: "/client-assets/desserts.jpg",
     items: {
-      'margherita-dop':        '/client-assets/pizza.jpg',
-      'burratissima-di-bella': '/client-assets/burratissima.jpg',
-      'regina-royale':         '/client-assets/pizza.jpg',
-      'diavola-piccante':      '/client-assets/calzone.jpg',
-      '4-formaggi-rustica':    '/client-assets/4-fromages-tramonto.jpg',
-      'tartufo-suprema':       '/client-assets/pizza.jpg',
-      'double-smash-cheese':   '/client-assets/burgers.jpg',
-      'truffle-smash-burger':  '/client-assets/burgers.jpg',
-      'smokey-bacon-bbq':      '/client-assets/burgers.jpg',
-      'crispy-chicken-spicy':  '/client-assets/burgers.jpg',
-      'tiramisu-maison-tradizionale': '/client-assets/tiramisu-tramonto.jpg'
+      'margherita-dop':                 '/client-assets/pizza.jpg',
+      'regina-royale':                  '/client-assets/regina-royale.jpg',
+      'diavola-piccante':               '/client-assets/pepperoni.jpg',
+      '4-formaggi-rustica':             '/client-assets/pizza-4fromages.jpg',
+      'burratissima-di-bella':          '/client-assets/burratissima.jpg',
+      'tartufo-suprema':                '/client-assets/tartufo-suprema.jpg',
+      'double-smash-cheese':            '/client-assets/burgers.jpg',
+      'truffle-smash-burger':           '/client-assets/truffle-burger.jpg',
+      'smokey-bacon-bbq':               '/client-assets/smokey-bacon-bbq.jpg',
+      'crispy-chicken-spicy':           '/client-assets/burger-chicken.jpg',
+      'san-pellegrino-limonata':        '/client-assets/san-pellegrino-limonata.jpg',
+      'san-pellegrino-aranciata-rossa': '/client-assets/san-pellegrino-aranciata.jpg',
+      'coca-cola-vintage-bouteille-verre': '/client-assets/boissons.jpg',
+      'fuze-tea-peche-intense':         '/client-assets/boissons.jpg',
+      'tiramisu-maison-tradizionale':   '/client-assets/tiramisu-tramonto.jpg',
+      'pizza-choco-noisette-pistache':  '/client-assets/desserts.jpg'
     }
   }
 };

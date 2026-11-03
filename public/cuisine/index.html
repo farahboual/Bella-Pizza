@@ -16,6 +16,7 @@
 
 :root{
   --bg:#100E0D;
+  --header-bg:#181513;
   --ticket:#24211F;
   --ticket-inner:#1B1917;
   --white:#FFFFFF;
@@ -30,7 +31,85 @@
   --green-bg:rgba(16, 185, 129, 0.15);
   --blue:#3B82F6;
   --blue-bg:rgba(59, 130, 246, 0.15);
+  --note-bg:#3E2914;
+  --note-text:#FEF3C7;
+  --note-border:#F59E0B;
   --font:'General Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Intentional Light Mode for Kitchen */
+[data-theme="light"] {
+  --bg:#F1F5F9;
+  --header-bg:#FFFFFF;
+  --ticket:#FFFFFF;
+  --ticket-inner:#F8FAFC;
+  --white:#0F172A;
+  --text:#0F172A;
+  --mute:#64748B;
+  --line:#CBD5E1;
+  --red:#991B1B;
+  --red-hover:#7F1D1D;
+  --amber:#D97706;
+  --amber-bg:rgba(217, 119, 6, 0.12);
+  --green:#059669;
+  --green-bg:rgba(5, 150, 105, 0.12);
+  --blue:#2563EB;
+  --blue-bg:rgba(37, 99, 235, 0.12);
+  --note-bg:#FEF3C7;
+  --note-text:#92400E;
+  --note-border:#F59E0B;
+}
+
+[data-theme="light"] body {
+  background:var(--bg) !important;
+  color:#0F172A !important;
+}
+
+[data-theme="light"] header {
+  background:#FFFFFF !important;
+  border-bottom:1.5px solid var(--line) !important;
+}
+
+[data-theme="light"] header h1 {
+  color:#0F172A !important;
+}
+
+[data-theme="light"] .o {
+  background:#FFFFFF !important;
+  box-shadow:0 4px 18px rgba(15, 23, 42, 0.08) !important;
+  border:2px solid var(--line) !important;
+}
+
+[data-theme="light"] .top b {
+  color:#0F172A !important;
+}
+
+[data-theme="light"] li div > span, [data-theme="light"] li div > strong {
+  color:#0F172A !important;
+}
+
+[data-theme="light"] li i {
+  background:#FEF3C7 !important;
+  color:#92400E !important;
+  border:1px solid #F59E0B !important;
+}
+
+[data-theme="light"] .cust b {
+  color:#0F172A !important;
+}
+
+[data-theme="light"] .btn.ink {
+  background:#0F172A !important;
+  color:#FFFFFF !important;
+}
+
+[data-theme="light"] .btn.ghost {
+  background:#FFFFFF !important;
+  border:1px solid var(--line) !important;
+  color:#0F172A !important;
+}
+[data-theme="light"] .btn.ghost:hover {
+  background:#E2E8F0 !important;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -53,7 +132,7 @@ header{
   align-items:center;
   justify-content:space-between;
   padding:14px 24px;
-  background:#181513 !important;
+  background:var(--header-bg) !important;
   border-bottom:1.5px solid var(--line) !important;
 }
 
@@ -403,10 +482,32 @@ li i{
 }
 </style></head><!-- Écran cuisine --><body>
 <div id="gate"><form id="f"><h1>Écran<span>Cuisine</span></h1><p><b>Gestion des commandes en direct</b><br>Entrez le mot de passe, touchez pour activer le son et mettez le volume au maximum.</p><input id="pw" type="password" autocomplete="current-password" placeholder="Mot de passe" required><div id="er"></div><button id="go" class="btn red">Se connecter et activer le son</button></form></div>
-<header><div><h1>Écran <span>Cuisine</span></h1><div class="st" id="st">connexion…</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn ghost" id="autoprint-btn">🖨️ Auto-impression: OFF</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
+<header><div><h1>Écran <span>Cuisine</span></h1><div class="st" id="st">connexion…</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn ghost" id="theme-btn" title="Changer le mode d'affichage"><span id="theme-icon">☀️</span> <span id="theme-text">Mode Clair</span></button> <button class="btn ghost" id="autoprint-btn">🖨️ Auto-impression: OFF</button> <button class="btn ink" id="mute">Couper l’alarme</button></div></header>
 <main id="list"></main>
 <div id="ticket"></div>
 <script>
+// Theme Switcher (Dark Mode / Light Mode with localStorage persistence)
+const applyTheme = (theme) => {
+  document.documentElement.setAttribute('data-theme', theme)
+  try { localStorage.setItem('kds_theme', theme) } catch {}
+  const isLight = theme === 'light'
+  const icon = document.querySelector('#theme-icon')
+  const text = document.querySelector('#theme-text')
+  if (icon) icon.textContent = isLight ? '🌙' : '☀️'
+  if (text) text.textContent = isLight ? 'Mode Sombre' : 'Mode Clair'
+}
+try {
+  const saved = localStorage.getItem('kds_theme') || 'dark'
+  applyTheme(saved)
+} catch {
+  applyTheme('dark')
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('#theme-btn')?.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark'
+    applyTheme(cur === 'light' ? 'dark' : 'light')
+  })
+})
 const $=s=>document.querySelector(s),eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))
 let orders=new Map(),ctx,muted=false,autoPrint=false,timer,key='',printedSet=new Set(),printQueue=[]

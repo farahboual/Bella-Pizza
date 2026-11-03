@@ -390,162 +390,161 @@ textarea.edit-field-input{resize:vertical;min-height:54px}
   }
 }
 
-/* Modern Italian Minimalist Manager Portal */
+/* Commercial SaaS Dashboard Styles (Stripe / Linear / Vercel grade) */
 body {
-  background: #F8F4EE !important;
-  color: #34251F !important;
-}
-
-body::before {
-  opacity: 0.10 !important;
-}
-
-body::after {
-  background: rgba(248, 244, 238, 0.92) !important;
+  background: var(--bg) !important;
+  color: var(--dark) !important;
 }
 
 header {
-  background: rgba(248, 244, 238, 0.95) !important;
-  border-bottom: 1px solid #EAE1D7 !important;
+  background: #FFFFFF !important;
+  border-bottom: 1px solid var(--line) !important;
 }
 
 h1, h2, h3, .sh-page-title {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  color: #34251F !important;
+  font-family: var(--font) !important;
+  color: var(--dark) !important;
+  letter-spacing: -0.02em !important;
 }
 
 .card {
   background: #FFFFFF !important;
-  border: 1px solid #EAE1D7 !important;
-  border-radius: 20px !important;
-  box-shadow: 0 4px 18px rgba(52, 37, 31, 0.04) !important;
-  color: #34251F !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+  color: var(--dark) !important;
 }
 
 .stat-card {
-  background: #F8F4EE !important;
-  border: 1px solid #EAE1D7 !important;
-  border-radius: 16px !important;
+  background: #FFFFFF !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
 }
 
 .stat-card .val {
-  color: #B87958 !important;
-  font-family: 'Inter', sans-serif !important;
-  font-weight: 800 !important;
+  color: var(--dark) !important;
+  font-family: var(--font) !important;
+  font-weight: 700 !important;
 }
 
 .nav-tab-btn {
   background: #FFFFFF !important;
-  border: 1px solid #EAE1D7 !important;
-  color: #6A5B53 !important;
-  border-radius: 99px !important;
-  font-weight: 700 !important;
-  transition: all 0.2s ease !important;
+  border: 1px solid var(--line) !important;
+  color: var(--mute) !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease !important;
 }
 
 .nav-tab-btn:hover {
-  border-color: #D9B98C !important;
-  color: #34251F !important;
+  border-color: var(--line-strong) !important;
+  color: var(--dark) !important;
 }
 
 .nav-tab-btn.active {
-  background: #B87958 !important;
+  background: var(--dark) !important;
   color: #FFFFFF !important;
-  border-color: #B87958 !important;
-  box-shadow: 0 2px 10px rgba(184, 121, 88, 0.3) !important;
+  border-color: var(--dark) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15) !important;
 }
 
 /* Item Rows */
 .item-row {
-  background: #F8F4EE !important;
-  border: 1px solid #EAE1D7 !important;
-  border-radius: 14px !important;
-  color: #34251F !important;
-  transition: all 0.18s ease !important;
+  background: #FFFFFF !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  color: var(--dark) !important;
+  transition: all 0.15s ease !important;
 }
 
 .item-row:hover {
-  background: #FFFFFF !important;
-  border-color: #D9B98C !important;
-  box-shadow: 0 4px 14px rgba(184, 121, 88, 0.08) !important;
+  background: #F8FAFC !important;
+  border-color: var(--line-strong) !important;
 }
 
 .item-name {
-  color: #34251F !important;
-  font-weight: 700 !important;
+  color: var(--dark) !important;
+  font-weight: 600 !important;
 }
 
 .sale-row {
   background: #FFFFFF !important;
-  border: 1px solid #EAE1D7 !important;
-  border-radius: 16px !important;
-  box-shadow: 0 2px 10px rgba(52, 37, 31, 0.03) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
 }
 
 .sale-row:hover {
-  background: #FDFBF7 !important;
-  border-color: #D9B98C !important;
+  background: #F8FAFC !important;
+  border-color: var(--line-strong) !important;
 }
 
 .sale-total {
-  color: #B87958 !important;
-  font-weight: 800 !important;
+  color: var(--red) !important;
+  font-weight: 700 !important;
 }
 
 .sale-wa-btn {
-  border-color: #D9B98C !important;
-  color: #34251F !important;
+  border: 1px solid var(--line) !important;
+  color: var(--dark) !important;
   background: #FFFFFF !important;
+  border-radius: 6px !important;
 }
 
 .sale-wa-btn:hover {
-  background: #B87958 !important;
-  color: #FFFFFF !important;
-  border-color: #B87958 !important;
+  background: var(--bg) !important;
+  border-color: var(--line-strong) !important;
 }
 
-.btn.red, .btn.ink {
-  background: #B87958 !important;
+.btn.red {
+  background: var(--red) !important;
   color: #FFFFFF !important;
-  border: none !important;
-  border-radius: 12px !important;
-  box-shadow: 0 3px 12px rgba(184, 121, 88, 0.3) !important;
+  border: 1px solid var(--red) !important;
+  border-radius: 6px !important;
 }
 
-.btn.red:hover, .btn.ink:hover {
-  background: #9E6446 !important;
+.btn.red:hover {
+  background: var(--red2) !important;
+}
+
+.btn.ink {
+  background: var(--dark) !important;
+  color: #FFFFFF !important;
+  border-radius: 6px !important;
 }
 
 .btn.ghost {
   background: #FFFFFF !important;
-  border: 1px solid #EAE1D7 !important;
-  color: #34251F !important;
-  border-radius: 12px !important;
+  border: 1px solid var(--line) !important;
+  color: var(--dark) !important;
+  border-radius: 6px !important;
 }
 
 .btn.ghost:hover {
-  border-color: #B87958 !important;
-  color: #B87958 !important;
+  background: var(--bg) !important;
+  border-color: var(--line-strong) !important;
 }
 
 input, select, textarea {
   background: #FFFFFF !important;
-  border: 1.5px solid #EAE1D7 !important;
-  border-radius: 12px !important;
-  color: #34251F !important;
-  font-family: 'Inter', system-ui, sans-serif !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  color: var(--dark) !important;
+  font-family: var(--font) !important;
+  font-size: 13.5px !important;
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none !important;
-  border-color: #B87958 !important;
-  box-shadow: 0 0 0 3px rgba(184, 121, 88, 0.15) !important;
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 2px rgba(122, 28, 28, 0.15) !important;
 }
 
 .status-pill.open {
-  background: rgba(184, 121, 88, 0.12) !important;
-  color: #B87958 !important;
-  border: 1px solid rgba(184, 121, 88, 0.3) !important;
+  background: #DCFCE7 !important;
+  color: #166534 !important;
+  border: 1px solid #BBF7D0 !important;
 }
 </style></head><body>
 
@@ -553,7 +552,7 @@ input:focus, select:focus, textarea:focus {
 <div id="gate">
  <form id="f">
   <div class="logo">
-   <svg viewBox="0 0 48 48" aria-hidden="true" style="width:34px;height:34px;flex:none"><rect width="48" height="48" rx="14" fill="var(--red,#A3785E)"/><circle cx="24" cy="14" r="2.5" fill="#fff"/><path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/><rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/><path d="M21 35H27" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+   <svg viewBox="0 0 48 48" aria-hidden="true" style="width:34px;height:34px;flex:none"><rect width="48" height="48" rx="14" fill="var(--red,#7A1C1C)"/><circle cx="24" cy="14" r="2.5" fill="#fff"/><path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/><rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/><path d="M21 35H27" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
    <b>Gérant<span>PORTAIL</span></b>
   </div>
   <h1>Espace Gérant</h1>
@@ -568,7 +567,7 @@ input:focus, select:focus, textarea:focus {
 <header>
  <div style="display:flex;gap:12px;align-items:center">
   <a class="logo" href="#top" aria-label="Espace Gérant">
-   <svg viewBox="0 0 48 48" aria-hidden="true" style="width:34px;height:34px;flex:none"><rect width="48" height="48" rx="14" fill="var(--red,#A3785E)"/><circle cx="24" cy="14" r="2.5" fill="#fff"/><path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/><rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/><path d="M21 35H27" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+   <svg viewBox="0 0 48 48" aria-hidden="true" style="width:34px;height:34px;flex:none"><rect width="48" height="48" rx="14" fill="var(--red,#7A1C1C)"/><circle cx="24" cy="14" r="2.5" fill="#fff"/><path d="M12 28C12 21.3726 17.3726 16 24 16C30.6274 16 36 21.3726 36 28H12Z" fill="#fff"/><rect x="10" y="30" width="28" height="3" rx="1.5" fill="#fff"/><path d="M21 35H27" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
    <b>L'Atelier<span>Gourmand</span></b>
   </a>
   <span class="badge-admin">Gérant</span>
@@ -999,7 +998,7 @@ input:focus, select:focus, textarea:focus {
 <!-- CHEVALET DE TABLE IMPRIMABLE -->
 <div id="chevalet-print-area">
  <div style="max-width:380px;margin:0 auto;border:3px solid #1A1511;border-radius:24px;padding:36px;font-family:'Nunito',sans-serif">
-  <h1 id="print-brand-name" style="font-size:28px;font-weight:900;color:var(--red,#A3785E);margin-bottom:4px">L'Atelier Gourmand</h1>
+  <h1 id="print-brand-name" style="font-size:28px;font-weight:900;color:var(--red,#7A1C1C);margin-bottom:4px">Bella Pizza</h1>
   <p id="print-brand-addr" style="font-size:14px;color:#6B6560;font-weight:700;margin-bottom:20px">12 rue des Délices, 75001 Paris</p>
   <div style="background:#F7F3EE;padding:12px;border-radius:16px;display:inline-block;margin-bottom:20px">
    <h2 id="print-tbl-title" style="font-size:32px;font-weight:900;color:#1A1511">TABLE N° 1</h2>

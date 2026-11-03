@@ -288,9 +288,11 @@ const AtelierDish = ({ n, d, p, id, img, onSelect }) => {
   }
 
   return (
-    <div
+    <motion.div
       className="atelier-dish-item"
       onClick={handleClick}
+      whileHover={{ y: -3, transition: { duration: 0.2 } }}
+      whileTap={{ scale: 0.98 }}
       style={{ opacity: out ? 0.6 : 1 }}
     >
       <div className="atelier-dish-thumb">
@@ -321,7 +323,7 @@ const AtelierDish = ({ n, d, p, id, img, onSelect }) => {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -405,8 +407,16 @@ function Menu() {
                   onClick={() => setCat(x.id)}
                   role="tab"
                   aria-selected={x.id === cat}
+                  style={{ position: 'relative' }}
                 >
-                  {getCatLabel(x.id)}
+                  {x.id === cat && (
+                    <motion.span
+                      layoutId="active-cat-bg"
+                      className="atelier-cat-active-pill"
+                      transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                    />
+                  )}
+                  <span style={{ position: 'relative', zIndex: 2 }}>{getCatLabel(x.id)}</span>
                 </button>
               ))}
             </div>
@@ -463,9 +473,17 @@ function Menu() {
                   className={`atelier-size-pill ${i === size ? 'active' : ''}`}
                   onClick={() => setSize(i)}
                   type="button"
+                  style={{ position: 'relative' }}
                 >
-                  <span>{s[0]}</span>
-                  <strong>{s[1]}</strong>
+                  {i === size && (
+                    <motion.span
+                      layoutId="active-size-bg"
+                      className="atelier-size-active-pill"
+                      transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                    />
+                  )}
+                  <span style={{ position: 'relative', zIndex: 2 }}>{s[0]}</span>
+                  <strong style={{ position: 'relative', zIndex: 2 }}>{s[1]}</strong>
                 </button>
               ))}
             </div>
@@ -514,7 +532,13 @@ function Menu() {
             )}
 
             {/* Remaining Pizzas in Editorial Grid */}
-            <div className="atelier-dish-grid">
+            <motion.div
+              key={`pizzas-${size}`}
+              className="atelier-dish-grid"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
               {otherPizzas.map(it => (
                 <AtelierDish
                   key={it.id}
@@ -526,7 +550,7 @@ function Menu() {
                   onSelect={setSelectedItem}
                 />
               ))}
-            </div>
+            </motion.div>
           </div>
         ) : (
           /* Burgers, Boissons, Desserts */
@@ -540,7 +564,13 @@ function Menu() {
               </div>
             )}
 
-            <div className="atelier-dish-grid">
+            <motion.div
+              key={cat}
+              className="atelier-dish-grid"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
               {(activeCat?.items || []).map(i => {
                 const s = slug(i[0])
                 return (
@@ -555,7 +585,7 @@ function Menu() {
                   />
                 )
               })}
-            </div>
+            </motion.div>
           </div>
         )}
       </div>

@@ -1,5 +1,6 @@
 ﻿import {useLang} from './i18n.jsx'
 import {createContext,useContext,useEffect,useState} from 'react'
+import {motion, AnimatePresence} from 'framer-motion'
 import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,SUPP_MAX,MEATS,cleanSupp,hasOpts,optExtra,pizzaOffer,canetteDeal,hasFood,CANETTE_ID,getParisTime,DEFAULT_SCHEDULE} from '../shared/catalog.js'
 import {RESTAURANT_CONFIG} from '../shared/restaurant.config.js'
 const Ctx=createContext(null)
@@ -151,7 +152,7 @@ export const AddBtn=({id})=>{
  if(!enabled||!item)return null
  const out=isOut(id,cfg)
  if(out)return <span className="tag-out">Rupture</span>
- return <button className={'add'+(ok?' ok':'')} aria-label={`Ajouter ${item.name} au panier`} onClick={()=>{add(id);setOk(true);setTimeout(()=>setOk(false),900)}}>{ok?'✓':'+'}</button>
+ return <motion.button whileTap={{ scale: 0.88 }} className={'add'+(ok?' ok':'')} aria-label={`Ajouter ${item.name} au panier`} onClick={()=>{add(id);setOk(true);setTimeout(()=>setOk(false),900)}}>{ok?'✓':'+'}</motion.button>
 }
 
 export const CartButton=()=>{
@@ -295,7 +296,7 @@ export function CartDrawer(){
    <p>Le restaurant l’a reçue. {type=='livraison'?'Le livreur arrive dès que votre commande est prête.':type=='sur_place'?(tableNumber?`Votre commande sera servie à la Table n° ${tableNumber}.`:'Votre commande sera servie à votre table / comptoir.'):`Vous pouvez venir la récupérer au ${RESTAURANT_CONFIG?.contact?.address?.full || 'restaurant'}.`} Pensez à régler {type=='livraison'?'à la livraison':'sur place'}.</p>
 
    <div style={{background:'var(--bg)',padding:16,borderRadius:16,border:'1px solid var(--line)',margin:'12px 0',textAlign:'center'}}>
-    <p style={{fontWeight:700,marginBottom:8}}>⭐ Satisfait de votre repas ?</p>
+    <p style={{fontWeight:700,marginBottom:8}}>Partagez votre expérience</p>
     <a href={RESTAURANT_CONFIG?.contact?.mapsUrl || '#'} target="_blank" rel="noopener noreferrer" className="btn red" style={{fontSize:13,padding:'10px 16px',width:'100%'}}>Laissez-nous 5 étoiles sur Google Maps →</a>
    </div>
 
@@ -305,7 +306,8 @@ export function CartDrawer(){
 
   :!count?<div className="cart-b"><p>{t('cartEmpty')}. {t('cartEmptySub')}</p></div>
 
-  :<form className="cart-b" onSubmit={submit}>
+  :<form className="cart-form-container" onSubmit={submit}>
+   <div className="cart-scroll-body">
    <ul className="cl">
 
     {lines.map(l=>{
@@ -319,7 +321,7 @@ export function CartDrawer(){
 
         {/* Multiple sauces */}
         <div className="cart-sauce-section" style={{display:'flex',flexDirection:'column',gap:8,width:'100%',margin:'8px 0'}}>
-         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--nude-text, #28231F)'}}>Sauces au choix :</span>
+         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--dark, #181513)'}}>Sauces au choix :</span>
 
          <div className="cart-sauce-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(105px, 1fr))',gap:6}}>
           {SAUCES.map(s=>{
@@ -340,10 +342,10 @@ export function CartDrawer(){
              fontWeight:600,
              userSelect:'none',
              transition:'all .15s ease',
-             background:selected ? '#A3785E' : '#FFFFFF',
-             color:selected ? '#FFFFFF' : '#28231F',
-             border:selected ? '1.5px solid #A3785E' : '1px solid rgba(40,35,31,0.15)',
-             boxShadow:selected ? '0 2px 6px rgba(163,120,94,0.25)' : 'none'
+             background:selected ? 'var(--red, #7A1C1C)' : '#FFFFFF',
+             color:selected ? '#FFFFFF' : 'var(--dark, #181513)',
+             border:selected ? '1.5px solid var(--red, #7A1C1C)' : '1px solid rgba(40,35,31,0.15)',
+             boxShadow:selected ? '0 2px 6px rgba(122,28,28,0.25)' : 'none'
             }}
            >
             <input
@@ -369,7 +371,7 @@ export function CartDrawer(){
 
         {/* Supplément viande : le client choisit quelle viande et combien */}
         <div className="cart-supp-section" style={{display:'flex',flexDirection:'column',gap:8,width:'100%',margin:'8px 0'}}>
-         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--nude-text, #28231F)'}}>Supp. viande +{eur(SUPP_CENTS)} chacun :</span>
+         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--dark, #181513)'}}>Supp. viande +{eur(SUPP_CENTS)} chacun :</span>
 
          <div className="cart-supp-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(130px, 1fr))',gap:6}}>
           {MEATS.map(m=>{
@@ -379,7 +381,7 @@ export function CartDrawer(){
             if(q<1)delete next[m];else next[m]=Math.min(q,SUPP_MAX)
             setOpt(l.u,{supp:next})
            }
-           const btn={width:24,height:24,borderRadius:'50%',border:'1px solid #A3785E',background:'#fff',color:'#A3785E',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',padding:0}
+           const btn={width:24,height:24,borderRadius:'50%',border:'1px solid var(--red, #7A1C1C)',background:'#fff',color:'var(--red, #7A1C1C)',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',padding:0}
 
            return <div
             key={m}
@@ -389,17 +391,17 @@ export function CartDrawer(){
              justifyContent:'space-between',
              gap:6,
              padding:'6px 8px',
-             border:n>0?'1.5px solid #A3785E':'1px solid rgba(40,35,31,0.15)',
-             background:n>0?'rgba(163,120,94,0.08)':'#fff',
+             border:n>0?'1.5px solid var(--red, #7A1C1C)':'1px solid rgba(40,35,31,0.15)',
+             background:n>0?'rgba(122,28,28,0.08)':'#fff',
              borderRadius:10,
              fontSize:12.5,
              fontWeight:600
             }}
            >
-            <span style={{color:'#28231F'}}>{m}</span>
+            <span style={{color:'var(--dark, #181513)'}}>{m}</span>
             <div style={{display:'flex',alignItems:'center',gap:5}}>
              {n>0&&<button type="button" style={btn} onClick={()=>setN(n-1)} aria-label={`Moins de ${m}`}>-</button>}
-             {n>0&&<span style={{fontWeight:700,minWidth:14,textAlign:'center',color:'#A3785E'}}>{n}</span>}
+             {n>0&&<span style={{fontWeight:700,minWidth:14,textAlign:'center',color:'var(--red, #7A1C1C)'}}>{n}</span>}
              <button type="button" style={btn} onClick={()=>setN(n+1)} aria-label={`Plus de ${m}`}>+</button>
             </div>
            </div>
@@ -520,6 +522,7 @@ export function CartDrawer(){
 
    {closed&&<p className="warn">{buildClosedMsg(cfg)}</p>}
    {err&&<p className="warn" role="alert">{err}</p>}
+   </div>
 
    <div className="cart-f">
     {(discount>0||offer>0||drinkDeal>0)&&<div className="tot" style={{fontSize:'1.1rem',color:'var(--mute)'}}><span>{t('subtotal')}</span><span>{eur(subtotal)}</span></div>}
