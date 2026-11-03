@@ -94,10 +94,10 @@ export function CartProvider({children}){
   return()=>removeEventListener('keydown',k)
  },[open])
 
- const add=id=>{
+ const add=(id, customOpts = null)=>{
   if(isOut(id,cfg)||isHidden(id,cfg))return
 
-  if(hasOpts(id)){
+  if(customOpts || hasOpts(id)){
    const u=id+'#'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)
 
    setLines(l=>[
@@ -105,10 +105,10 @@ export function CartProvider({children}){
     {
      u,
      id,
-     qty:1,
-     note:'',
-     sauces:[],
-     supp:{}
+     qty: customOpts?.qty || 1,
+     note: customOpts?.note || '',
+     sauces: Array.isArray(customOpts?.sauces) ? customOpts.sauces : [],
+     supp: (customOpts?.supp && typeof customOpts.supp === 'object') ? customOpts.supp : {}
     }
    ])
 
@@ -314,7 +314,7 @@ export function CartDrawer(){
      const c=CATALOG[l.id]||cfg?.customItems?.[l.id]||{name:'Article'},price=unit(l)
 
      return <li key={l.u}>
-      <div className="cl-t"><b>{c.name}</b><div style={{display:'flex',alignItems:'center',gap:8}}><span>{eur(price*l.qty)}</span><button type="button" className="cl-del" onClick={()=>setQty(l.u,0)} aria-label={`Supprimer ${c.name} du panier`} title="Supprimer cet article" style={{background:'none',border:'none',cursor:'pointer',padding:'4px',color:'var(--mute)',display:'inline-flex',alignItems:'center',justifyContent:'center',borderRadius:6}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button></div></div>
+      <div className="cl-t"><div style={{display:'flex',flexDirection:'column'}}><b style={{lineHeight:1.2}}>{c.name}</b>{l.note&&<span style={{fontSize:11.5,color:'var(--red, #7A1C1C)',fontWeight:600,marginTop:3,letterSpacing:'0.01em'}}>{l.note}</span>}</div><div style={{display:'flex',alignItems:'center',gap:8}}><span>{eur(price*l.qty)}</span><button type="button" className="cl-del" onClick={()=>setQty(l.u,0)} aria-label={`Supprimer ${c.name} du panier`} title="Supprimer cet article" style={{background:'none',border:'none',cursor:'pointer',padding:'4px',color:'var(--mute)',display:'inline-flex',alignItems:'center',justifyContent:'center',borderRadius:6}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button></div></div>
 
       {hasOpts(l.id)&&
        <div className="cl-o" style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center',margin:'6px 0'}}>
