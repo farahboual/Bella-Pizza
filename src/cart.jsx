@@ -432,7 +432,7 @@ export function CartDrawer(){
     return (
       <div className="cart-upsell">
         <div className="cart-upsell-title">
-          <span>{t('upsellTitle')}</span>
+          <span>À ajouter à votre commande</span>
         </div>
         <div className="cart-upsell-grid">
           {availableUpsells.map(u => {
@@ -440,16 +440,22 @@ export function CartDrawer(){
             const price = (getPrice && getPrice(u.id, cfg)) || u.fallbackPrice
             return (
               <div key={u.id} className="cart-upsell-card">
+                {u.img && (
+                  <div className="cart-upsell-img-wrap">
+                    <img src={u.img} alt={u.name} className="cart-upsell-img" />
+                  </div>
+                )}
                 <div className="cart-upsell-info">
-                  <span className="cart-upsell-name">{u.icon} {u.name}</span>
+                  <span className="cart-upsell-name">{u.name}</span>
                   <span className="cart-upsell-price">{eur(price)}</span>
                 </div>
                 <button
                   type="button"
                   className={`cart-upsell-btn ${inCart ? 'added' : ''}`}
                   onClick={() => add(u.id)}
+                  aria-label={`Ajouter ${u.name}`}
                 >
-                  {inCart ? `✓ Ajouté (${inCart.qty}) +` : '+ Ajouter'}
+                  {inCart ? `${inCart.qty} +` : '+ Ajouter'}
                 </button>
               </div>
             )
@@ -523,7 +529,7 @@ export function CartDrawer(){
     <div className="tot"><span>Total</span><b>{eur(finalTotal)}</b></div>
 
     <button className="btn ink" disabled={busy||short||closed}>
-     {busy?'Envoi…':payment=='online'?`Payer ${eur(finalTotal)}`:'Envoyer la commande'}
+     {busy?'Envoi…':payment=='online'?`Payer ${eur(finalTotal)}`:'Envoyer ma commande'}
     </button>
 
     <p className="legal">Paiement par carte sécurisé par Stripe. Les prix sont en euros TTC. En commandant vous acceptez nos conditions de vente. Allergènes : demandez-nous la liste au {RESTAURANT_CONFIG?.contact?.phone}.</p>

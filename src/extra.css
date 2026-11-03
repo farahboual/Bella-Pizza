@@ -3443,3 +3443,574 @@ html, body {
   border-color: var(--nude-accent, #A3785E) !important;
   color: var(--nude-accent, #A3785E) !important;
 }
+
+/* ==========================================================================
+   MODERN ITALIAN MINIMALIST SHOPPING CART & CHECKOUT REDESIGN
+   Palette:
+     - Warm Cream Background: #F8F4EE
+     - White Cards:           #FFFFFF
+     - Terracotta Primary:    #B87958
+     - Dark Espresso Text:    #34251F
+     - Muted Gold Accent:     #D9B98C
+     - Soft Beige Border:     #EAE1D7
+   ========================================================================== */
+
+/* Cart Overlay & Container */
+.cart-ov {
+  background: rgba(52, 37, 31, 0.45) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  z-index: 100 !important;
+}
+
+.cart {
+  background: #F8F4EE !important;
+  color: #34251F !important;
+  border-left: 1px solid #EAE1D7 !important;
+  box-shadow: -20px 0 60px rgba(52, 37, 31, 0.18) !important;
+  font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif !important;
+}
+
+/* Header */
+.cart-h {
+  background: #F8F4EE !important;
+  border-bottom: 1px solid #EAE1D7 !important;
+  padding: 22px 24px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.cart-h h2 {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: 1.65rem !important;
+  letter-spacing: -0.01em !important;
+  color: #34251F !important;
+  margin: 0 !important;
+}
+
+.x {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.x:hover {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border-color: #B87958 !important;
+  transform: rotate(90deg) scale(1.05) !important;
+}
+
+/* Cart Body */
+.cart-b {
+  background: #F8F4EE !important;
+  padding: 20px 24px 140px !important;
+}
+
+/* Cart Item Cards */
+.cl {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 0 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+.cl li {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  border-radius: 16px !important;
+  padding: 16px 18px !important;
+  box-shadow: 0 4px 16px rgba(52, 37, 31, 0.04) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.cl li:hover {
+  border-color: #D9B98C !important;
+  box-shadow: 0 6px 20px rgba(184, 121, 88, 0.08) !important;
+}
+
+.cl-t {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: baseline !important;
+  gap: 12px !important;
+  margin-bottom: 8px !important;
+}
+
+.cl-t b {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #34251F !important;
+  line-height: 1.35 !important;
+  word-break: break-word !important;
+}
+
+.cl-t span {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: #B87958 !important;
+  white-space: nowrap !important;
+}
+
+.cl-del {
+  color: #8C7E75 !important;
+  transition: color 0.18s ease, transform 0.18s ease !important;
+}
+
+.cl-del:hover {
+  color: #B87958 !important;
+  transform: scale(1.15) !important;
+}
+
+/* Quantity Control & Note */
+.cl-q {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #F2ECE3 !important;
+}
+
+.cl-q > button {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 10px !important;
+  background: #F8F4EE !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cl-q > button:hover {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border-color: #B87958 !important;
+}
+
+.cl-q > span {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: #34251F !important;
+  min-width: 20px !important;
+  text-align: center !important;
+}
+
+.cl-q input {
+  flex: 1 !important;
+  height: 34px !important;
+  border-radius: 10px !important;
+  background: #F8F4EE !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  font-size: 12.5px !important;
+  padding: 0 12px !important;
+  font-family: 'Inter', sans-serif !important;
+  transition: border-color 0.2s ease, background 0.2s ease !important;
+}
+
+.cl-q input:focus {
+  outline: none !important;
+  background: #FFFFFF !important;
+  border-color: #B87958 !important;
+}
+
+/* ==========================================================================
+   PRODUCT CUSTOMIZATION (SAUCES & EXTRAS)
+   Terracotta when active, White when idle, Soft Beige borders
+   ========================================================================== */
+
+.cart-sauce-section, .cart-supp-section {
+  padding: 10px 0 4px !important;
+}
+
+.cart-sauce-section > span, .cart-supp-section > span {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: #8C7E75 !important;
+}
+
+.cart-sauce-pill {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  color: #34251F !important;
+  border-radius: 14px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 4px rgba(52, 37, 31, 0.02) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cart-sauce-pill:hover {
+  border-color: #D9B98C !important;
+  background: #FDFBF7 !important;
+  transform: translateY(-1px) !important;
+}
+
+.cart-sauce-pill.is-selected {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border-color: #B87958 !important;
+  box-shadow: 0 4px 12px rgba(184, 121, 88, 0.32) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+.cart-supp-grid > div {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  border-radius: 14px !important;
+  padding: 8px 12px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #34251F !important;
+  transition: all 0.2s ease !important;
+}
+
+.cart-supp-grid > div:hover {
+  border-color: #D9B98C !important;
+}
+
+/* ==========================================================================
+   RECOMMENDED PRODUCTS / UPSELLING (WARM ITALIAN CARDS)
+   ========================================================================== */
+
+.cart-upsell {
+  background: #FFFFFF !important;
+  border: 1px solid #EAE1D7 !important;
+  border-radius: 18px !important;
+  padding: 18px !important;
+  margin: 18px 0 24px !important;
+  box-shadow: 0 4px 18px rgba(52, 37, 31, 0.03) !important;
+}
+
+.cart-upsell-title {
+  margin-bottom: 12px !important;
+}
+
+.cart-upsell-title span {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #34251F !important;
+  letter-spacing: -0.01em !important;
+}
+
+.cart-upsell-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.cart-upsell-card {
+  background: #F8F4EE !important;
+  border: 1px solid #EAE1D7 !important;
+  border-radius: 14px !important;
+  padding: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cart-upsell-card:hover {
+  background: #FFFFFF !important;
+  border-color: #D9B98C !important;
+  box-shadow: 0 4px 14px rgba(184, 121, 88, 0.12) !important;
+  transform: translateY(-2px) !important;
+}
+
+.cart-upsell-img-wrap {
+  width: 100% !important;
+  height: 72px !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background: #EAE1D7 !important;
+}
+
+.cart-upsell-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 0.3s ease !important;
+}
+
+.cart-upsell-card:hover .cart-upsell-img {
+  transform: scale(1.05) !important;
+}
+
+.cart-upsell-name {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #34251F !important;
+  line-height: 1.25 !important;
+  display: block !important;
+}
+
+.cart-upsell-price {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  color: #B87958 !important;
+  display: block !important;
+  margin-top: 2px !important;
+}
+
+.cart-upsell-btn {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+  text-align: center !important;
+  margin-top: auto !important;
+}
+
+.cart-upsell-btn:hover {
+  background: #9E6446 !important;
+  transform: scale(1.02) !important;
+}
+
+.cart-upsell-btn.added {
+  background: #D9B98C !important;
+  color: #34251F !important;
+}
+
+/* ==========================================================================
+   CHECKOUT SECTION (SEGMENTED CONTROLS & FORM FIELDS)
+   ========================================================================== */
+
+/* Segmented Control for Mode de Commande */
+.seg {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 16px 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 6px !important;
+  background: #EAE1D7 !important;
+  padding: 4px !important;
+  border-radius: 16px !important;
+}
+
+.seg legend {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: #8C7E75 !important;
+  margin-bottom: 8px !important;
+}
+
+.seg label {
+  background: transparent !important;
+  border: none !important;
+  color: #6A5B53 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 10px 8px !important;
+  border-radius: 12px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: none !important;
+}
+
+.seg label.on {
+  background: #FFFFFF !important;
+  color: #B87958 !important;
+  box-shadow: 0 2px 8px rgba(52, 37, 31, 0.08) !important;
+}
+
+/* Inputs & Form Elements */
+.cart form label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #34251F !important;
+}
+
+.cart form label small {
+  font-weight: 400 !important;
+  color: #8C7E75 !important;
+}
+
+.cart input[type=text],
+.cart input[type=tel],
+.cart input[type=email],
+.cart input:not([type=radio]):not(.cl-q input),
+.cart textarea,
+.cart select {
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE1D7 !important;
+  border-radius: 14px !important;
+  color: #34251F !important;
+  font-size: 14px !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  padding: 12px 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.cart input:focus,
+.cart textarea:focus,
+.cart select:focus {
+  outline: none !important;
+  border-color: #B87958 !important;
+  box-shadow: 0 0 0 3px rgba(184, 121, 88, 0.15) !important;
+}
+
+/* Promo code inline button */
+.cart label .btn.ghost {
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE1D7 !important;
+  color: #34251F !important;
+  font-weight: 700 !important;
+  border-radius: 14px !important;
+  transition: all 0.18s ease !important;
+}
+
+.cart label .btn.ghost:hover {
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border-color: #B87958 !important;
+}
+
+/* ==========================================================================
+   TOTAL & ORDER BUTTON ("ENVOYER MA COMMANDE")
+   Sticky bottom card on mobile with prominent Terracotta CTA
+   ========================================================================== */
+
+.cart-f {
+  position: sticky !important;
+  bottom: 0 !important;
+  background: rgba(248, 244, 238, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-top: 1px solid #EAE1D7 !important;
+  padding: 18px 24px calc(20px + env(safe-area-inset-bottom)) !important;
+  box-shadow: 0 -8px 24px rgba(52, 37, 31, 0.06) !important;
+  z-index: 20 !important;
+}
+
+.tot {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: baseline !important;
+  margin-bottom: 14px !important;
+  font-size: 1.15rem !important;
+  color: #34251F !important;
+}
+
+.tot b {
+  font-size: 1.6rem !important;
+  font-weight: 900 !important;
+  color: #B87958 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Primary Checkout Button */
+.cart-f .btn.ink {
+  width: 100% !important;
+  background: #B87958 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 16px !important;
+  padding: 16px 20px !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  cursor: pointer !important;
+  box-shadow: 0 6px 22px rgba(184, 121, 88, 0.4) !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+.cart-f .btn.ink:hover {
+  background: #9E6446 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(184, 121, 88, 0.5) !important;
+}
+
+.cart-f .btn.ink:active {
+  transform: translateY(0) !important;
+}
+
+.cart-f .btn.ink:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.cart-f .legal {
+  font-size: 11px !important;
+  color: #8C7E75 !important;
+  line-height: 1.4 !important;
+  margin-top: 12px !important;
+  text-align: center !important;
+}
+
+/* Mobile Polish */
+@media (max-width: 640px) {
+  .cart {
+    border-radius: 28px 28px 0 0 !important;
+  }
+  .cart-h {
+    padding: 18px 20px 14px !important;
+  }
+  .cart-b {
+    padding: 16px 18px 130px !important;
+  }
+  .cl li {
+    padding: 14px 14px !important;
+  }
+  .cart-upsell-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .cart-f {
+    padding: 14px 18px calc(16px + env(safe-area-inset-bottom)) !important;
+  }
+  .tot b {
+    font-size: 1.45rem !important;
+  }
+  .cart-f .btn.ink {
+    padding: 15px !important;
+    font-size: 15.5px !important;
+  }
+}
+
