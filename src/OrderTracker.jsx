@@ -184,17 +184,29 @@ export function OrderTracker() {
     <>
       {/* ── 1. Floating Live Pill (when minimized) ── */}
       {!open && (
-        <button
-          className="tracker-pill"
-          onClick={() => setOpen(true)}
-          aria-label={`Suivre la commande #${order.number}`}
-        >
-          <span className="tracker-dot" />
-          <span>
-            <b>#{order.number}</b> : {currentInfo.label}
-          </span>
-          <span style={{ opacity: 0.7, fontSize: 11, marginLeft: 4 }}>Suivre ➔</span>
-        </button>
+        <div className="tracker-pill-container">
+          <button
+            className="tracker-pill"
+            onClick={() => setOpen(true)}
+            aria-label={`Suivre la commande #${order.number}`}
+          >
+            <span className="tracker-dot" />
+            <span>
+              <b>#{order.number}</b> · {currentInfo.label}
+            </span>
+            <span style={{ opacity: 0.75, fontSize: 11, marginLeft: 4 }}>Suivre ➔</span>
+          </button>
+          {['done', 'cancelled'].includes(order.status) && (
+            <button
+              className="tracker-pill-close"
+              onClick={() => saveOrder(null)}
+              aria-label="Fermer le suivi de commande"
+              title="Fermer le suivi"
+            >
+              ×
+            </button>
+          )}
+        </div>
       )}
 
       {/* ── 2. Full Live Tracking Modal ── */}

@@ -227,10 +227,10 @@ function AtelierHero() {
           </h1>
           <p className="atelier-hero-desc">{t('heroSubtitle')}</p>
           <div className="atelier-hero-actions">
-            <a className="btn red" href="#carte">
+            <a className="btn burgundy" href="#carte">
               {t('orderOnline')} →
             </a>
-            <a className="btn outline" href={TEL}>
+            <a className="btn hero-outline" href={TEL}>
               {t('callToOrder')} — {cfgC.phone}
             </a>
           </div>
@@ -534,12 +534,12 @@ function Menu() {
                   name: spotlightPizza.n,
                   desc: spotlightPizza.d,
                   price: livePriceOrNumber(spotlightPizza.id, spotlightPizza.p, getPrice, cfg),
-                  img: '/client-assets/pizza.jpg'
+                  img: spotlightPizza.img || '/client-assets/pizza.jpg'
                 })}
               >
                 <div className="atelier-spotlight-img">
                   <img
-                    src="/client-assets/pizza.jpg"
+                    src={spotlightPizza.img || '/client-assets/pizza.jpg'}
                     alt={spotlightPizza.n}
                     loading="lazy"
                   />
@@ -558,7 +558,7 @@ function Menu() {
                         name: spotlightPizza.n,
                         desc: spotlightPizza.d,
                         price: livePriceOrNumber(spotlightPizza.id, spotlightPizza.p, getPrice, cfg),
-                        img: '/client-assets/pizza.jpg'
+                        img: spotlightPizza.img || '/client-assets/pizza.jpg'
                       })}
                     >
                       Personnaliser →
