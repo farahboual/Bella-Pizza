@@ -1,4 +1,4 @@
-﻿import {useLang} from './i18n.jsx'
+import {useLang} from './i18n.jsx'
 import {createContext,useContext,useEffect,useState} from 'react'
 import {motion, AnimatePresence} from 'framer-motion'
 import {CATALOG,RULES,eur,SAUCES,SUPP_CENTS,SUPP_MAX,MEATS,cleanSupp,hasOpts,optExtra,pizzaOffer,canetteDeal,hasFood,CANETTE_ID,getParisTime,DEFAULT_SCHEDULE} from '../shared/catalog.js'
@@ -482,13 +482,22 @@ export function CartDrawer(){
 
    <label>Message pour le restaurant <small>(facultatif)</small><textarea rows={2} maxLength={300} value={note} onChange={e=>setNoteAll(e.target.value)}/></label>
 
-   <fieldset className="seg"><legend>Paiement</legend>
-    {cfg.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>Carte en ligne</label>}
-    <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?'À la livraison':'Sur place'}</label>
-   </fieldset>
+   <div className="cart-payment-card">
+    <div className="cart-section-label">
+     <span>Mode de règlement</span>
+    </div>
+    <fieldset className="seg seg-payment">
+     <legend className="sr-only">Mode de règlement</legend>
+     {cfg.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>Carte en ligne</label>}
+     <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?'À la livraison':'Sur place'}</label>
+    </fieldset>
+   </div>
 
    {closed&&<p className="warn">{buildClosedMsg(cfg)}</p>}
    {err&&<p className="warn" role="alert">{err}</p>}
+
+   {/* Generous bottom clearance so the payment section is NEVER covered or half-hidden by the cart footer */}
+   <div className="cart-scroll-bottom-spacer" aria-hidden="true" />
    </div>
 
    <div className="cart-f">
