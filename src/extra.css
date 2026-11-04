@@ -4894,3 +4894,127 @@ html, body {
   align-items: center !important;
   gap: 14px !important;
 }
+
+/* ============================================================
+   MENU CARD ACTION CUES & MODAL QUANTITY CONTROLS
+   ============================================================ */
+
+/* Editorial Dish Action Cue (replacing confusing standalone plus button) */
+.atelier-dish-action-cue {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-family: var(--font, system-ui, sans-serif) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #801D1E !important;
+  background: rgba(128, 29, 30, 0.06) !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(128, 29, 30, 0.15) !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  pointer-events: none !important;
+}
+
+.atelier-dish-item:hover .atelier-dish-action-cue,
+.atelier-dish-featured:hover .atelier-dish-action-cue {
+  background: #801D1E !important;
+  color: #FFFFFF !important;
+  border-color: #801D1E !important;
+  transform: translateX(2px) !important;
+  box-shadow: 0 4px 12px rgba(128, 29, 30, 0.25) !important;
+}
+
+.atelier-dish-action-cue svg {
+  transition: transform 0.22s ease !important;
+}
+
+.atelier-dish-item:hover .atelier-dish-action-cue svg,
+.atelier-dish-featured:hover .atelier-dish-action-cue svg {
+  transform: translateX(2px) !important;
+}
+
+/* Simple Item Quantity Card (for drinks, desserts) */
+.modal-simple-qty-card {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 16px 20px !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE4DC !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(32, 27, 24, 0.04) !important;
+}
+
+.modal-simple-qty-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.modal-simple-qty-title {
+  font-family: var(--serif, 'Fraunces', serif) !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  color: #201B18 !important;
+  margin: 0 !important;
+}
+
+.modal-simple-qty-sub {
+  font-size: 13px !important;
+  color: #6E645D !important;
+}
+
+/* Footer actions wrap & stepper */
+.modal-footer-actions-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.modal-footer-stepper {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE4DC !important;
+  border-radius: 999px !important;
+  padding: 3px !important;
+  box-shadow: 0 2px 6px rgba(32, 27, 24, 0.04) !important;
+}
+
+.footer-stepper-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: transparent !important;
+  color: #201B18 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+.footer-stepper-btn:hover:not(:disabled) {
+  background: #F4EFE8 !important;
+  color: #801D1E !important;
+}
+
+.footer-stepper-btn:disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+}
+
+.footer-stepper-count {
+  font-family: var(--font, system-ui, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #201B18 !important;
+  min-width: 24px !important;
+  text-align: center !important;
+}

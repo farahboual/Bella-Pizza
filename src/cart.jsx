@@ -316,104 +316,13 @@ export function CartDrawer(){
      return <li key={l.u}>
       <div className="cl-t"><div style={{display:'flex',flexDirection:'column'}}><b style={{lineHeight:1.2}}>{c.name}</b>{l.note&&<span style={{fontSize:11.5,color:'var(--red, #7A1C1C)',fontWeight:600,marginTop:3,letterSpacing:'0.01em'}}>{l.note}</span>}</div><div style={{display:'flex',alignItems:'center',gap:8}}><span>{eur(price*l.qty)}</span><button type="button" className="cl-del" onClick={()=>setQty(l.u,0)} aria-label={`Supprimer ${c.name} du panier`} title="Supprimer cet article" style={{background:'none',border:'none',cursor:'pointer',padding:'4px',color:'var(--mute)',display:'inline-flex',alignItems:'center',justifyContent:'center',borderRadius:6}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button></div></div>
 
-      {hasOpts(l.id)&&
-       <div className="cl-o" style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center',margin:'6px 0'}}>
-
-        {/* Multiple sauces */}
-        <div className="cart-sauce-section" style={{display:'flex',flexDirection:'column',gap:8,width:'100%',margin:'8px 0'}}>
-         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--dark, #181513)'}}>Sauces au choix :</span>
-
-         <div className="cart-sauce-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(105px, 1fr))',gap:6}}>
-          {SAUCES.map(s=>{
-           const selected=(l.sauces||[]).includes(s)
-
-           return <label
-            key={s}
-            className={`cart-sauce-pill ${selected ? 'is-selected' : ''}`}
-            style={{
-             display:'flex',
-             alignItems:'center',
-             justifyContent:'center',
-             gap:6,
-             padding:'8px 10px',
-             borderRadius:10,
-             cursor:'pointer',
-             fontSize:12.5,
-             fontWeight:600,
-             userSelect:'none',
-             transition:'all .15s ease',
-             background:selected ? 'var(--red, #7A1C1C)' : '#FFFFFF',
-             color:selected ? '#FFFFFF' : 'var(--dark, #181513)',
-             border:selected ? '1.5px solid var(--red, #7A1C1C)' : '1px solid rgba(40,35,31,0.15)',
-             boxShadow:selected ? '0 2px 6px rgba(122,28,28,0.25)' : 'none'
-            }}
-           >
-            <input
-             type="checkbox"
-             checked={selected}
-             style={{display:'none'}}
-             onChange={()=>{
-              const sauces=l.sauces||[]
-
-              setOpt(l.u,{
-               sauces:selected
-                ? sauces.filter(x=>x!==s)
-                : [...sauces,s]
-              })
-             }}
-            />
-            {selected && <span style={{fontSize:11}}>✓</span>}
-            <span>{s}</span>
-           </label>
-          })}
-         </div>
+      {Array.isArray(l.sauces) && l.sauces.length > 0 && !l.note?.includes("Sauce") && (
+        <div style={{fontSize: 11.5, color: "var(--mute)", margin: "4px 0 6px"}}>
+          Sauces : {l.sauces.join(", ")}
         </div>
+       )}
 
-        {/* Supplément viande : le client choisit quelle viande et combien */}
-        <div className="cart-supp-section" style={{display:'flex',flexDirection:'column',gap:8,width:'100%',margin:'8px 0'}}>
-         <span style={{fontWeight:700,fontSize:13,letterSpacing:'0.01em',color:'var(--dark, #181513)'}}>Supp. viande +{eur(SUPP_CENTS)} chacun :</span>
-
-         <div className="cart-supp-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(130px, 1fr))',gap:6}}>
-          {MEATS.map(m=>{
-           const supp=cleanSupp(l.supp),n=supp[m]||0
-           const setN=q=>{
-            const next={...supp}
-            if(q<1)delete next[m];else next[m]=Math.min(q,SUPP_MAX)
-            setOpt(l.u,{supp:next})
-           }
-           const btn={width:24,height:24,borderRadius:'50%',border:'1px solid var(--red, #7A1C1C)',background:'#fff',color:'var(--red, #7A1C1C)',fontSize:14,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',padding:0}
-
-           return <div
-            key={m}
-            style={{
-             display:'flex',
-             alignItems:'center',
-             justifyContent:'space-between',
-             gap:6,
-             padding:'6px 8px',
-             border:n>0?'1.5px solid var(--red, #7A1C1C)':'1px solid rgba(40,35,31,0.15)',
-             background:n>0?'rgba(122,28,28,0.08)':'#fff',
-             borderRadius:10,
-             fontSize:12.5,
-             fontWeight:600
-            }}
-           >
-            <span style={{color:'var(--dark, #181513)'}}>{m}</span>
-            <div style={{display:'flex',alignItems:'center',gap:5}}>
-             {n>0&&<button type="button" style={btn} onClick={()=>setN(n-1)} aria-label={`Moins de ${m}`}>-</button>}
-             {n>0&&<span style={{fontWeight:700,minWidth:14,textAlign:'center',color:'var(--red, #7A1C1C)'}}>{n}</span>}
-             <button type="button" style={btn} onClick={()=>setN(n+1)} aria-label={`Plus de ${m}`}>+</button>
-            </div>
-           </div>
-          })}
-         </div>
-        </div>
-
-
-       </div>
-      }
-
-      <div className="cl-q">
+       <div className="cl-q">
        <button type="button" onClick={()=>setQty(l.u,l.qty-1)} aria-label="Retirer un">−</button>
        <span aria-live="polite">{l.qty}</span>
        <button type="button" onClick={()=>setQty(l.u,l.qty+1)} aria-label="Ajouter un">+</button>

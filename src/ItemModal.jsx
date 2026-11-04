@@ -222,12 +222,20 @@ export const ItemModal = ({ item, onClose }) => {
 
   const isPizza = item?.id?.startsWith('pizzas:')
   const isBurger = item?.id?.startsWith('burgers:')
+  const isTacos = item?.id?.startsWith('tacos:')
+  const isSandwich = item?.id?.startsWith('sandwichs:') || item?.id?.startsWith('paninis:') || item?.id?.startsWith('zapwich:')
+  const isTexmex = item?.id?.startsWith('texmex:')
+  const isDrink = item?.id?.startsWith('boissons:')
+  const isDessert = item?.id?.startsWith('desserts:')
+
+  const canHaveSauces = isPizza || isBurger || isTacos || isSandwich || isTexmex
 
   // Customization state
   const [crust, setCrust] = useState('classic') // 'classic' or 'cheesy' (+2.50)
   const [selectedSauces, setSelectedSauces] = useState(isBurger ? ['Sauce Secrète Bella'] : [])
   const [extras, setExtras] = useState({})
   const [specialNote, setSpecialNote] = useState('')
+  const [itemQty, setItemQty] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
 
@@ -242,9 +250,19 @@ export const ItemModal = ({ item, onClose }) => {
   }, 0)
 
   const basePrice = item.price || 0
-  const totalPrice = basePrice + crustExtra + extrasTotal
+  const unitPrice = basePrice + crustExtra + extrasTotal
+  const totalPrice = unitPrice * itemQty
+
+  // Dynamic step numbering
+  let stepIndex = 0
+  const crustStep = isPizza ? ++stepIndex : null
+  const saucesStep = canHaveSauces ? ++stepIndex : null
+  const extrasStep = activeExtrasConfig.length > 0 ? ++stepIndex : null
+  const hasCustomization = isPizza || isBurger || canHaveSauces || activeExtrasConfig.length > 0
+  const notesStep = hasCustomization ? ++stepIndex : 2
 
   const toggleSauce = (sName) => {
+    if (!canHaveSauces) return
     setSelectedSauces(prev => {
       if (prev.includes(sName)) {
         return prev.filter(x => x !== sName)
@@ -277,7 +295,7 @@ export const ItemModal = ({ item, onClose }) => {
       }
     }
 
-    if (selectedSauces.length > 0) {
+    if (canHaveSauces && selectedSauces.length > 0) {
       noteParts.push((lang === 'en' ? 'Sauces: ' : 'Sauces : ') + selectedSauces.join(', '))
     }
 
@@ -302,8 +320,9 @@ export const ItemModal = ({ item, onClose }) => {
     if (isBurger && extras.smashSteak) suppPayload['Steak Boucher'] = extras.smashSteak
 
     add(item.id, {
+      qty: itemQty,
       note: compiledNote,
-      sauces: selectedSauces,
+      sauces: canHaveSauces ? selectedSauces : [],
       supp: suppPayload
     })
 
@@ -462,83 +481,130 @@ export const ItemModal = ({ item, onClose }) => {
               </section>
             )}
 
-            {/* SECTION 2: Visual Artisanal Sauces */}
-            <section className="modal-custom-section" aria-labelledby="sauces-heading">
-              <div className="modal-section-header">
-                <div className="modal-section-title-row">
-                  <span className="modal-section-step">{isPizza ? '2' : '1'}</span>
-                  <h3 id="sauces-heading" className="modal-section-heading">
-                    {t('modalSaucesTitle')}
-                  </h3>
+            {/* Simple Item Quantity Selector (Drinks, Desserts, Sides with no complex options) */}
+            {!hasCustomization && (
+              <section className="modal-custom-section" aria-labelledby="qty-heading">
+                <div className="modal-section-header">
+                  <div className="modal-section-title-row">
+                    <span className="modal-section-step">1</span>
+                    <h3 id="qty-heading" className="modal-section-heading">
+                      {lang === 'en' ? 'Select Quantity' : 'Sélectionnez la quantité'}
+                    </h3>
+                  </div>
+                  <span className="modal-section-subtitle">
+                    {eur(basePrice)} {lang === 'en' ? 'each' : 'l’unité'}
+                  </span>
                 </div>
-                <div className={`modal-sauce-counter-pill ${selectedSauces.length === 2 ? 'is-full' : ''}`}>
-                  <span>{selectedSauces.length} sur 2 {lang === 'en' ? 'sauces complimentary' : 'sauces offertes'}</span>
-                  {selectedSauces.length === 2 && (
-                    <small>{lang === 'en' ? '(Limit reached)' : '(Limite atteinte)'}</small>
-                  )}
-                </div>
-              </div>
-              <p className="modal-section-guide">
-                {lang === 'en'
-                  ? 'Select up to 2 house emulsion sauces prepared daily in our kitchen.'
-                  : 'Sélectionnez jusqu\'à 2 émulsions artisanales préparées chaque jour en cuisine.'}
-              </p>
-
-              <div className="modal-sauces-list">
-                {SAUCE_DATA.map(s => {
-                  const isSelected = selectedSauces.includes(s.name)
-                  const isLimitReached = selectedSauces.length >= 2 && !isSelected
-                  return (
-                    <motion.div
-                      key={s.id}
-                      className={`modal-sauce-tile ${isSelected ? 'is-selected' : ''} ${isLimitReached ? 'is-disabled' : ''}`}
-                      onClick={() => toggleSauce(s.name)}
-                      whileTap={!isLimitReached ? { scale: 0.98 } : {}}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      aria-disabled={isLimitReached}
-                      tabIndex={isLimitReached ? -1 : 0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          toggleSauce(s.name)
-                        }
-                      }}
+                <div className="modal-simple-qty-card">
+                  <div className="modal-simple-qty-info">
+                    <h4 className="modal-simple-qty-title">{item.name}</h4>
+                    <span className="modal-simple-qty-sub">{item.desc || (lang === 'en' ? 'Freshly served' : 'Servi très frais')}</span>
+                  </div>
+                  <div className="modal-extra-stepper">
+                    <button
+                      type="button"
+                      className={`stepper-btn minus ${itemQty <= 1 ? 'disabled' : ''}`}
+                      onClick={() => setItemQty(q => Math.max(1, q - 1))}
+                      disabled={itemQty <= 1}
+                      aria-label="Diminuer quantité"
                     >
-                      <SauceRamekin sauce={s} />
+                      −
+                    </button>
+                    <span className="stepper-count has-qty">
+                      {itemQty}
+                    </span>
+                    <button
+                      type="button"
+                      className="stepper-btn plus"
+                      onClick={() => setItemQty(q => Math.min(20, q + 1))}
+                      aria-label="Augmenter quantité"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
 
-                      <div className="modal-sauce-text">
-                        <div className="modal-sauce-title-row">
-                          <h4 className="modal-sauce-name">{s.name}</h4>
-                          <span className="modal-sauce-tag">{lang === 'en' ? s.tagEn : s.tag}</span>
-                        </div>
-                        <p className="modal-sauce-desc">{lang === 'en' ? s.descEn : s.desc}</p>
-                      </div>
+            {/* SECTION 2: Visual Artisanal Sauces (Only for Pizzas, Burgers, Tacos, Sandwiches, Texmex) */}
+            {canHaveSauces && (
+              <section className="modal-custom-section" aria-labelledby="sauces-heading">
+                <div className="modal-section-header">
+                  <div className="modal-section-title-row">
+                    <span className="modal-section-step">{saucesStep}</span>
+                    <h3 id="sauces-heading" className="modal-section-heading">
+                      {t('modalSaucesTitle')}
+                    </h3>
+                  </div>
+                  <div className={`modal-sauce-counter-pill ${selectedSauces.length === 2 ? 'is-full' : ''}`}>
+                    <span>{selectedSauces.length} sur 2 {lang === 'en' ? 'sauces complimentary' : 'sauces offertes'}</span>
+                    {selectedSauces.length === 2 && (
+                      <small>{lang === 'en' ? '(Limit reached)' : '(Limite atteinte)'}</small>
+                    )}
+                  </div>
+                </div>
+                <p className="modal-section-guide">
+                  {lang === 'en'
+                    ? 'Select up to 2 house emulsion sauces prepared daily in our kitchen.'
+                    : 'Sélectionnez jusqu\'à 2 émulsions artisanales préparées chaque jour en cuisine.'}
+                </p>
 
-                      <div className="modal-sauce-action">
-                        <span className="modal-sauce-price-tag">
-                          {isSelected
-                            ? (lang === 'en' ? 'Included' : 'Inclus')
-                            : isLimitReached
-                              ? 'Max'
-                              : (lang === 'en' ? 'Free' : 'Offert')}
-                        </span>
-                        <div className={`modal-sauce-checkbox ${isSelected ? 'active' : ''} ${isLimitReached ? 'disabled' : ''}`}>
-                          {isSelected ? '✓' : ''}
+                <div className="modal-sauces-list">
+                  {SAUCE_DATA.map(s => {
+                    const isSelected = selectedSauces.includes(s.name)
+                    const isLimitReached = selectedSauces.length >= 2 && !isSelected
+                    return (
+                      <motion.div
+                        key={s.id}
+                        className={`modal-sauce-tile ${isSelected ? 'is-selected' : ''} ${isLimitReached ? 'is-disabled' : ''}`}
+                        onClick={() => toggleSauce(s.name)}
+                        whileTap={!isLimitReached ? { scale: 0.98 } : {}}
+                        role="checkbox"
+                        aria-checked={isSelected}
+                        aria-disabled={isLimitReached}
+                        tabIndex={isLimitReached ? -1 : 0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            toggleSauce(s.name)
+                          }
+                        }}
+                      >
+                        <SauceRamekin sauce={s} />
+
+                        <div className="modal-sauce-text">
+                          <div className="modal-sauce-title-row">
+                            <h4 className="modal-sauce-name">{s.name}</h4>
+                            <span className="modal-sauce-tag">{lang === 'en' ? s.tagEn : s.tag}</span>
+                          </div>
+                          <p className="modal-sauce-desc">{lang === 'en' ? s.descEn : s.desc}</p>
                         </div>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </section>
+
+                        <div className="modal-sauce-action">
+                          <span className="modal-sauce-price-tag">
+                            {isSelected
+                              ? (lang === 'en' ? 'Included' : 'Inclus')
+                              : isLimitReached
+                                ? 'Max'
+                                : (lang === 'en' ? 'Free' : 'Offert')}
+                          </span>
+                          <div className={`modal-sauce-checkbox ${isSelected ? 'active' : ''} ${isLimitReached ? 'disabled' : ''}`}>
+                            {isSelected ? '✓' : ''}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </section>
+            )}
 
             {/* SECTION 3: Gourmet Supplements & Extra Ingredients */}
             {activeExtrasConfig.length > 0 && (
               <section className="modal-custom-section" aria-labelledby="extras-heading">
                 <div className="modal-section-header">
                   <div className="modal-section-title-row">
-                    <span className="modal-section-step">{isPizza ? '3' : '2'}</span>
+                    <span className="modal-section-step">{extrasStep}</span>
                     <h3 id="extras-heading" className="modal-section-heading">
                       {t('modalExtrasTitle')}
                     </h3>
@@ -613,11 +679,11 @@ export const ItemModal = ({ item, onClose }) => {
               </section>
             )}
 
-            {/* SECTION 4: Chef Instructions */}
+            {/* SECTION: Chef Instructions / Customer Note */}
             <section className="modal-custom-section" aria-labelledby="notes-heading">
               <div className="modal-section-header">
                 <div className="modal-section-title-row">
-                  <span className="modal-section-step">{isPizza ? '4' : '3'}</span>
+                  <span className="modal-section-step">{notesStep}</span>
                   <h3 id="notes-heading" className="modal-section-heading">
                     {t('modalChefNote')}
                   </h3>
@@ -628,7 +694,7 @@ export const ItemModal = ({ item, onClose }) => {
                   className="modal-chef-textarea"
                   value={specialNote}
                   onChange={(e) => setSpecialNote(e.target.value.slice(0, 100))}
-                  placeholder={t('modalChefNotePlaceholder')}
+                  placeholder={!hasCustomization ? (lang === 'en' ? 'Optional note (e.g. extra cold)...' : 'Précision facultative (ex. : bien frais)...') : t('modalChefNotePlaceholder')}
                   rows={2}
                   maxLength={100}
                 />
@@ -642,10 +708,10 @@ export const ItemModal = ({ item, onClose }) => {
             <div className="item-modal-footer">
               <div className="modal-footer-price-col">
                 <div className="modal-footer-breakdown">
-                  <span className="modal-footer-base">{t('modalBasePrice')} {eur(basePrice)}</span>
-                  {totalPrice > basePrice && (
+                  <span className="modal-footer-base">{eur(unitPrice)} {lang === 'en' ? 'each' : 'l’unité'}</span>
+                  {unitPrice > basePrice && (
                     <span className="modal-footer-extras-pill">
-                      +{eur(totalPrice - basePrice)} {t('modalExtrasPrice')}
+                      +{eur(unitPrice - basePrice)} {t('modalExtrasPrice')}
                     </span>
                   )}
                 </div>
@@ -655,30 +721,53 @@ export const ItemModal = ({ item, onClose }) => {
                 </div>
               </div>
 
-              <motion.button
-                type="button"
-                className={`modal-confirm-btn ${isAdded ? 'is-success' : ''} ${isSubmitting ? 'is-submitting' : ''}`}
-                onClick={handleConfirm}
-                disabled={isSubmitting || isAdded}
-                whileHover={!isSubmitting && !isAdded ? { scale: 1.02 } : {}}
-                whileTap={!isSubmitting && !isAdded ? { scale: 0.98 } : {}}
-              >
-                {isAdded ? (
-                  <span>✓ {lang === 'en' ? 'Added to order' : 'Ajouté au panier !'}</span>
-                ) : isSubmitting ? (
-                  <span>{lang === 'en' ? 'Adding...' : 'Ajout en cours…'}</span>
-                ) : (
-                  <>
-                    <span>{t('modalAddToCart')}</span>
-                    <span className="btn-divider" />
-                    <span className="btn-price">{eur(totalPrice)}</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4 }}>
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </>
-                )}
-              </motion.button>
+              <div className="modal-footer-actions-wrap">
+                <div className="modal-footer-stepper" aria-label="Quantité">
+                  <button
+                    type="button"
+                    className={`footer-stepper-btn minus ${itemQty <= 1 ? 'disabled' : ''}`}
+                    onClick={() => setItemQty(q => Math.max(1, q - 1))}
+                    disabled={itemQty <= 1}
+                    aria-label="Diminuer la quantité"
+                  >
+                    −
+                  </button>
+                  <span className="footer-stepper-count">{itemQty}</span>
+                  <button
+                    type="button"
+                    className="footer-stepper-btn plus"
+                    onClick={() => setItemQty(q => Math.min(20, q + 1))}
+                    aria-label="Augmenter la quantité"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <motion.button
+                  type="button"
+                  className={`modal-confirm-btn ${isAdded ? 'is-success' : ''} ${isSubmitting ? 'is-submitting' : ''}`}
+                  onClick={handleConfirm}
+                  disabled={isSubmitting || isAdded}
+                  whileHover={!isSubmitting && !isAdded ? { scale: 1.02 } : {}}
+                  whileTap={!isSubmitting && !isAdded ? { scale: 0.98 } : {}}
+                >
+                  {isAdded ? (
+                    <span>✓ {lang === 'en' ? 'Added to order' : 'Ajouté au panier !'}</span>
+                  ) : isSubmitting ? (
+                    <span>{lang === 'en' ? 'Adding...' : 'Ajout en cours…'}</span>
+                  ) : (
+                    <>
+                      <span>{t('modalAddToCart')}</span>
+                      <span className="btn-divider" />
+                      <span className="btn-price">{eur(totalPrice)}</span>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4 }}>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
+                    </>
+                  )}
+                </motion.button>
+              </div>
             </div>
           </div>
         </motion.div>

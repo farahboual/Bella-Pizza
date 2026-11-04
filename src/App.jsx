@@ -262,6 +262,7 @@ function AtelierHero() {
 // Editorial Dish Component — supports featured (full-width) variant
 const AtelierDish = ({ n, d, p, id, img, onSelect, featured = false }) => {
   const { cfg, getPrice, isOut, isHidden } = useCart()
+  const { lang } = useLang()
   const [thumbErr, setThumbErr] = useState(false)
   if (id && isHidden && isHidden(id, cfg)) return null
 
@@ -278,6 +279,11 @@ const AtelierDish = ({ n, d, p, id, img, onSelect, featured = false }) => {
   const displayDesc = liveDetails.desc !== undefined ? liveDetails.desc : d
 
   const liveImg = (id && cfg?.itemImages?.[id]) || (baseSlug && cfg?.itemImages?.[baseSlug]) || (id && cfg?.overrides?.[id]?.img) || img
+
+  const isCustomizable = id?.startsWith('pizzas:') || id?.startsWith('burgers:') || id?.startsWith('tacos:') || id?.startsWith('sandwichs:')
+  const actionLabel = isCustomizable
+    ? (lang === 'en' ? 'Customize' : 'Personnaliser')
+    : (lang === 'en' ? 'Select' : 'Choisir')
 
   const handleClick = () => {
     if (out) return
@@ -315,9 +321,16 @@ const AtelierDish = ({ n, d, p, id, img, onSelect, featured = false }) => {
             <h3 className="atelier-dish-featured-name">{cleanName}</h3>
             {displayDesc && <p className="atelier-dish-featured-desc">{displayDesc}</p>}
           </div>
-          <div className="atelier-dish-featured-footer" onClick={(e) => e.stopPropagation()}>
+          <div className="atelier-dish-featured-footer">
             <span className="atelier-dish-featured-price">{displayPrice}</span>
-            {!out && id && <AddBtn id={id} />}
+            {!out && (
+              <span className="atelier-dish-action-cue">
+                <span>{actionLabel}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                </svg>
+              </span>
+            )}
           </div>
         </div>
       </motion.div>
@@ -351,12 +364,17 @@ const AtelierDish = ({ n, d, p, id, img, onSelect, featured = false }) => {
           {displayDesc && <p className="atelier-dish-desc">{displayDesc}</p>}
         </div>
 
-        <div className="atelier-dish-bottom" onClick={(e) => e.stopPropagation()}>
+        <div className="atelier-dish-bottom">
           <span className="atelier-dish-price">{displayPrice}</span>
           {out ? (
             <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--mute)' }}>Rupture</span>
           ) : (
-            id && <AddBtn id={id} />
+            <span className="atelier-dish-action-cue">
+              <span>{actionLabel}</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+            </span>
           )}
         </div>
       </div>
