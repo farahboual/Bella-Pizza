@@ -215,45 +215,89 @@ function AtelierHero() {
           src="/client-assets/hero.jpg"
           alt="Pizza napolitaine artisanale Bella Pizza"
           loading="eager"
+          className="atelier-hero-parallax-img"
         />
-        <div className="atelier-hero-cinematic-overlay" />
+        {/* Layered cinematic overlays for depth */}
+        <div className="atelier-hero-scrim-top" aria-hidden="true" />
+        <div className="atelier-hero-cinematic-overlay" aria-hidden="true" />
+        <div className="atelier-hero-scrim-bottom" aria-hidden="true" />
+
         <div className="atelier-hero-cinematic-content">
-          <div className="atelier-eyebrow">
+          {/* Refined live status badge */}
+          <motion.div
+            className="atelier-eyebrow"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             <span className="dot-live" />
             <span>{status.t}</span>
-          </div>
-          <h1 className="atelier-hero-title">
+          </motion.div>
+
+          {/* Editorial headline */}
+          <motion.h1
+            className="atelier-hero-title"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          >
             {t('heroTitle')}
             <em>{t('heroHighlight')}</em>
-          </h1>
-          <p className="atelier-hero-desc">{t('heroSubtitle')}</p>
-          <div className="atelier-hero-actions">
+          </motion.h1>
+
+          {/* Subline */}
+          <motion.p
+            className="atelier-hero-desc"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.38 }}
+          >
+            {t('heroSubtitle')}
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            className="atelier-hero-actions"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.52 }}
+          >
             <a className="btn burgundy" href="#carte">
               {t('orderOnline')} →
             </a>
             <a className="btn hero-outline" href={TEL}>
               {t('callToOrder')} — {cfgC.phone}
             </a>
-          </div>
-        </div>
-      </div>
+          </motion.div>
 
-      {/* Provenance strip */}
-      <div className="atelier-hero-provenance" aria-hidden="true">
-        <div className="atelier-provenance-col">
-          <span className="atelier-provenance-label">Origine</span>
-          <span className="atelier-provenance-value">Naples, Italie</span>
-          <span className="atelier-provenance-sub">Recette napolitaine traditionnelle</span>
-        </div>
-        <div className="atelier-provenance-col">
-          <span className="atelier-provenance-label">Fermentation</span>
-          <span className="atelier-provenance-value">48 heures</span>
-          <span className="atelier-provenance-sub">Pâte à maturation lente en chambre froide</span>
-        </div>
-        <div className="atelier-provenance-col">
-          <span className="atelier-provenance-label">Cuisson</span>
-          <span className="atelier-provenance-value">Four à bois 485°C</span>
-          <span className="atelier-provenance-sub">90 secondes — croûte alvéolée et légèrement brûlée</span>
+          {/* Inline cinematic provenance ribbon inside the hero */}
+          <motion.div
+            className="atelier-hero-inline-ribbon"
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+          >
+            <div className="hero-ribbon-item">
+              <strong>485°C</strong>
+              <span>Four à bois</span>
+            </div>
+            <div className="hero-ribbon-sep" />
+            <div className="hero-ribbon-item">
+              <strong>48h</strong>
+              <span>Fermentation</span>
+            </div>
+            <div className="hero-ribbon-sep" />
+            <div className="hero-ribbon-item">
+              <strong>DOP</strong>
+              <span>San Marzano</span>
+            </div>
+            <div className="hero-ribbon-sep" />
+            <div className="hero-ribbon-item">
+              <strong>100%</strong>
+              <span>Fait Main</span>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

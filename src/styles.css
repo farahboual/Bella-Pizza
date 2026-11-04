@@ -373,33 +373,60 @@ a {
   flex-shrink: 0;
 }
 
-/* Full-bleed cinematic image strip */
+/* Full-bleed cinematic image strip — film-grade treatment */
 .atelier-hero-cinematic {
   position: relative;
-  min-height: clamp(440px, 58vh, 600px);
+  min-height: clamp(560px, 76vh, 760px);
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: var(--dark);
+  background: #0F0C0A;
 }
-.atelier-hero-cinematic img {
+/* Ken Burns slow zoom on load */
+.atelier-hero-parallax-img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
   object-fit: cover;
-  object-position: center 60%;
+  object-position: center 55%;
   display: block;
+  animation: hero-ken-burns 18s ease-out forwards;
+  will-change: transform;
 }
+@keyframes hero-ken-burns {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1.0); }
+}
+/* Top vignette — blends header into image */
+.atelier-hero-scrim-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 180px;
+  background: linear-gradient(180deg, rgba(15, 12, 10, 0.55) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+/* Primary lateral dark overlay — text legibility */
 .atelier-hero-cinematic-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    90deg,
-    rgba(32, 27, 24, 0.92) 0%,
-    rgba(32, 27, 24, 0.74) 48%,
-    rgba(32, 27, 24, 0.38) 100%
+    105deg,
+    rgba(15, 12, 10, 0.88) 0%,
+    rgba(20, 16, 14, 0.72) 42%,
+    rgba(32, 27, 24, 0.28) 100%
   );
+  z-index: 1;
+}
+/* Bottom scrim — seamless transition into dark manifesto section */
+.atelier-hero-scrim-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 160px;
+  background: linear-gradient(0deg, rgba(23, 19, 17, 0.9) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 .atelier-hero-cinematic-content {
   position: relative;
@@ -407,7 +434,7 @@ a {
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 56px var(--pad);
+  padding: 72px var(--pad) 80px;
 }
 
 .atelier-eyebrow {
@@ -436,29 +463,32 @@ a {
 
 .atelier-hero-title {
   font-family: var(--serif);
-  font-size: clamp(2.4rem, 5.2vw, 4.4rem);
+  font-size: clamp(2.8rem, 6.5vw, 5.4rem);
   font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
   color: #FFFFFF !important;
-  margin-bottom: 18px;
-  max-width: 680px;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  margin-bottom: 20px;
+  max-width: 760px;
+  text-shadow: 0 2px 32px rgba(0, 0, 0, 0.6);
 }
 .atelier-hero-title em {
   font-style: italic;
   font-weight: 400;
-  color: var(--gold);
+  color: #C5A16B;
   display: block;
+  text-shadow: 0 0 48px rgba(197, 161, 107, 0.4);
 }
 
 .atelier-hero-desc {
-  font-size: 16px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.88);
-  max-width: 520px;
-  margin-bottom: 34px;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  font-size: clamp(15px, 1.9vw, 17.5px);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.84);
+  max-width: 540px;
+  margin-bottom: 36px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .atelier-hero-actions {
