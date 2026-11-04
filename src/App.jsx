@@ -292,7 +292,7 @@ const AtelierDish = ({ n, d, p, id, img, onSelect, featured = false }) => {
         id,
         name: cleanName,
         desc: displayDesc,
-        price: livePrice || (typeof p === 'number' ? p : 0),
+        price: livePriceOrNumber(id, p, getPrice, cfg),
         img: liveImg
       })
     }
