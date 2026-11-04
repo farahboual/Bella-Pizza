@@ -378,12 +378,16 @@ export const ItemModal = ({ item, onClose }) => {
                   ? (lang === 'en' ? 'Artisanal Neapolitan Pizza' : 'Pizza Napolitaine Artisanale')
                   : isBurger
                     ? (lang === 'en' ? 'Gourmet Smash Burger' : 'Smash Burger Gourmet')
-                    : 'Bella Pizza'}
+                    : isDrink
+                      ? (lang === 'en' ? 'Chilled Beverage' : 'Boisson Fraîche')
+                      : isDessert
+                        ? (lang === 'en' ? 'Italian Dolce' : 'Dolce & Dessert Maison')
+                        : 'Bella Pizza'}
               </span>
               <h2 className="item-modal-title">{item.name}</h2>
               {item.desc && <p className="item-modal-desc">{item.desc}</p>}
               <div className="item-modal-price-pill" aria-label="Prix de base">
-                <span className="modal-price-pill-lbl">{lang === 'en' ? 'Base recipe' : 'Recette de base'}</span>
+                <span className="modal-price-pill-lbl">{lang === 'en' ? 'Base price' : 'Prix unitaire'}</span>
                 <span className="modal-price-pill-val">{eur(basePrice)}</span>
               </div>
             </div>
@@ -392,11 +396,31 @@ export const ItemModal = ({ item, onClose }) => {
             <div className="item-modal-desktop-notes" aria-hidden="true">
               <div className="modal-note-item">
                 <span className="modal-note-dot" />
-                <span>{isPizza ? 'Four napolitain à 485°C' : 'Smashed minute sur plancha'}</span>
+                <span>
+                  {isPizza
+                    ? 'Four napolitain à 485°C'
+                    : isBurger
+                      ? 'Smashed minute sur plancha'
+                      : isDrink
+                        ? (lang === 'en' ? 'Served ice-cold' : 'Servi très frais')
+                        : isDessert
+                          ? (lang === 'en' ? 'Handcrafted pastry recipe' : 'Recette pâtissière maison')
+                          : 'Sélection artisanale'}
+                </span>
               </div>
               <div className="modal-note-item">
                 <span className="modal-note-dot" />
-                <span>{isPizza ? 'Maturation lente 48 heures' : 'Pur bœuf français sélectionné'}</span>
+                <span>
+                  {isPizza
+                    ? 'Maturation lente 48 heures'
+                    : isBurger
+                      ? 'Pur bœuf français sélectionné'
+                      : isDrink
+                        ? (lang === 'en' ? 'Italian refreshment' : 'Rafraîchissement italien')
+                        : isDessert
+                          ? (lang === 'en' ? 'Pure gourmet indulgence' : 'Gourmandise italienne')
+                          : 'Qualité supérieure'}
+                </span>
               </div>
             </div>
           </div>
@@ -679,28 +703,34 @@ export const ItemModal = ({ item, onClose }) => {
               </section>
             )}
 
-            {/* SECTION: Chef Instructions / Customer Note */}
-            <section className="modal-custom-section" aria-labelledby="notes-heading">
-              <div className="modal-section-header">
-                <div className="modal-section-title-row">
-                  <span className="modal-section-step">{notesStep}</span>
-                  <h3 id="notes-heading" className="modal-section-heading">
-                    {t('modalChefNote')}
-                  </h3>
+            {/* SECTION: Chef Instructions / Customer Note (Only for cooked dishes — NEVER for drinks & desserts) */}
+            {(isPizza || isBurger || isTacos || isSandwich || isTexmex) && (
+              <section className="modal-custom-section" aria-labelledby="notes-heading">
+                <div className="modal-section-header">
+                  <div className="modal-section-title-row">
+                    <span className="modal-section-step">{notesStep}</span>
+                    <h3 id="notes-heading" className="modal-section-heading">
+                      {isPizza
+                        ? (lang === 'en' ? 'Notes for the Pizzaiolo (optional)' : 'Précisions pour le pizzaïolo (optionnel)')
+                        : (lang === 'en' ? 'Kitchen instructions (optional)' : 'Précisions pour la cuisine (optionnel)')}
+                    </h3>
+                  </div>
                 </div>
-              </div>
-              <div className="modal-chef-input-wrap">
-                <textarea
-                  className="modal-chef-textarea"
-                  value={specialNote}
-                  onChange={(e) => setSpecialNote(e.target.value.slice(0, 100))}
-                  placeholder={!hasCustomization ? (lang === 'en' ? 'Optional note (e.g. extra cold)...' : 'Précision facultative (ex. : bien frais)...') : t('modalChefNotePlaceholder')}
-                  rows={2}
-                  maxLength={100}
-                />
-                <span className="modal-chef-counter">{specialNote.length} / 100</span>
-              </div>
-            </section>
+                <div className="modal-chef-input-wrap">
+                  <textarea
+                    className="modal-chef-textarea"
+                    value={specialNote}
+                    onChange={(e) => setSpecialNote(e.target.value.slice(0, 100))}
+                    placeholder={isPizza
+                      ? (lang === 'en' ? 'E.g.: slightly well-done crust, sliced...' : 'Ex. : cuisson légèrement plus poussée, prédécoupée...')
+                      : (lang === 'en' ? 'E.g.: extra napkins, cutlery...' : 'Ex. : sans oignons, bien chaud...')}
+                    rows={2}
+                    maxLength={100}
+                  />
+                  <span className="modal-chef-counter">{specialNote.length} / 100</span>
+                </div>
+              </section>
+            )}
 
           </div>
 
