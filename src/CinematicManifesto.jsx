@@ -109,14 +109,14 @@ export function CinematicManifesto() {
               </div>
 
               <div className="cinematic-card-body">
-                <div className="cinematic-act-header-row">
-                  <span className="cinematic-act-num-large" aria-hidden="true">{act.num}</span>
-                  <div className="cinematic-act-meta">
-                    <div className="cinematic-card-eyebrow">{act.eyebrow}</div>
-                    <div className="cinematic-card-italian">{act.italian}</div>
-                  </div>
+                <div className="cinematic-card-eyebrow-row">
+                  <span className="cinematic-card-eyebrow">{act.eyebrow}</span>
+                  <span className="cinematic-card-italian">{act.italian}</span>
                 </div>
-                <h3 className="cinematic-card-title">{act.title}</h3>
+                <div className="cinematic-act-title-row">
+                  <span className="cinematic-act-num-badge" aria-hidden="true">{act.num}</span>
+                  <h3 className="cinematic-card-title">{act.title}</h3>
+                </div>
                 <p className="cinematic-card-desc">{act.desc}</p>
               </div>
             </motion.article>
