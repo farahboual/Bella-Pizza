@@ -162,8 +162,17 @@ export const CartButton=()=>{
 
 export const OrderBtn=({className='btn lime',children='Commander en ligne'})=>{const{enabled,setOpen}=useCart();return enabled?<button className={className} onClick={()=>setOpen(true)}>{children}</button>:null}
 
-export const MobileBar=({tel})=>{const{enabled,count,total,setOpen}=useCart()
- return <div className="bar">{enabled?<button className="btn ink" onClick={()=>setOpen(true)}>{count?`Voir mon panier · ${eur(total)}`:'Commander en ligne'}</button>:<a className="btn ink" href={tel}>Appeler pour commander</a>}</div>
+export const MobileBar = ({ tel }) => {
+  const { enabled, count, total, setOpen } = useCart()
+  if (!enabled || !count) return null
+  return (
+    <div className="bar">
+      <button className="btn ink" onClick={() => setOpen(true)}>
+        <span>Voir mon panier ({count})</span>
+        <b>{eur(total)}</b>
+      </button>
+    </div>
+  )
 }
 
 function getAvailableSlots(){

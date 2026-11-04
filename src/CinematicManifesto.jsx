@@ -15,8 +15,8 @@ export function CinematicManifesto() {
         ? 'Imported wheat flour from ancient Campania mills. 72% hydration and 48 hours of slow cold maturation for cloud-like lightness.'
         : 'Blé pur sélectionné au Moulin de Naples, hydratation à 72% et 48 heures de fermentation lente en chambre froide pour une digestibilité absolue.',
       chip: lang === 'en' ? '48h Slow Maturation' : 'Maturation 48 Heures',
-      img: '/client-assets/story-1-dough.jpg',
-      alt: 'Pétrissage artisanal de la pâte napolitaine'
+      img: '/client-assets/manifesto-step-1-dough.jpg',
+      alt: 'Pétrissage artisanal et saupoudrage de farine Tipo 00 sur pâtons'
     },
     {
       num: '02',
@@ -27,8 +27,8 @@ export function CinematicManifesto() {
         ? 'Sun-drenched volcanic tomatoes from Mount Vesuvius slopes crushed by hand, paired with farm-fresh Campania mozzarella.'
         : 'Tomates gorgées du soleil vésuvien écrasées à la main, Mozzarella di Bufala crémeuse et feuilles de basilic frais cueillies au matin.',
       chip: lang === 'en' ? 'Protected Origin DOP' : 'Appellation Protégée DOP',
-      img: '/client-assets/story-2-ingredients.jpg',
-      alt: 'Ingrédients nobles italiens sous appellation protégée'
+      img: '/client-assets/manifesto-step-2-ingredients.jpg',
+      alt: 'Ingrédients nobles italiens sous appellation protégée DOP'
     },
     {
       num: '03',
@@ -39,8 +39,8 @@ export function CinematicManifesto() {
         ? 'A blistering 90-second bake on volcanic stone. The crust rises instantly, tender and airy with authentic leopard spotting.'
         : 'Saisie fulgurante de 90 secondes sur pierre volcanique. La croûte gonfle instantanément, alvéolée et tachetée de son léopardage signature.',
       chip: lang === 'en' ? '90s High-Heat Bake' : '90 Secondes à Flamme Vive',
-      img: '/client-assets/story-3-oven.jpg',
-      alt: 'Four à bois traditionnel napolitain incandescent'
+      img: '/client-assets/manifesto-step-3-oven.jpg',
+      alt: 'Four à bois traditionnel napolitain incandescent à 485°C'
     },
     {
       num: '04',
@@ -49,10 +49,10 @@ export function CinematicManifesto() {
       italian: 'L\'Arte a Tavola',
       desc: lang === 'en'
         ? 'Finished with a drizzle of cold-pressed Umbrian olive oil and freshly torn herbs. Crisp outside, melt-in-mouth inside.'
-        : 'Un filet d\'huile d\'olive vierge extra pressée à froid, burrata crémeuse de Corato et parfum fumé délicat. Servi immédiatement.',
+        : 'Un filet d\'huile d\'olive vierge extra pressée à froid au burette en cuivre, burrata crémeuse et parfum fumé délicat. Servi immédiatement.',
       chip: lang === 'en' ? 'Handcrafted to Order' : 'Dressé Minute à la Commande',
-      img: '/client-assets/story-4-plated.jpg',
-      alt: 'Pizza napolitaine fumante sortie du four'
+      img: '/client-assets/manifesto-step-4-plated.jpg',
+      alt: 'Pizza napolitaine fumante avec filet d\'huile d\'olive versé à la burette'
     }
   ]
 
@@ -101,13 +101,21 @@ export function CinematicManifesto() {
                   className="cinematic-card-img"
                 />
                 <div className="cinematic-card-scrim" />
-                <span className="cinematic-card-num" aria-hidden="true">{act.num}</span>
+                <span className="cinematic-card-num" aria-hidden="true">
+                  <span className="cinematic-card-num-dot" />
+                  <span>{lang === 'en' ? `STEP ${act.num}` : `ÉTAPE ${act.num}`}</span>
+                </span>
                 <span className="cinematic-card-chip">{act.chip}</span>
               </div>
 
               <div className="cinematic-card-body">
-                <div className="cinematic-card-eyebrow">{act.eyebrow}</div>
-                <div className="cinematic-card-italian">{act.italian}</div>
+                <div className="cinematic-act-header-row">
+                  <span className="cinematic-act-num-large" aria-hidden="true">{act.num}</span>
+                  <div className="cinematic-act-meta">
+                    <div className="cinematic-card-eyebrow">{act.eyebrow}</div>
+                    <div className="cinematic-card-italian">{act.italian}</div>
+                  </div>
+                </div>
                 <h3 className="cinematic-card-title">{act.title}</h3>
                 <p className="cinematic-card-desc">{act.desc}</p>
               </div>
