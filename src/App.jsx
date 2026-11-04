@@ -11,6 +11,7 @@ import { CartProvider, CartDrawer, AddBtn, MobileBar, useCart } from './cart.jsx
 import { slug, CATALOG, eur, getParisTime, DEFAULT_SCHEDULE, isInSlot } from '../shared/catalog.js'
 import { RESTAURANT_CONFIG } from '../shared/restaurant.config.js'
 import { LangProvider, useLang, LanguageToggle } from './i18n.jsx'
+import { ThemeProvider, ThemeToggle } from './ThemeContext.jsx'
 import { ItemModal } from './ItemModal.jsx'
 import { CinematicManifesto } from './CinematicManifesto.jsx'
 
@@ -160,7 +161,8 @@ function Header() {
         <a href="#savoir-faire" className="luxury-nav-link">{t('navHours')}</a>
       </nav>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <ThemeToggle />
         <LanguageToggle />
         <a className="luxury-phone-btn" href={TEL} aria-label={`Appeler le ${cfgC.phone}`}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -853,23 +855,25 @@ export default function App() {
   }, [])
 
   return (
-    <LangProvider>
-      <CartProvider>
-        <MotionConfig reducedMotion="user">
-          <a href="#carte" className="skip">Aller à la carte</a>
-          <Header />
-          <main>
-            <AtelierHero />
-            <CinematicManifesto />
-            <Menu />
-            <AtelierInfoSection />
-          </main>
-          <AtelierFooter />
-          <MobileBar tel={TEL} />
-          <CartDrawer />
-          <OrderTracker />
-        </MotionConfig>
-      </CartProvider>
-    </LangProvider>
+    <ThemeProvider>
+      <LangProvider>
+        <CartProvider>
+          <MotionConfig reducedMotion="user">
+            <a href="#carte" className="skip">Aller à la carte</a>
+            <Header />
+            <main>
+              <AtelierHero />
+              <CinematicManifesto />
+              <Menu />
+              <AtelierInfoSection />
+            </main>
+            <AtelierFooter />
+            <MobileBar tel={TEL} />
+            <CartDrawer />
+            <OrderTracker />
+          </MotionConfig>
+        </CartProvider>
+      </LangProvider>
+    </ThemeProvider>
   )
 }

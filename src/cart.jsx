@@ -390,36 +390,85 @@ export function CartDrawer(){
    {drinkDeal>0&&<p className="note" style={{color:'var(--green)',fontWeight:700}}>Canette à 1 € avec votre plat : -{eur(drinkDeal)}</p>}
    {canetteAlone&&<p className="note">Canette seule : 1,50 €. Passe à 1,00 € avec un plat.</p>}
 
-   <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
+   <div className="cart-mode-card">
+    <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
 
-   {short&&<p className="warn">Livraison à partir de {eur(RULES.deliveryMin)} de commande (il manque {eur(RULES.deliveryMin-subtotal)}). Ou choisissez « À emporter » ou « Sur place ».</p>}
+    {/* Contextual notice per order mode */}
+    {type === 'emporter' && (
+      <div className="cart-context-pill">
+        <span className="cart-context-dot" />
+        <span>Retrait direct à l'Atelier : {RESTAURANT_CONFIG?.contact?.address?.street || '12 Rue de la Pizza Napolitaine, 75002 Paris'}</span>
+      </div>
+    )}
 
-   {type==='sur_place'&&<label>Numéro de Table<input placeholder="Ex: Table 4" value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/></label>}
+    {type === 'livraison' && (
+      <div className={`cart-context-pill ${short ? 'warn' : 'ok'}`}>
+        <span className="cart-context-dot" />
+        {short ? (
+          <span>Minimum de livraison : {eur(RULES.deliveryMin)} (plus que {eur(RULES.deliveryMin - subtotal)} à ajouter)</span>
+        ) : (
+          <span>✓ Minimum de commande atteint pour la livraison</span>
+        )}
+      </div>
+    )}
 
-   <label>
-     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
-      <span style={{fontWeight:700,fontSize:13}}>Créneau horaire souhaité</span>
-      <span style={{fontSize:11.5,color:'var(--mute)'}}>{slot === 'asap' ? 'Immédiat (~25-35 min)' : `Pour ${slot}`}</span>
+    {type === 'sur_place' && (
+      <div className="cart-context-pill">
+        <span className="cart-context-dot" />
+        <span>Service à table — dégustation minute</span>
+      </div>
+    )}
+   </div>
+
+   {/* Specific fields for Sur place */}
+   {type === 'sur_place' && (
+     <div className="cart-section-box">
+       <label>Numéro de Table
+         <input required placeholder="Ex: Table 4" value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/>
+       </label>
      </div>
-     <select value={slot} onChange={e=>setSlot(e.target.value)} style={{font:'600 14px var(--d)',padding:'11px 12px',borderRadius:12,border:'1.5px solid var(--line)',background:'#fff',width:'100%'}}>
-      <option value="asap">Dès que possible (~25-35 min)</option>
-      {getAvailableSlots().map(s => (
-        <option key={s} value={s}>Pour aujourd'hui à {s}</option>
-      ))}
-     </select>
-   </label>
+   )}
 
-   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:6,marginBottom:2}}><span style={{fontWeight:800,fontSize:13.5}}>Vos coordonnées</span>{f.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>✓ Coordonnées mémorisées</span>}</div>
-   <label>Nom<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
-   <label>Téléphone<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
-   <label>E-mail <small>(reçu de paiement, facultatif)</small><input type="email" autoComplete="email" value={f.email} onChange={upd('email')}/></label>
+   {/* Specific fields for Livraison */}
+   {type === 'livraison' && (
+     <div className="cart-section-box">
+       <label>Adresse de livraison
+         <input required autoComplete="street-address" placeholder="N° et nom de voie" value={f.address} onChange={upd('address')}/>
+       </label>
+       <label>Code postal
+         <input required inputMode="numeric" pattern="\d{5}" maxLength={5} placeholder="75002" autoComplete="postal-code" value={f.postcode} onChange={upd('postcode')}/>
+       </label>
+     </div>
+   )}
 
-   {type=='livraison'&&
-    <>
-     <label>Adresse de livraison<input required autoComplete="street-address" value={f.address} onChange={upd('address')}/></label>
-     <label>Code postal<input required inputMode="numeric" pattern="\d{5}" maxLength={5} autoComplete="postal-code" value={f.postcode} onChange={upd('postcode')}/></label>
-    </>
-   }
+   {/* Schedule */}
+   {type !== 'sur_place' ? (
+     <label>
+       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+        <span style={{fontWeight:700,fontSize:13}}>Créneau horaire souhaité</span>
+        <span style={{fontSize:11.5,color:'var(--mute)'}}>{slot === 'asap' ? 'Immédiat (~25-35 min)' : `Pour ${slot}`}</span>
+       </div>
+       <select value={slot} onChange={e=>setSlot(e.target.value)} style={{font:'600 14px var(--d)',padding:'11px 12px',borderRadius:12,border:'1.5px solid var(--line)',background:'#fff',width:'100%'}}>
+        <option value="asap">Dès que possible (~25-35 min)</option>
+        {getAvailableSlots().map(s => (
+          <option key={s} value={s}>Pour aujourd'hui à {s}</option>
+        ))}
+       </select>
+     </label>
+   ) : null}
+
+   {/* Customer coordinates */}
+   <div className="cart-section-box">
+     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+       <span style={{fontWeight:800,fontSize:13.5}}>{type === 'sur_place' ? 'Votre identifiant' : 'Vos coordonnées'}</span>
+       {f.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>✓ Mémorisé</span>}
+     </div>
+     <label>Nom ou Prénom<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
+     <label>Téléphone<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
+     {type !== 'sur_place' && (
+       <label>E-mail <small>(reçu de paiement, facultatif)</small><input type="email" autoComplete="email" value={f.email} onChange={upd('email')}/></label>
+     )}
+   </div>
 
    <label>Code Promo <small>(facultatif)</small>
     <div style={{display:'flex',gap:8}}>

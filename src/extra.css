@@ -6461,3 +6461,513 @@ html, body {
   border-color: #801D1E !important;
   color: #FFFFFF !important;
 }
+
+
+/* ==========================================================================
+   THEME TOGGLE BUTTON & CART FLOW REFINEMENT
+   ========================================================================== */
+
+.theme-toggle-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 38px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: rgba(32, 26, 23, 0.8) !important;
+  border: 1px solid rgba(197, 161, 107, 0.35) !important;
+  color: #F4EFE8 !important;
+  font-family: var(--font, system-ui, sans-serif) !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  transition: all 0.22s ease !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(32, 26, 23, 1) !important;
+  border-color: #C5A16B !important;
+  transform: translateY(-1px) !important;
+}
+
+.theme-toggle-btn svg {
+  color: #C5A16B !important;
+}
+
+/* Cart mode box & contextual pills */
+.cart-mode-card {
+  margin-bottom: 14px !important;
+}
+
+.cart-context-pill {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 9px 12px !important;
+  border-radius: 10px !important;
+  background: rgba(197, 161, 107, 0.12) !important;
+  border: 1px solid rgba(197, 161, 107, 0.28) !important;
+  color: #801D1E !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  margin-top: 8px !important;
+}
+
+.cart-context-pill.warn {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #dc2626 !important;
+}
+
+.cart-context-pill.ok {
+  background: rgba(34, 197, 94, 0.08) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  color: #16a34a !important;
+}
+
+.cart-context-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: currentColor !important;
+  flex-shrink: 0 !important;
+}
+
+.cart-section-box {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid #EAE4DC !important;
+  border-radius: 12px !important;
+  padding: 12px 14px !important;
+  margin-bottom: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* ==========================================================================
+   COMPLETE LIGHT THEME SPECIFICATION ([data-theme="light"])
+   ========================================================================== */
+
+[data-theme="light"],
+html[data-theme="light"] body {
+  background-color: #F4EFE8 !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] #hd {
+  background: rgba(244, 239, 232, 0.94) !important;
+  border-bottom: 1px solid #E5DDD2 !important;
+}
+
+[data-theme="light"] #hd .luxury-nav-link {
+  color: #4A423B !important;
+}
+
+[data-theme="light"] #hd .luxury-nav-link:hover {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] #hd .luxury-nav-link::after {
+  background: #801D1E !important;
+}
+
+[data-theme="light"] #hd .luxury-logo-title {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] #hd .luxury-logo-sub {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] #hd .luxury-phone-btn {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] #hd .luxury-phone-btn:hover {
+  border-color: #801D1E !important;
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .theme-toggle-btn {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .theme-toggle-btn svg {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] #hd .lang-toggle-container {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+}
+
+[data-theme="light"] #hd .lang-btn {
+  color: #6A625B !important;
+}
+
+[data-theme="light"] #hd .lang-btn.active {
+  background: #201B18 !important;
+  color: #FFFFFF !important;
+}
+
+/* Light Manifesto */
+[data-theme="light"] .cinematic-manifesto-section {
+  background: #EAE3D8 !important;
+  color: #201B18 !important;
+  border-color: #E5DDD2 !important;
+}
+
+[data-theme="light"] .cinematic-manifesto-title {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .cinematic-manifesto-title em {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .cinematic-manifesto-sub {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .cinematic-eyebrow-badge {
+  background: #FFFFFF !important;
+  border-color: rgba(163, 120, 94, 0.3) !important;
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .cinematic-act-card {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  box-shadow: 0 10px 28px rgba(32, 27, 24, 0.06) !important;
+}
+
+[data-theme="light"] .cinematic-act-card:hover {
+  border-color: #801D1E !important;
+  box-shadow: 0 16px 36px rgba(32, 27, 24, 0.12) !important;
+}
+
+[data-theme="light"] .cinematic-card-scrim {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 60%, #FFFFFF 100%) !important;
+}
+
+[data-theme="light"] .cinematic-card-title {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .cinematic-card-desc {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .cinematic-act-num-large {
+  color: #801D1E !important;
+  text-shadow: none !important;
+}
+
+[data-theme="light"] .cinematic-card-eyebrow {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .cinematic-card-italian {
+  color: #7A7067 !important;
+}
+
+[data-theme="light"] .cinematic-strip-bottom {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+}
+
+[data-theme="light"] .cinematic-strip-item strong {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .cinematic-strip-item span {
+  color: #5A524B !important;
+}
+
+/* Light Menu Section */
+[data-theme="light"] .atelier-menu-section {
+  background: #F4EFE8 !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-menu-controls {
+  background: rgba(244, 239, 232, 0.94) !important;
+  border-bottom: 1px solid #E5DDD2 !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .atelier-cat-btn {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .atelier-cat-btn:hover {
+  color: #201B18 !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .atelier-cat-btn.active {
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .atelier-search-box input {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-search-box input::placeholder {
+  color: #9A9187 !important;
+}
+
+[data-theme="light"] .atelier-search-icon {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-size-pill {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-size-pill strong {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-size-pill.active {
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .atelier-size-pill.active strong {
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .atelier-signature-spotlight {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .atelier-spotlight-title {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-spotlight-eyebrow {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-spotlight-desc {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .atelier-spotlight-price {
+  color: #801D1E !important;
+  text-shadow: none !important;
+}
+
+[data-theme="light"] .atelier-spotlight-badge {
+  background: rgba(128, 29, 30, 0.1) !important;
+  border-color: #801D1E !important;
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-dish-item {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .atelier-dish-item:hover {
+  border-color: #801D1E !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09) !important;
+}
+
+[data-theme="light"] .atelier-dish-name {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-dish-desc {
+  color: #6A625B !important;
+}
+
+[data-theme="light"] .atelier-dish-price {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-dish-action-cue {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-dish-item:hover .atelier-dish-action-cue {
+  color: #631415 !important;
+}
+
+[data-theme="light"] .atelier-dish-thumb {
+  background: #EAE3D8 !important;
+  border-color: #E5DDD2 !important;
+}
+
+[data-theme="light"] .atelier-dish-featured {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+}
+
+[data-theme="light"] .atelier-dish-featured-name {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-dish-featured-desc {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .atelier-dish-featured-price {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-editorial-intro-title {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-editorial-intro-label {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-editorial-intro-desc {
+  color: #5A524B !important;
+}
+
+/* Light Info Section */
+[data-theme="light"] .atelier-info-section {
+  background: #EAE3D8 !important;
+  color: #201B18 !important;
+  border-color: #E5DDD2 !important;
+}
+
+[data-theme="light"] .atelier-info-header h2 {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-info-header p {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .atelier-info-triad {
+  background: #FFFFFF !important;
+  border-color: #E5DDD2 !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .atelier-info-col {
+  background: #FFFFFF !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-col-icon {
+  background: #F4EFE8 !important;
+  border-color: #E5DDD2 !important;
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .atelier-col-title {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-col-sub {
+  color: #6A625B !important;
+}
+
+[data-theme="light"] .atelier-col-list p,
+[data-theme="light"] .atelier-col-list span {
+  color: #4A423B !important;
+}
+
+[data-theme="light"] .atelier-col-list strong {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-col-row span {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .atelier-col-row strong {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .atelier-info-col .btn.outline {
+  background: transparent !important;
+  border-color: #E5DDD2 !important;
+  color: #201B18 !important;
+}
+
+/* Light Order Tracker */
+[data-theme="light"] .tracker-modal {
+  background: #FAF7F2 !important;
+  color: #201B18 !important;
+  border: 1px solid #EAE4DC !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .tracker-head {
+  border-bottom: 1px solid #EAE4DC !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .tracker-head h3 {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .tracker-status-box {
+  background: #FFFFFF !important;
+  border-color: #EAE4DC !important;
+}
+
+[data-theme="light"] .tracker-status-title {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .tracker-status-desc {
+  color: #5A524B !important;
+}
+
+[data-theme="light"] .tracker-step-icon {
+  background: #FFFFFF !important;
+  border-color: #EAE4DC !important;
+  color: #6A625B !important;
+}
+
+[data-theme="light"] .tracker-step-label {
+  color: #6A625B !important;
+}
+
+[data-theme="light"] .tracker-step.completed .tracker-step-label,
+[data-theme="light"] .tracker-step.current .tracker-step-label {
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .tracker-pill {
+  background: #FFFFFF !important;
+  border-color: #EAE4DC !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .tracker-pill b {
+  color: #801D1E !important;
+}
+
+[data-theme="light"] .tracker-modal .btn.outline {
+  background: #FFFFFF !important;
+  border-color: #EAE4DC !important;
+  color: #201B18 !important;
+}
+
+[data-theme="light"] .tracker-modal .x {
+  background: #F4EFE8 !important;
+  border-color: #EAE4DC !important;
+  color: #201B18 !important;
+}
