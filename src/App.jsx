@@ -774,7 +774,7 @@ function AtelierInfoSection() {
             <h3 className="atelier-col-title">{t('infoAddressTitle')}</h3>
             <p className="atelier-col-sub">{cfgB.name} · {cfgC?.address?.city || 'Paris'}</p>
             <div className="atelier-col-list">
-              <p style={{ fontSize: 13.5, lineHeight: 1.6, color: 'var(--dark)' }}>
+              <p style={{ fontSize: 13.5, lineHeight: 1.6, color: 'rgba(244, 239, 232, 0.85)' }}>
                 <strong>{cfgC.address.street}</strong><br />
                 {cfgC.address.postalCode} {cfgC.address.city}
               </p>

@@ -31,7 +31,7 @@ export const RESTAURANT_CONFIG = {
     primaryHover:    "#5C1414",   // Dark Barolo
     primaryLight:    "#201A17",   // Warm Obsidian surface
     backgroundColor: "#171311",   // Deep Cinematic Espresso
-    textColor:       "#F4EFE8",   // Warm Ivory Text
+    textColor:       "#181513",   // Deep Charcoal/Espresso (restores dark tokens)
     accentGold:      "#C5A16B",   // Muted Gold
     borderColor:     "rgba(197, 161, 107, 0.22)", // Gold Hairline Border
     fontFamily:      "'General Sans', 'Plus Jakarta Sans', system-ui, sans-serif",

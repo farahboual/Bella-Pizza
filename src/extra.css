@@ -6023,3 +6023,205 @@ html, body {
 .atelier-editorial-intro-rule {
   background: #C5A16B !important;
 }
+
+
+/* ==========================================================================
+   INFO SECTION & FOOTER — HIGH-CONTRAST DARK LUXURY (FIX INVISIBLE TEXT)
+   ========================================================================== */
+.atelier-info-section {
+  background: #171311 !important;
+  color: #F4EFE8 !important;
+  border-top: 1px solid rgba(197, 161, 107, 0.18) !important;
+  border-bottom: 1px solid rgba(197, 161, 107, 0.18) !important;
+  padding: 80px 0 !important;
+}
+
+.atelier-info-header h2 {
+  color: #F4EFE8 !important;
+  font-family: var(--serif, 'Fraunces', Georgia, serif) !important;
+  font-size: clamp(2rem, 3.6vw, 2.6rem) !important;
+  margin-bottom: 12px !important;
+}
+
+.atelier-info-header p {
+  color: rgba(244, 239, 232, 0.72) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+/* Triad Container — Dark Obsidian Card */
+.atelier-info-triad {
+  background: #201A17 !important;
+  border: 1px solid rgba(197, 161, 107, 0.28) !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 24px rgba(197, 161, 107, 0.08) !important;
+}
+
+.atelier-info-col {
+  background: #201A17 !important;
+  padding: 36px 32px !important;
+  color: #F4EFE8 !important;
+}
+
+.atelier-info-col:not(:last-child) {
+  border-right: 1px solid rgba(197, 161, 107, 0.18) !important;
+}
+
+@media (max-width: 900px) {
+  .atelier-info-col:not(:last-child) {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(197, 161, 107, 0.18) !important;
+  }
+}
+
+.atelier-col-icon {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  background: rgba(197, 161, 107, 0.12) !important;
+  border: 1px solid rgba(197, 161, 107, 0.3) !important;
+  color: #C5A16B !important;
+  display: grid !important;
+  place-items: center !important;
+  margin-bottom: 20px !important;
+}
+
+.atelier-col-title {
+  color: #FFFFFF !important;
+  font-family: var(--serif, 'Fraunces', Georgia, serif) !important;
+  font-size: 21px !important;
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+}
+
+.atelier-col-sub {
+  color: rgba(244, 239, 232, 0.6) !important;
+  font-size: 13px !important;
+  margin-bottom: 22px !important;
+}
+
+.atelier-col-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  font-size: 13.5px !important;
+}
+
+.atelier-col-list p,
+.atelier-col-list span {
+  color: rgba(244, 239, 232, 0.78) !important;
+}
+
+.atelier-col-list strong {
+  color: #FFFFFF !important;
+}
+
+.atelier-col-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px dashed rgba(197, 161, 107, 0.2) !important;
+}
+
+.atelier-col-row span {
+  color: rgba(244, 239, 232, 0.7) !important;
+}
+
+.atelier-col-row strong {
+  color: #FFFFFF !important;
+}
+
+.atelier-col-row.highlight {
+  background: rgba(197, 161, 107, 0.1) !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border-bottom: none !important;
+}
+
+.atelier-col-row.highlight span {
+  color: #C5A16B !important;
+  font-weight: 600 !important;
+}
+
+.atelier-col-row.highlight strong {
+  color: #C5A16B !important;
+  font-weight: 700 !important;
+}
+
+.atelier-info-col .btn.red {
+  background: #801D1E !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(197, 161, 107, 0.35) !important;
+}
+
+.atelier-info-col .btn.outline {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(197, 161, 107, 0.35) !important;
+  color: #F4EFE8 !important;
+}
+
+.atelier-info-col .btn.outline:hover {
+  background: rgba(197, 161, 107, 0.2) !important;
+  border-color: #C5A16B !important;
+  color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   FOOTER — DEEP OBSIDIAN & HIGH-CONTRAST GOLD
+   ========================================================================== */
+.atelier-footer {
+  background: #100D0B !important;
+  color: #F4EFE8 !important;
+  padding: 72px 0 40px !important;
+  border-top: 1px solid rgba(197, 161, 107, 0.2) !important;
+}
+
+.atelier-footer-brand h4 {
+  color: #FFFFFF !important;
+  font-family: var(--serif, 'Fraunces', Georgia, serif) !important;
+  font-size: 24px !important;
+  margin-bottom: 8px !important;
+}
+
+.atelier-footer-brand p {
+  color: rgba(244, 239, 232, 0.72) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+.atelier-footer-contact p {
+  color: rgba(244, 239, 232, 0.72) !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+.atelier-footer-contact strong {
+  color: #C5A16B !important;
+}
+
+.atelier-footer-legal {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding-top: 24px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 12px !important;
+  color: rgba(244, 239, 232, 0.5) !important;
+}
+
+/* Mobile Bar Sticky */
+.bar {
+  background: rgba(16, 13, 11, 0.94) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-top: 1px solid rgba(197, 161, 107, 0.25) !important;
+}
+
+.bar .btn.ink {
+  background: #801D1E !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(197, 161, 107, 0.4) !important;
+  box-shadow: 0 4px 18px rgba(128, 29, 30, 0.45) !important;
+}
