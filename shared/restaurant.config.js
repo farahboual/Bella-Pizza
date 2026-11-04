@@ -27,13 +27,13 @@ export const RESTAURANT_CONFIG = {
 
   // ─── 2. THEME & COLORS (L'ATELIER NAPOLETANO) ─────────────────────
   theme: {
-    primaryColor:    "#7A1C1C",   // Deep Oxblood
+    primaryColor:    "#801D1E",   // Deep Burgundy
     primaryHover:    "#5C1414",   // Dark Barolo
-    primaryLight:    "#FFFFFF",   // Pure Alabaster card
-    backgroundColor: "#FBF9F5",   // Warm Alabaster Background
-    textColor:       "#181513",   // Deep Espresso Text
-    accentGold:      "#C8A97E",   // Antique Gold
-    borderColor:     "#EAE4DC",   // Limestone Border
+    primaryLight:    "#201A17",   // Warm Obsidian surface
+    backgroundColor: "#171311",   // Deep Cinematic Espresso
+    textColor:       "#F4EFE8",   // Warm Ivory Text
+    accentGold:      "#C5A16B",   // Muted Gold
+    borderColor:     "rgba(197, 161, 107, 0.22)", // Gold Hairline Border
     fontFamily:      "'General Sans', 'Plus Jakarta Sans', system-ui, sans-serif",
     fontSerif:       "'Fraunces', Georgia, serif"
   },
