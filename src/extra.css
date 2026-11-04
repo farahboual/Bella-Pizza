@@ -5018,3 +5018,323 @@ html, body {
   min-width: 24px !important;
   text-align: center !important;
 }
+
+
+/* ==========================================================================
+   CINEMATIC MANIFESTO & FILM-GRADE EDITORIAL STYLING (2026 LUXURY)
+   ========================================================================== */
+.cinematic-manifesto-section {
+  position: relative;
+  background: #171311 !important;
+  color: #F4EFE8 !important;
+  padding: clamp(64px, 8vw, 100px) 0 !important;
+  border-top: 1px solid rgba(197, 161, 107, 0.2) !important;
+  border-bottom: 1px solid rgba(197, 161, 107, 0.2) !important;
+  overflow: hidden;
+}
+
+.cinematic-ambient-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 380px;
+  background: radial-gradient(ellipse at top, rgba(197, 161, 107, 0.14) 0%, rgba(128, 29, 30, 0.08) 45%, transparent 75%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cinematic-manifesto-header {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 740px;
+  margin: 0 auto 52px auto;
+}
+
+.cinematic-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #C5A16B;
+  background: rgba(32, 27, 24, 0.85);
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(197, 161, 107, 0.35);
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.cinematic-eyebrow-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #C5A16B;
+  box-shadow: 0 0 10px #C5A16B;
+}
+
+.cinematic-manifesto-title {
+  font-family: var(--serif, 'Fraunces', Georgia, serif);
+  font-size: clamp(2.2rem, 4.4vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: #F4EFE8;
+  margin-bottom: 16px;
+}
+
+.cinematic-manifesto-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: #C5A16B;
+}
+
+.cinematic-manifesto-sub {
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: clamp(14.5px, 1.8vw, 16.5px);
+  line-height: 1.65;
+  color: rgba(244, 239, 232, 0.72);
+}
+
+.cinematic-acts-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-bottom: 56px;
+}
+
+@media (max-width: 1060px) {
+  .cinematic-acts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .cinematic-acts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.cinematic-act-card {
+  background: #201A17;
+  border: 1px solid rgba(229, 221, 210, 0.12);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.cinematic-act-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(197, 161, 107, 0.45);
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.7), 0 0 24px rgba(197, 161, 107, 0.15);
+}
+
+.cinematic-card-media {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #14100E;
+}
+
+.cinematic-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+  filter: brightness(0.92) contrast(1.04);
+}
+
+.cinematic-act-card:hover .cinematic-card-img {
+  transform: scale(1.08);
+  filter: brightness(1) contrast(1.06);
+}
+
+.cinematic-card-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(23, 19, 17, 0.1) 0%, rgba(32, 26, 23, 0.4) 60%, #201A17 100%);
+  pointer-events: none;
+}
+
+.cinematic-card-num {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-family: var(--serif, 'Fraunces', Georgia, serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #C5A16B;
+  background: rgba(23, 19, 17, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(197, 161, 107, 0.35);
+  padding: 4px 10px;
+  border-radius: 999px;
+  z-index: 2;
+}
+
+.cinematic-card-chip {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #F4EFE8;
+  background: rgba(128, 29, 30, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px 10px;
+  border-radius: 999px;
+  z-index: 2;
+}
+
+.cinematic-card-body {
+  padding: 22px 22px 26px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cinematic-card-eyebrow {
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C5A16B;
+  margin-bottom: 4px;
+}
+
+.cinematic-card-italian {
+  font-family: var(--serif, 'Fraunces', Georgia, serif);
+  font-style: italic;
+  font-size: 13.5px;
+  color: rgba(244, 239, 232, 0.6);
+  margin-bottom: 6px;
+}
+
+.cinematic-card-title {
+  font-family: var(--serif, 'Fraunces', Georgia, serif);
+  font-size: 18.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+}
+
+.cinematic-card-desc {
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(244, 239, 232, 0.74);
+}
+
+/* Filmic Bottom Ribbon */
+.cinematic-strip-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 4vw, 48px);
+  padding: 22px 28px;
+  background: rgba(32, 26, 23, 0.8);
+  border: 1px solid rgba(197, 161, 107, 0.22);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  flex-wrap: wrap;
+}
+
+.cinematic-strip-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cinematic-strip-item strong {
+  font-family: var(--serif, 'Fraunces', Georgia, serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: #C5A16B;
+  letter-spacing: -0.02em;
+}
+
+.cinematic-strip-item span {
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244, 239, 232, 0.75);
+}
+
+.cinematic-strip-sep {
+  width: 1px;
+  height: 28px;
+  background: rgba(197, 161, 107, 0.25);
+}
+
+@media (max-width: 640px) {
+  .cinematic-strip-sep {
+    display: none;
+  }
+  .cinematic-strip-bottom {
+    gap: 20px;
+    justify-content: space-around;
+  }
+}
+
+/* ==========================================================================
+   CINEMATIC CARD & TYPOGRAPHY REFINEMENTS
+   ========================================================================== */
+.atelier-dish-price {
+  font-family: var(--serif, 'Fraunces', Georgia, serif) !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--red, #801D1E) !important;
+  letter-spacing: -0.01em !important;
+}
+
+.atelier-spotlight-price {
+  font-family: var(--serif, 'Fraunces', Georgia, serif) !important;
+  font-size: 30px !important;
+  font-weight: 700 !important;
+  color: var(--red, #801D1E) !important;
+  letter-spacing: -0.02em !important;
+}
+
+.atelier-dish-item {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease !important;
+}
+
+.atelier-dish-item:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 14px 32px -8px rgba(32, 27, 24, 0.12) !important;
+  border-color: rgba(197, 161, 107, 0.4) !important;
+}
+
+.atelier-dish-thumb img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.atelier-dish-item:hover .atelier-dish-thumb img {
+  transform: scale(1.08) !important;
+}

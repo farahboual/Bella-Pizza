@@ -12,6 +12,7 @@ import { slug, CATALOG, eur, getParisTime, DEFAULT_SCHEDULE, isInSlot } from '..
 import { RESTAURANT_CONFIG } from '../shared/restaurant.config.js'
 import { LangProvider, useLang, LanguageToggle } from './i18n.jsx'
 import { ItemModal } from './ItemModal.jsx'
+import { CinematicManifesto } from './CinematicManifesto.jsx'
 
 const cfgB = RESTAURANT_CONFIG.brand
 const cfgC = RESTAURANT_CONFIG.contact
@@ -815,6 +816,7 @@ export default function App() {
           <Header />
           <main>
             <AtelierHero />
+            <CinematicManifesto />
             <Menu />
             <AtelierInfoSection />
           </main>
