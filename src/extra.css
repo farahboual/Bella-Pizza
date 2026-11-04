@@ -4834,3 +4834,63 @@ html, body {
 .modal-confirm-btn .btn-price {
   font-weight: 800 !important;
 }
+
+/* ============================================================
+   SUPPLEMENT & EXTRA INGREDIENT PHOTO THUMBNAILS
+   ============================================================ */
+
+/* Square photo frame on the left of each extra card */
+.extra-thumb-frame {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  border: 1.5px solid #EAE4DC !important;
+  box-shadow: 0 2px 8px rgba(32, 27, 24, 0.10) !important;
+  background: #F4EFE8 !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.extra-thumb-frame.is-selected {
+  border-color: #801D1E !important;
+  box-shadow: 0 4px 14px rgba(128, 29, 30, 0.18) !important;
+}
+
+.extra-thumb-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  transform: scale(1.03) !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.modal-extra-card:hover .extra-thumb-img {
+  transform: scale(1.10) !important;
+}
+
+.extra-thumb-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.08) 0%,
+    rgba(0,0,0,0.12) 100%
+  ) !important;
+  pointer-events: none !important;
+}
+
+.extra-thumb-placeholder {
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg, #EAE4DC 0%, #D6CDBF 100%) !important;
+}
+
+/* Adjust extra card layout to accommodate the photo */
+.modal-extra-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}

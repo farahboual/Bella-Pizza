@@ -97,10 +97,34 @@ const SauceRamekin = ({ sauce }) => {
   )
 }
 
+// Ingredient photo thumbnail with graceful fallback to a styled placeholder
+const ExtraThumb = ({ src, alt, isSelected }) => {
+  const [imgErr, setImgErr] = useState(false)
+  return (
+    <div className={`extra-thumb-frame ${isSelected ? 'is-selected' : ''}`} aria-hidden="true">
+      {src && !imgErr ? (
+        <>
+          <img
+            src={src}
+            alt={alt}
+            className="extra-thumb-img"
+            loading="lazy"
+            onError={() => setImgErr(true)}
+          />
+          <div className="extra-thumb-overlay" />
+        </>
+      ) : (
+        <div className="extra-thumb-placeholder" />
+      )}
+    </div>
+  )
+}
+
 // Pizza Extras
 const PIZZA_EXTRAS = [
   {
     key: 'burrata',
+    img: '/client-assets/extra-burrata.jpg',
     name: 'Burrata Crémeuse des Pouilles (125g)',
     nameEn: 'Whole Creamy Pugliese Burrata (125g)',
     desc: 'Cœur coulant de stracciatella crémeuse déposé au centre minute après cuisson.',
@@ -111,6 +135,7 @@ const PIZZA_EXTRAS = [
   },
   {
     key: 'truffle',
+    img: '/client-assets/extra-truffe.jpg',
     name: 'Crème de Truffe Noire d\'Été',
     nameEn: 'Italian Black Summer Truffle Cream',
     desc: 'Truffes estivales d\'Ombrie pilées à l\'huile d\'olive extra-vierge.',
@@ -121,6 +146,7 @@ const PIZZA_EXTRAS = [
   },
   {
     key: 'bacon',
+    img: '/client-assets/extra-bacon.jpg',
     name: 'Bacon Fumé au Bois de Hêtre',
     nameEn: 'Crispy Beechwood Smoked Bacon',
     desc: 'Poitrine artisanale croustillante tranchée fine et rôtie au feu de bois.',
@@ -131,6 +157,7 @@ const PIZZA_EXTRAS = [
   },
   {
     key: 'parmesan',
+    img: '/client-assets/extra-parmesan.jpg',
     name: 'Roquette & Grana Padano DOP 24 Mois',
     nameEn: 'Wild Arugula & 24-Month Grana Padano',
     desc: 'Jeunes pousses fraîches et copeaux généreux de Grana Padano affiné.',
@@ -145,6 +172,7 @@ const PIZZA_EXTRAS = [
 const BURGER_EXTRAS = [
   {
     key: 'cheddar',
+    img: '/client-assets/extra-cheddar.jpg',
     name: 'Double Cheddar Affiné Fondu',
     nameEn: 'Double Melted Aged Cheddar',
     desc: 'Tranches épaisses de véritable cheddar maturé 9 mois, fondu à la cloche vapeur.',
@@ -155,6 +183,7 @@ const BURGER_EXTRAS = [
   },
   {
     key: 'bacon',
+    img: '/client-assets/extra-bacon.jpg',
     name: 'Bacon Fumé au Bois de Hêtre',
     nameEn: 'Crispy Beechwood Smoked Bacon',
     desc: 'Bacon artisanal croustillant doré à la plancha brûlante.',
@@ -165,6 +194,7 @@ const BURGER_EXTRAS = [
   },
   {
     key: 'smashSteak',
+    img: '/client-assets/extra-smash.jpg',
     name: 'Steak Pur Bœuf Smash Supplémentaire (120g)',
     nameEn: 'Extra Fresh Smash Beef Patty (120g)',
     desc: 'Pur bœuf frais français smashé minute, bords dentelés et croûte croustillante.',
@@ -175,6 +205,7 @@ const BURGER_EXTRAS = [
   },
   {
     key: 'onions',
+    img: '/client-assets/extra-onions.jpg',
     name: 'Oignons Caramélisés au Balsamique',
     nameEn: 'Balsamic Caramelized Onions',
     desc: 'Oignons doux fondants compotés au vinaigre balsamique de Modène.',
@@ -532,6 +563,9 @@ export const ItemModal = ({ item, onClose }) => {
                         key={opt.key}
                         className={`modal-extra-card ${isSelected ? 'is-selected' : ''}`}
                       >
+                        {/* Ingredient photo thumbnail */}
+                        <ExtraThumb src={opt.img} alt={opt.name} isSelected={isSelected} />
+
                         <div className="modal-extra-info">
                           <div className="modal-extra-header">
                             <h4 className="modal-extra-name">{lang === 'en' ? opt.nameEn : opt.name}</h4>
@@ -542,7 +576,7 @@ export const ItemModal = ({ item, onClose }) => {
                             <span className="modal-extra-unit-price">+{eur(opt.price)}</span>
                             {isSelected && (
                               <span className="modal-extra-subtotal">
-                                Total portion: +{eur(opt.price * count)}
+                                +{eur(opt.price * count)} total
                               </span>
                             )}
                           </div>
