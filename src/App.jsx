@@ -108,29 +108,14 @@ const Logo = () => {
           src={cfgB.logoUrl}
           alt={cfgB.name}
           onError={() => setErr(true)}
-          style={{ height: 44, width: 44, borderRadius: '50%', objectFit: 'cover', flex: 'none', border: '1px solid var(--line)' }}
+          className="luxury-logo-img"
         />
       ) : (
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: '50%',
-            background: 'var(--red)',
-            display: 'grid',
-            placeItems: 'center',
-            color: '#fff',
-            fontFamily: "'Fraunces', Georgia, serif",
-            fontWeight: 700,
-            fontSize: 20,
-            flex: 'none'
-          }}
-          aria-hidden="true"
-        >
+        <div className="luxury-logo-badge" aria-hidden="true">
           {(cfgB.name || 'B').charAt(0)}
         </div>
       )}
-      <div>
+      <div className="luxury-logo-text">
         <span className="luxury-logo-title">{cfgB.name}</span>
         <span className="luxury-logo-sub">PIZZERIA · CUCINA</span>
       </div>
@@ -161,7 +146,7 @@ function Header() {
         <a href="#savoir-faire" className="luxury-nav-link">{t('navHours')}</a>
       </nav>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div className="luxury-header-actions">
         <ThemeToggle />
         <LanguageToggle />
         <a className="luxury-phone-btn" href={TEL} aria-label={`Appeler le ${cfgC.phone}`}>
@@ -181,10 +166,10 @@ function Header() {
           {count > 0 ? (
             <>
               <b>{count}</b>
-              <span>{eur(total)}</span>
+              <span className="cart-total-badge">{eur(total)}</span>
             </>
           ) : (
-            <span>Panier</span>
+            <span className="cart-total-badge">Panier</span>
           )}
         </button>
       </div>

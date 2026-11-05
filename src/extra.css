@@ -7487,17 +7487,349 @@ html, body {
   }
 }
 
-/* Item Modal Responsiveness */
+/* ==========================================================================
+   COMPREHENSIVE RESPONSIVENESS AUDIT & REFINEMENTS
+   ========================================================================== */
+
+/* Header & Navigation Architecture */
+#hd {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 0 clamp(12px, 3.5vw, 32px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.luxury-logo-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  text-decoration: none !important;
+  min-width: 0 !important;
+  flex-shrink: 1 !important;
+}
+
+.luxury-logo-badge {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: var(--red, #801D1E) !important;
+  display: grid !important;
+  place-items: center !important;
+  color: #fff !important;
+  font-family: 'Fraunces', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  flex: none !important;
+}
+
+.luxury-logo-img {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  flex: none !important;
+  border: 1px solid var(--line) !important;
+}
+
+.luxury-logo-text {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+}
+
+.luxury-logo-title {
+  font-family: 'Fraunces', Georgia, serif !important;
+  font-size: 19px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  color: #FAF7F2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.15 !important;
+}
+
+.luxury-logo-sub {
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  color: #C5A16B !important;
+  text-transform: uppercase !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+}
+
+.luxury-header-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+@media (max-width: 640px) {
+  #hd {
+    height: 60px !important;
+    padding: 0 10px !important;
+    gap: 8px !important;
+  }
+  .luxury-logo-link {
+    max-width: 48vw !important;
+    gap: 8px !important;
+  }
+  .luxury-logo-badge, .luxury-logo-img {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+  }
+  .luxury-logo-title {
+    font-size: 15px !important;
+  }
+  .luxury-logo-sub {
+    font-size: 8px !important;
+    letter-spacing: 0.08em !important;
+  }
+  .luxury-header-actions {
+    gap: 5px !important;
+  }
+  .theme-toggle-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+  }
+  .theme-toggle-label {
+    display: none !important;
+  }
+  .lang-toggle-container {
+    padding: 2px 3px !important;
+  }
+  .lang-btn {
+    padding: 3px 6px !important;
+    font-size: 10.5px !important;
+  }
+  .luxury-phone-btn {
+    display: none !important;
+  }
+  .luxury-cart-btn {
+    padding: 7px 11px !important;
+    font-size: 12px !important;
+    gap: 5px !important;
+    border-radius: 999px !important;
+  }
+  .cart-total-badge {
+    display: none !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .luxury-logo-sub {
+    display: none !important;
+  }
+  .luxury-logo-link {
+    max-width: 42vw !important;
+  }
+  .luxury-logo-title {
+    font-size: 14px !important;
+  }
+}
+
+/* Item Modal Desktop & Mobile Architecture */
+.item-modal-card {
+  width: min(940px, 94vw) !important;
+  max-height: 88vh !important;
+  background: #FBF9F5 !important;
+  border: 1px solid #EAE4DC !important;
+  border-radius: 24px !important;
+  color: #181513 !important;
+  box-shadow: 0 28px 70px -10px rgba(24, 21, 19, 0.35) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.item-modal-hero {
+  position: relative !important;
+  width: 44% !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+  background: #181513 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+}
+
+.item-modal-media-banner {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.item-modal-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.item-modal-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(180deg, rgba(24, 21, 19, 0.15) 0%, rgba(24, 21, 19, 0.5) 45%, rgba(24, 21, 19, 0.95) 100%) !important;
+}
+
+.item-modal-close {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(24, 21, 19, 0.65) !important;
+  backdrop-filter: blur(10px) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  cursor: pointer !important;
+  display: grid !important;
+  place-items: center !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 20 !important;
+}
+
+.item-modal-close:hover {
+  background: #7A1C1C !important;
+  transform: scale(1.05) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.item-modal-title-wrap {
+  position: relative !important;
+  padding: 24px 24px 20px !important;
+  color: #FFFFFF !important;
+  z-index: 2 !important;
+}
+
+.item-modal-right-col {
+  flex: 1 1 56% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  max-height: 88vh !important;
+  background: #FBF9F5 !important;
+  overflow: hidden !important;
+}
+
+.item-modal-scroll-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 24px 24px 28px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 22px !important;
+}
+
+/* Item Modal Mobile Responsive Overhaul */
 @media (max-width: 768px) {
   .item-modal-card {
     width: 100% !important;
     max-height: 94dvh !important;
     margin-top: auto !important;
     border-radius: 24px 24px 0 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
   .item-modal-hero {
-    height: 190px !important;
-    min-height: 190px !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: transparent !important;
+  }
+  .item-modal-media-banner {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 150px !important;
+    overflow: hidden !important;
+  }
+  .item-modal-img {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .item-modal-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(180deg, rgba(24, 21, 19, 0.1) 0%, rgba(24, 21, 19, 0.55) 100%) !important;
+  }
+  .item-modal-close {
+    top: 10px !important;
+    right: 10px !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .item-modal-title-wrap {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    padding: 12px 16px 8px !important;
+    background: #FBF9F5 !important;
+    border-bottom: 1px solid #EAE4DC !important;
+  }
+  .item-modal-title {
+    font-size: 19px !important;
+    color: #181513 !important;
+    text-shadow: none !important;
+  }
+  .item-modal-desc {
+    font-size: 12px !important;
+    color: #5A524B !important;
+    margin: 4px 0 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .item-modal-price-pill {
+    margin-top: 6px !important;
+    padding: 3px 8px !important;
+    background: rgba(197, 161, 107, 0.15) !important;
+    border-color: rgba(197, 161, 107, 0.4) !important;
+  }
+  .modal-price-pill-lbl, .modal-price-pill-val {
+    color: #801D1E !important;
+  }
+  .item-modal-desktop-notes {
+    display: none !important;
+  }
+  .item-modal-right-col {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+  .item-modal-scroll-body {
+    padding: 14px 16px 20px !important;
+    gap: 16px !important;
   }
   .item-modal-footer {
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)) !important;
@@ -7505,6 +7837,34 @@ html, body {
   .modal-confirm-btn {
     padding: 12px 16px !important;
     font-size: 14px !important;
+  }
+}
+
+/* Dark mode overrides for Item Modal Mobile */
+[data-theme="dark"] .item-modal-card {
+  background: #181412 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .item-modal-right-col {
+  background: #181412 !important;
+}
+
+@media (max-width: 768px) {
+  [data-theme="dark"] .item-modal-title-wrap {
+    background: #181412 !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+  [data-theme="dark"] .item-modal-title {
+    color: #FAF7F2 !important;
+  }
+  [data-theme="dark"] .item-modal-desc {
+    color: rgba(244, 239, 232, 0.75) !important;
+  }
+  [data-theme="dark"] .modal-price-pill-lbl,
+  [data-theme="dark"] .modal-price-pill-val {
+    color: #C5A16B !important;
   }
 }
 
