@@ -7917,3 +7917,296 @@ html, body {
     gap: 28px !important;
   }
 }
+
+/* ==========================================================================
+   ACTIVE & SELECTED CONTRAST SYSTEM (NEVER BLACK TEXT ON BLACK BACKGROUND)
+   ========================================================================== */
+
+/* 1. Crust Choice Cards in Item Modal */
+.modal-choice-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE4DC !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.modal-choice-card .modal-choice-title {
+  color: #181513 !important;
+}
+
+.modal-choice-card .modal-choice-desc {
+  color: #6E645D !important;
+}
+
+/* Active / Selected Crust — Light Mode */
+.modal-choice-card.is-active {
+  background: #FFF8F7 !important;
+  border-color: #801D1E !important;
+  box-shadow: 0 4px 16px rgba(128, 29, 30, 0.12) !important;
+}
+
+.modal-choice-card.is-active .modal-choice-title {
+  color: #801D1E !important;
+  font-weight: 800 !important;
+}
+
+.modal-choice-card.is-active .modal-choice-desc {
+  color: #38302B !important;
+}
+
+/* Crust Cards — Dark Mode */
+[data-theme="dark"] .modal-choice-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-theme="dark"] .modal-choice-card .modal-choice-title {
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .modal-choice-card .modal-choice-desc {
+  color: rgba(244, 239, 232, 0.72) !important;
+}
+
+[data-theme="dark"] .modal-choice-card.is-active {
+  background: rgba(128, 29, 30, 0.35) !important;
+  border-color: #C5A16B !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(197, 161, 107, 0.2) !important;
+}
+
+[data-theme="dark"] .modal-choice-card.is-active .modal-choice-title {
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="dark"] .modal-choice-card.is-active .modal-choice-desc {
+  color: #F4EFE8 !important;
+}
+
+/* 2. Sauce Tiles in Item Modal */
+.modal-sauce-tile {
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE4DC !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.modal-sauce-tile .modal-sauce-name {
+  color: #181513 !important;
+}
+
+.modal-sauce-tile .modal-sauce-desc {
+  color: #6E645D !important;
+}
+
+/* Selected Sauce — Light Mode */
+.modal-sauce-tile.is-selected {
+  background: #FFF8F7 !important;
+  border-color: #801D1E !important;
+  box-shadow: 0 4px 14px rgba(128, 29, 30, 0.12) !important;
+}
+
+.modal-sauce-tile.is-selected .modal-sauce-name {
+  color: #801D1E !important;
+  font-weight: 800 !important;
+}
+
+.modal-sauce-tile.is-selected .modal-sauce-desc {
+  color: #38302B !important;
+}
+
+/* Sauce Tiles — Dark Mode */
+[data-theme="dark"] .modal-sauce-tile {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-theme="dark"] .modal-sauce-tile .modal-sauce-name {
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .modal-sauce-tile .modal-sauce-desc {
+  color: rgba(244, 239, 232, 0.72) !important;
+}
+
+[data-theme="dark"] .modal-sauce-tile.is-selected {
+  background: rgba(128, 29, 30, 0.35) !important;
+  border-color: #C5A16B !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(197, 161, 107, 0.2) !important;
+}
+
+[data-theme="dark"] .modal-sauce-tile.is-selected .modal-sauce-name {
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="dark"] .modal-sauce-tile.is-selected .modal-sauce-desc {
+  color: #F4EFE8 !important;
+}
+
+/* 3. Gourmet Extras in Item Modal */
+.modal-extra-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid #EAE4DC !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.modal-extra-card .modal-extra-name {
+  color: #181513 !important;
+}
+
+.modal-extra-card .modal-extra-desc {
+  color: #6E645D !important;
+}
+
+/* Selected Extra — Light Mode */
+.modal-extra-card.is-selected {
+  background: #FFF8F7 !important;
+  border-color: #801D1E !important;
+  box-shadow: 0 4px 14px rgba(128, 29, 30, 0.12) !important;
+}
+
+.modal-extra-card.is-selected .modal-extra-name {
+  color: #801D1E !important;
+  font-weight: 800 !important;
+}
+
+.modal-extra-card.is-selected .modal-extra-desc {
+  color: #38302B !important;
+}
+
+/* Extra Cards — Dark Mode */
+[data-theme="dark"] .modal-extra-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-theme="dark"] .modal-extra-card .modal-extra-name {
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .modal-extra-card .modal-extra-desc {
+  color: rgba(244, 239, 232, 0.72) !important;
+}
+
+[data-theme="dark"] .modal-extra-card.is-selected {
+  background: rgba(128, 29, 30, 0.35) !important;
+  border-color: #C5A16B !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(197, 161, 107, 0.2) !important;
+}
+
+[data-theme="dark"] .modal-extra-card.is-selected .modal-extra-name {
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="dark"] .modal-extra-card.is-selected .modal-extra-desc {
+  color: #F4EFE8 !important;
+}
+
+/* Chef Instructions Textarea */
+[data-theme="dark"] .modal-chef-textarea {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .modal-chef-textarea:focus {
+  border-color: #C5A16B !important;
+  box-shadow: 0 0 0 3px rgba(197, 161, 107, 0.2) !important;
+}
+
+/* 4. Segmented Controls (.seg label.on) in Cart */
+.seg label {
+  color: #6E645D !important;
+  transition: all 0.18s ease !important;
+}
+
+.seg label.on {
+  background: #801D1E !important;
+  color: #FFFFFF !important;
+  border-color: #801D1E !important;
+  box-shadow: 0 3px 12px rgba(128, 29, 30, 0.3) !important;
+}
+
+.seg label.on span,
+.seg label.on svg,
+.seg label.on b {
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .seg label {
+  color: rgba(244, 239, 232, 0.75) !important;
+}
+
+[data-theme="dark"] .seg label.on {
+  background: #801D1E !important;
+  color: #FFFFFF !important;
+  border-color: rgba(197, 161, 107, 0.5) !important;
+  box-shadow: 0 4px 16px rgba(128, 29, 30, 0.45) !important;
+}
+
+[data-theme="dark"] .seg label.on span,
+[data-theme="dark"] .seg label.on svg,
+[data-theme="dark"] .seg label.on b {
+  color: #FFFFFF !important;
+}
+
+/* 5. Cart Items & Upsells in Dark Mode */
+[data-theme="dark"] .cl li {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .cl-t b {
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .cart-upsell-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .cart-upsell-name {
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .cart-upsell-price {
+  color: #C5A16B !important;
+}
+
+.cart-upsell-btn.added {
+  background: #166534 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #166534 !important;
+}
+
+/* 6. Ergonomic Footer for Item Modal on Mobile */
+@media (max-width: 480px) {
+  .item-modal-footer {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .modal-footer-price-col {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+  }
+  .modal-confirm-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .modal-crust-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .seg {
+    gap: 4px !important;
+    padding: 3px !important;
+  }
+  .seg label {
+    font-size: 11.5px !important;
+    padding: 8px 4px !important;
+    white-space: nowrap !important;
+  }
+}
