@@ -380,9 +380,9 @@
   border-radius: 12px;
   padding: 9px 11px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 6px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
   transition: transform .15s, border-color .15s;
 }
 .cart-upsell-card:hover {
@@ -395,6 +395,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 .cart-upsell-price {
   font: 800 11.5px var(--d, sans-serif);
@@ -405,15 +407,16 @@
   color: var(--dark, #28231F);
   border: 1.5px solid var(--dark, #28231F);
   border-radius: 99px;
-  padding: 4px 8px;
+  padding: 5px 12px;
   font: 700 11px var(--d, sans-serif);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 36px;
   transition: all .15s;
-  width: 100%;
 }
 .cart-upsell-btn:hover {
   background: var(--dark, #28231F);
