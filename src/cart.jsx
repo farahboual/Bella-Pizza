@@ -514,11 +514,11 @@ export function CartDrawer(){
      <span>{t('cartPaymentMode')}</span>
     </div>
     <div className="seg seg-payment" role="radiogroup" aria-label={t('cartPaymentMode')}>
-     <label className={payment==='online'?'on':''} onClick={()=>setPay('online')} style={{cursor:'pointer'}}>
+     <label className={payment==='online'?'on':''} onClick={(e)=>{e.preventDefault();setPay('online')}} style={{cursor:'pointer'}}>
        <input type="radio" name="pay_choice" checked={payment==='online'} onChange={()=>setPay('online')} tabIndex={-1}/>
        {t('cartPayOnline')}
      </label>
-     <label className={payment==='sur_place'?'on':''} onClick={()=>setPay('sur_place')} style={{cursor:'pointer'}}>
+     <label className={payment==='sur_place'?'on':''} onClick={(e)=>{e.preventDefault();setPay('sur_place')}} style={{cursor:'pointer'}}>
        <input type="radio" name="pay_choice" checked={payment==='sur_place'} onChange={()=>setPay('sur_place')} tabIndex={-1}/>
        {type==='livraison'?t('cartPayOnDelivery'):t('cartPayOnSite')}
      </label>
