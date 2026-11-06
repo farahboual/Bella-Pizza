@@ -1,5 +1,5 @@
 import { OrderTracker } from './OrderTracker.jsx'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Component } from 'react'
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 import { pz, tom, cre, T, C, SZ, CATS } from './data.js'
 import pizzaImg from './assets/pizza.webp'
@@ -34,14 +34,16 @@ const getItemImg = (catId, itemSlug) => (cfgI.items && cfgI.items[itemSlug]) || 
 function useStatus() {
   const [s, set] = useState({ o: null, t: 'Horaires' })
   const { cfg } = useCart()
+  const { lang } = useLang()
 
   useEffect(() => {
+    const isEn = lang === 'en'
     if (cfg?.forcedOpen) {
-      set({ o: true, t: 'Ouvert · Service continu' })
+      set({ o: true, t: isEn ? 'Open · Continuous service' : 'Ouvert · Service continu' })
       return
     }
     if (cfg?.manualClosed) {
-      set({ o: false, t: cfg.closedReason || 'Fermé temporairement' })
+      set({ o: false, t: cfg.closedReason || (isEn ? 'Temporarily Closed' : 'Fermé temporairement') })
       return
     }
 
@@ -52,16 +54,16 @@ function useStatus() {
       const exc = activeSched.exceptions.find(e => e.date === dateStr)
       if (exc) {
         if (exc.type === 'closed') {
-          set({ o: false, t: cfg?.closedReason || exc.note || 'Fermé aujourd’hui' })
+          set({ o: false, t: cfg?.closedReason || exc.note || (isEn ? 'Closed today' : 'Fermé aujourd’hui') })
           return
         }
         if (exc.type === 'open') {
           const isOpen = isInSlot(m, exc.start || '11:00', exc.end || '23:00')
-          const endLabel = (exc.end === '00:00' ? '00h00' : (exc.end || '23:00').replace(':', 'h'))
-          const startLabel = (exc.start || '11:00').replace(':', 'h')
+          const endLabel = (exc.end === '00:00' ? (isEn ? '12:00 AM' : '00h00') : (exc.end || '23:00').replace(':', isEn ? ':' : 'h'))
+          const startLabel = (exc.start || '11:00').replace(':', isEn ? ':' : 'h')
           set({
             o: isOpen,
-            t: isOpen ? `Ouvert · jusqu’à ${endLabel}` : `Fermé · ouvre à ${startLabel}`
+            t: isOpen ? (isEn ? `Open · until ${endLabel}` : `Ouvert · jusqu’à ${endLabel}`) : (isEn ? `Closed · opens at ${startLabel}` : `Fermé · ouvre à ${startLabel}`)
           })
           return
         }
@@ -70,7 +72,7 @@ function useStatus() {
 
     const dayConf = activeSched?.weekly?.[dayPart]
     if (!dayConf || dayConf.open === false) {
-      set({ o: false, t: cfg?.closedReason || 'Fermé aujourd’hui' })
+      set({ o: false, t: cfg?.closedReason || (isEn ? 'Closed today' : 'Fermé aujourd’hui') })
       return
     }
 
@@ -85,14 +87,18 @@ function useStatus() {
     const activeExtra = extraSlots.find(slot => isInSlot(m, slot.start, slot.end))
     const o = lunch || eve || Boolean(activeExtra)
 
-    const formatHour = t => (t === '00:00' ? '00h00' : (t || '').replace(':', 'h'))
+    const formatHour = t => {
+      if (!t) return ''
+      if (isEn) return t === '00:00' ? '12:00 AM' : t
+      return t === '00:00' ? '00h00' : t.replace(':', 'h')
+    }
     const closingTime = lunch ? lEnd : (eve ? eEnd : (activeExtra?.end || eEnd))
 
     set({
       o,
-      t: o ? `Ouvert · jusqu’à ${formatHour(closingTime)}` : `Fermé · ouvre à ${formatHour(lStart)}`
+      t: o ? (isEn ? `Open · until ${formatHour(closingTime)}` : `Ouvert · jusqu’à ${formatHour(closingTime)}`) : (isEn ? `Closed · opens at ${formatHour(lStart)}` : `Fermé · ouvre à ${formatHour(lStart)}`)
     })
-  }, [cfg])
+  }, [cfg, lang])
 
   return s
 }
@@ -169,7 +175,7 @@ function Header() {
               <span className="cart-total-badge">{eur(total)}</span>
             </>
           ) : (
-            <span className="cart-total-badge">Panier</span>
+            <span className="cart-total-badge">{t('cartTotalBadge')}</span>
           )}
         </button>
       </div>
@@ -212,12 +218,12 @@ function AtelierHero() {
         <div className="atelier-hero-cinematic-content">
           {/* Refined live status badge */}
           <motion.div
-            className="atelier-eyebrow"
+            className={`atelier-eyebrow ${status.o ? 'status-open' : 'status-closed'}`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <span className="dot-live" />
+            <span className={`dot-live ${status.o ? 'dot-open' : 'dot-closed'}`} />
             <span>{status.t}</span>
           </motion.div>
 
@@ -768,6 +774,38 @@ function AtelierFooter() {
   )
 }
 
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error }
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('[Bella Pizza ErrorBoundary]', error, errorInfo)
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '40px 20px', textAlign: 'center', background: '#171311', color: '#FAF7F2', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--serif, serif)', fontSize: '24px', marginBottom: '12px', color: '#C5A16B' }}>Une erreur inattendue est survenue</h2>
+          <p style={{ maxWidth: '480px', color: 'rgba(244, 239, 232, 0.7)', marginBottom: '24px', fontSize: '14px', lineHeight: 1.6 }}>
+            Votre panier est préservé. Cliquez ci-dessous pour actualiser l'affichage.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{ padding: '12px 28px', background: '#801D1E', color: '#FFFFFF', border: 'none', borderRadius: '99px', fontWeight: 700, cursor: 'pointer' }}
+          >
+            Recharger la page
+          </button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 export default function App() {
   useEffect(() => {
     if (RESTAURANT_CONFIG?.theme?.primaryColor) {
@@ -782,25 +820,27 @@ export default function App() {
   }, [])
 
   return (
-    <ThemeProvider>
-      <LangProvider>
-        <CartProvider>
-          <MotionConfig reducedMotion="user">
-            <a href="#carte" className="skip">Aller à la carte</a>
-            <Header />
-            <main>
-              <AtelierHero />
-              <CinematicManifesto />
-              <Menu />
-              <AtelierInfoSection />
-            </main>
-            <AtelierFooter />
-            <MobileBar tel={TEL} />
-            <CartDrawer />
-            <OrderTracker />
-          </MotionConfig>
-        </CartProvider>
-      </LangProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <LangProvider>
+          <CartProvider>
+            <MotionConfig reducedMotion="user">
+              <a href="#carte" className="skip">Aller à la carte</a>
+              <Header />
+              <main>
+                <AtelierHero />
+                <CinematicManifesto />
+                <Menu />
+                <AtelierInfoSection />
+              </main>
+              <AtelierFooter />
+              <MobileBar tel={TEL} />
+              <CartDrawer />
+              <OrderTracker />
+            </MotionConfig>
+          </CartProvider>
+        </LangProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   )
 }

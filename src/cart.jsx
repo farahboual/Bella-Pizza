@@ -164,11 +164,12 @@ export const OrderBtn=({className='btn lime',children='Commander en ligne'})=>{c
 
 export const MobileBar = ({ tel }) => {
   const { enabled, count, total, setOpen } = useCart()
+  const { t } = useLang()
   if (!enabled || !count) return null
   return (
     <div className="bar">
       <button className="btn ink" onClick={() => setOpen(true)}>
-        <span>Voir mon panier ({count})</span>
+        <span>{t('viewMyCart')} ({count})</span>
         <b>{eur(total)}</b>
       </button>
     </div>
@@ -199,7 +200,14 @@ const UPSELL_CANDIDATES = [
 export function CartDrawer(){
  const { t } = useLang()
  const{lines,add,setQty,setNote,setOpt,unit,subtotal,offer:baseOffer,drinkDeal,canetteAlone,clear,total,count,open,setOpen,cfg,getPrice,isOut,isHidden}=useCart()
- const[type,setType]=useState('emporter'),[slot,setSlot]=useState('asap'),[pay,setPay]=useState(''),[f,setF]=useState(()=>{try{const s=localStorage.getItem('tp_customer');if(s)return JSON.parse(s)}catch{}return{name:'',phone:'',email:'',address:'',postcode:''}}),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
+ const [type,setType]=useState('emporter'),[slot,setSlot]=useState('asap'),[pay,setPay]=useState(''),[f,setF]=useState(()=>{
+   try{
+     const s=localStorage.getItem('tp_customer')
+     const p=s?JSON.parse(s):null
+     if(p&&typeof p==='object')return{name:p.name||'',phone:p.phone||'',email:p.email||'',address:p.address||'',postcode:p.postcode||''}
+   }catch{}
+   return{name:'',phone:'',email:'',address:'',postcode:''}
+ }),[tableNumber,setTableNumber]=useState(''),[promoInput,setPromoInput]=useState(''),[appliedPromo,setAppliedPromo]=useState(null),[promoErr,setPromoErr]=useState(''),[note,setNoteAll]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState(''),[done,setDone]=useState(null)
 
  useEffect(()=>{
   const q=new URLSearchParams(location.search)
@@ -212,7 +220,14 @@ export function CartDrawer(){
 
  if(!open||!cfg)return null
 
- const payment=pay||(cfg?.online!==false?'online':'sur_place'),upd=k=>e=>{const val=e.target.value;setF(prev=>{const next={...prev,[k]:val};try{localStorage.setItem('tp_customer',JSON.stringify(next))}catch{}return next})}
+ const payment=pay||'online',upd=k=>e=>{
+   const val=e?.target?e.target.value:e
+   setF(prev=>{
+     const next={...(prev||{}),[k]:val}
+     try{localStorage.setItem('tp_customer',JSON.stringify(next))}catch{}
+     return next
+   })
+ }
  const offer=type==='emporter'?baseOffer:0
  const currentTotal=subtotal-offer-drinkDeal
  const short=type=='livraison'&&subtotal<RULES.deliveryMin,closed=!cfg.open
@@ -391,7 +406,19 @@ export function CartDrawer(){
    {canetteAlone&&<p className="note">Canette seule : 1,50 €. Passe à 1,00 € avec un plat.</p>}
 
    <div className="cart-mode-card">
-    <fieldset className="seg"><legend>{t('cartOrderMode')}</legend>{[['emporter',t('cartTakeaway')],['livraison',t('cartDelivery')],['sur_place',t('cartDineIn')]].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
+    <div className="seg" role="radiogroup" aria-label={t('cartOrderMode')}>
+      {[['emporter',t('cartTakeaway')],['livraison',t('cartDelivery')],['sur_place',t('cartDineIn')]].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=>(
+        <label
+          key={v}
+          className={type===v?'on':''}
+          onClick={(e)=>{e.preventDefault();setType(v)}}
+          style={{cursor:'pointer'}}
+        >
+          <input type="radio" name="order_mode_selection" checked={type===v} onChange={()=>setType(v)} tabIndex={-1}/>
+          {l}
+        </label>
+      ))}
+    </div>
 
     {/* Contextual notice per order mode */}
     {type === 'emporter' && (
@@ -405,7 +432,7 @@ export function CartDrawer(){
       <div className={`cart-context-pill ${short ? 'warn' : 'ok'}`}>
         <span className="cart-context-dot" />
         {short ? (
-          <span>{t('cartContextDeliveryMin')} {eur(RULES.deliveryMin)} ({t('cartContextDeliveryShort').replace('{diff}', eur(RULES.deliveryMin - subtotal))})</span>
+          <span>{t('cartContextDeliveryMin')} {eur(RULES.deliveryMin)} ({(t('cartContextDeliveryShort') || 'plus que {diff} à ajouter').replace('{diff}', eur(Math.max(0, RULES.deliveryMin - subtotal)))})</span>
         ) : (
           <span>{t('cartContextDeliveryOk')}</span>
         )}
@@ -424,7 +451,7 @@ export function CartDrawer(){
    {type === 'sur_place' && (
      <div className="cart-section-box">
        <label>{t('cartTableNumber')}
-         <input required placeholder={t('cartTablePlaceholder')} value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/>
+         <input required placeholder={t('cartTablePlaceholder')} value={tableNumber || ''} onChange={e=>setTableNumber(e.target.value)}/>
        </label>
      </div>
    )}
@@ -433,10 +460,10 @@ export function CartDrawer(){
    {type === 'livraison' && (
      <div className="cart-section-box">
        <label>{t('cartDeliveryAddress')}
-         <input required autoComplete="street-address" placeholder={t('cartAddressPlaceholder')} value={f.address} onChange={upd('address')}/>
+         <input required autoComplete="street-address" placeholder={t('cartAddressPlaceholder')} value={f?.address || ''} onChange={upd('address')}/>
        </label>
        <label>{t('cartPostcode')}
-         <input required inputMode="numeric" pattern="\d{5}" maxLength={5} placeholder="75002" autoComplete="postal-code" value={f.postcode} onChange={upd('postcode')}/>
+         <input required inputMode="numeric" pattern="\d{5}" maxLength={5} placeholder="75002" autoComplete="postal-code" value={f?.postcode || ''} onChange={upd('postcode')}/>
        </label>
      </div>
    )}
@@ -461,12 +488,12 @@ export function CartDrawer(){
    <div className="cart-section-box">
      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
        <span style={{fontWeight:800,fontSize:13.5}}>{type === 'sur_place' ? t('cartIdentity') : t('cartCoordinates')}</span>
-       {f.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>{t('cartSaved')}</span>}
+       {f?.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>{t('cartSaved')}</span>}
      </div>
-     <label>{t('cartNameLabel')}<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
-     <label>{t('cartPhoneLabel')}<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
+     <label>{t('cartNameLabel')}<input required autoComplete="name" value={f?.name || ''} onChange={upd('name')}/></label>
+     <label>{t('cartPhoneLabel')}<input required type="tel" autoComplete="tel" value={f?.phone || ''} onChange={upd('phone')}/></label>
      {type !== 'sur_place' && (
-       <label>{t('cartEmailLabel')} <small>{t('cartEmailOptional')}</small><input type="email" autoComplete="email" value={f.email} onChange={upd('email')}/></label>
+       <label>{t('cartEmailLabel')} <small>{t('cartEmailOptional')}</small><input type="email" autoComplete="email" value={f?.email || ''} onChange={upd('email')}/></label>
      )}
    </div>
 
@@ -486,11 +513,16 @@ export function CartDrawer(){
     <div className="cart-section-label">
      <span>{t('cartPaymentMode')}</span>
     </div>
-    <fieldset className="seg seg-payment">
-     <legend className="sr-only">{t('cartPaymentMode')}</legend>
-     {cfg?.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>{t('cartPayOnline')}</label>}
-     <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?t('cartPayOnDelivery'):t('cartPayOnSite')}</label>
-    </fieldset>
+    <div className="seg seg-payment" role="radiogroup" aria-label={t('cartPaymentMode')}>
+     <label className={payment==='online'?'on':''} onClick={()=>setPay('online')} style={{cursor:'pointer'}}>
+       <input type="radio" name="pay_choice" checked={payment==='online'} onChange={()=>setPay('online')} tabIndex={-1}/>
+       {t('cartPayOnline')}
+     </label>
+     <label className={payment==='sur_place'?'on':''} onClick={()=>setPay('sur_place')} style={{cursor:'pointer'}}>
+       <input type="radio" name="pay_choice" checked={payment==='sur_place'} onChange={()=>setPay('sur_place')} tabIndex={-1}/>
+       {type==='livraison'?t('cartPayOnDelivery'):t('cartPayOnSite')}
+     </label>
+    </div>
    </div>
 
    {closed&&<p className="warn">{buildClosedMsg(cfg)}</p>}
