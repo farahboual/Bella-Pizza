@@ -8210,3 +8210,232 @@ html, body {
     white-space: nowrap !important;
   }
 }
+/* ==========================================================================
+   PATCH — appended to extra.css via build
+   ========================================================================== */
+
+/* ── 1. tracker-btn-minimize: visible in LIGHT mode ─────────────────────── */
+/* The base rule at line 3493 already handles light. The dark-mode override
+   at line 6505 sets it transparent with low-opacity text which is fine for
+   dark. But in light the text colour was `#28231F` (readable) — no problem
+   there. The real issue was the DARK override leaking into light because
+   the dark rule wasn't scoped. Add an explicit light-mode lock: */
+[data-theme="light"] .tracker-btn-minimize {
+  background: rgba(163, 120, 94, 0.08) !important;
+  color: #28231F !important;
+  border: 1.5px solid rgba(163, 120, 94, 0.25) !important;
+}
+
+[data-theme="light"] .tracker-btn-minimize:hover {
+  background: rgba(163, 120, 94, 0.16) !important;
+  color: #7A1C1C !important;
+}
+
+/* ── 2. cart-upsell: fully responsive + dark mode text visibility ────────── */
+
+/* Title visibility in dark mode */
+[data-theme="dark"] .cart-upsell {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .cart-upsell-title span {
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .cart-upsell-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .cart-upsell-name {
+  color: #FAF7F2 !important;
+}
+
+[data-theme="dark"] .cart-upsell-price {
+  color: #C5A16B !important;
+}
+
+[data-theme="dark"] .cart-upsell-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #FAF7F2 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .cart-upsell-btn.added {
+  background: #166534 !important;
+  color: #FFFFFF !important;
+  border-color: #166534 !important;
+}
+
+/* Responsive upsell grid: single column on mobile */
+@media (max-width: 480px) {
+  .cart-upsell {
+    padding: 12px !important;
+  }
+  .cart-upsell-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .cart-upsell-card {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 8px 10px !important;
+  }
+  .cart-upsell-img-wrap {
+    width: 48px !important;
+    height: 48px !important;
+    flex-shrink: 0 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+  .cart-upsell-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .cart-upsell-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+  .cart-upsell-name {
+    white-space: normal !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  .cart-upsell-btn {
+    flex-shrink: 0 !important;
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* ── 3. Payment fieldset: remove duplicate visible legend ────────────────── */
+/* The fieldset has a visible .cart-section-label above it AND the fieldset
+   legend inside. We already use .sr-only on the legend, but make sure
+   the legend is truly hidden even if .sr-only isn't defined: */
+.seg-payment legend.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Also always show Online card option — the button is hidden when
+   cfg.online is falsy at the React level, but add a visual hint when
+   no online option is available: */
+.seg-payment {
+  min-height: 44px !important;
+}
+
+/* ── 4. Dark mode: mode de règlement seg label text ─────────────────────── */
+[data-theme="dark"] .seg-payment label {
+  color: rgba(244, 239, 232, 0.85) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-theme="dark"] .seg-payment label.on {
+  background: #801D1E !important;
+  color: #FFFFFF !important;
+  border-color: rgba(197, 161, 107, 0.5) !important;
+}
+
+/* ── 5. Cart context pill: readable in both modes ──────────────────────── */
+.cart-context-pill {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  font-size: 12.5px !important;
+  line-height: 1.45 !important;
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  margin-top: 8px !important;
+  background: rgba(234, 228, 220, 0.5) !important;
+  color: #38302B !important;
+  flex-wrap: wrap !important;
+  word-break: break-word !important;
+}
+
+[data-theme="dark"] .cart-context-pill {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: rgba(244, 239, 232, 0.85) !important;
+}
+
+.cart-context-pill.warn {
+  background: rgba(220, 100, 60, 0.1) !important;
+  color: #92400e !important;
+}
+
+[data-theme="dark"] .cart-context-pill.warn {
+  background: rgba(220, 100, 60, 0.18) !important;
+  color: #FCD34D !important;
+}
+
+.cart-context-pill.ok {
+  background: rgba(22, 101, 52, 0.08) !important;
+  color: #166534 !important;
+}
+
+[data-theme="dark"] .cart-context-pill.ok {
+  background: rgba(22, 101, 52, 0.18) !important;
+  color: #4ADE80 !important;
+}
+
+/* ── 6. Cart select (time slot) dark mode ────────────────────────────────── */
+[data-theme="dark"] .cart select {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #FAF7F2 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+[data-theme="dark"] .cart select option {
+  background: #1A1512 !important;
+  color: #FAF7F2 !important;
+}
+
+/* ── 7. Cart input/label dark mode universal fix ─────────────────────────── */
+[data-theme="dark"] .cart label {
+  color: rgba(244, 239, 232, 0.8) !important;
+}
+
+[data-theme="dark"] .cart small {
+  color: rgba(244, 239, 232, 0.5) !important;
+}
+
+[data-theme="dark"] .cart .note {
+  color: rgba(244, 239, 232, 0.65) !important;
+}
+
+[data-theme="dark"] .cart .warn {
+  color: #FCA5A5 !important;
+}
+
+[data-theme="dark"] .cart-section-box {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ── 8. Cart drawer: responsive mobile – prevent footer blowup ───────────── */
+@media (max-width: 540px) {
+  .cart-f .tot {
+    font-size: 13px !important;
+  }
+  .cart-f .tot b {
+    font-size: 15px !important;
+  }
+  .cart-f .btn.ink {
+    font-size: 14px !important;
+    padding: 13px 16px !important;
+  }
+  .cart-f .legal {
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+  }
+}

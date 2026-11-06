@@ -476,9 +476,6 @@ function Menu() {
     return cid
   }
 
-  // Signature Hero Dish: The spotlight pizza
-  const spotlightPizza = pizzaList[0]
-  const otherPizzas = pizzaList.slice(1)
 
   return (
     <section className="atelier-menu-section" id="carte">
@@ -575,50 +572,7 @@ function Menu() {
               ))}
             </div>
 
-            {/* Signature Spotlight Hero (Burratissima or Margherita) */}
-            {spotlightPizza && (
-              <div
-                className="atelier-signature-spotlight"
-                onClick={() => setSelectedItem({
-                  id: spotlightPizza.id,
-                  name: spotlightPizza.n,
-                  desc: spotlightPizza.d,
-                  price: livePriceOrNumber(spotlightPizza.id, spotlightPizza.p, getPrice, cfg),
-                  img: spotlightPizza.img || '/client-assets/pizza.jpg'
-                })}
-              >
-                <div className="atelier-spotlight-img">
-                  <img
-                    src={spotlightPizza.img || '/client-assets/pizza.jpg'}
-                    alt={spotlightPizza.n}
-                    loading="lazy"
-                  />
-                  <span className="atelier-spotlight-badge">Création Signature</span>
-                </div>
-                <div className="atelier-spotlight-content">
-                  <span className="atelier-spotlight-eyebrow">Pièce Maîtresse de l'Atelier</span>
-                  <h3 className="atelier-spotlight-title">{spotlightPizza.n}</h3>
-                  <p className="atelier-spotlight-desc">{spotlightPizza.d}</p>
-                  <div className="atelier-spotlight-footer" onClick={(e) => e.stopPropagation()}>
-                    <span className="atelier-spotlight-price">{spotlightPizza.p}</span>
-                    <button
-                      className="btn red"
-                      onClick={() => setSelectedItem({
-                        id: spotlightPizza.id,
-                        name: spotlightPizza.n,
-                        desc: spotlightPizza.d,
-                        price: livePriceOrNumber(spotlightPizza.id, spotlightPizza.p, getPrice, cfg),
-                        img: spotlightPizza.img || '/client-assets/pizza.jpg'
-                      })}
-                    >
-                      Personnaliser →
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Remaining Pizzas in Editorial Grid — every 4th item is full-width featured */}
+            {/* Pizzas in Balanced Editorial Grid */}
             <motion.div
               key={`pizzas-${size}`}
               className="atelier-dish-grid"
@@ -626,31 +580,17 @@ function Menu() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              {otherPizzas.map((it, idx) =>
-                idx % 4 === 3 ? (
-                  <div key={it.id} className="atelier-dish-grid-full">
-                    <AtelierDish
-                      n={it.n}
-                      d={it.d}
-                      p={it.p}
-                      id={it.id}
-                      img={it.img}
-                      onSelect={setSelectedItem}
-                      featured
-                    />
-                  </div>
-                ) : (
-                  <AtelierDish
-                    key={it.id}
-                    n={it.n}
-                    d={it.d}
-                    p={it.p}
-                    id={it.id}
-                    img={it.img}
-                    onSelect={setSelectedItem}
-                  />
-                )
-              )}
+              {pizzaList.map((it) => (
+                <AtelierDish
+                  key={it.id}
+                  n={it.n}
+                  d={it.d}
+                  p={it.p}
+                  id={it.id}
+                  img={it.img}
+                  onSelect={setSelectedItem}
+                />
+              ))}
             </motion.div>
           </div>
         ) : (
@@ -722,7 +662,7 @@ function AtelierInfoSection() {
       <div className="wrap">
         <div className="atelier-info-header">
           <h2>{cfgB.name} · Paris 2e</h2>
-          <p>L'exigence du fait maison, la rigueur de l'artisanat italien et un accueil chaleureux au quotidien.</p>
+          <p>{t('atelierCraftsmanship')}</p>
         </div>
 
         <div className="atelier-info-triad">
@@ -803,6 +743,8 @@ function AtelierInfoSection() {
 }
 
 function AtelierFooter() {
+  const { t } = useLang()
+
   return (
     <footer className="atelier-footer">
       <div className="wrap">
@@ -813,8 +755,8 @@ function AtelierFooter() {
             <p style={{ marginTop: 8, opacity: 0.8 }}>{cfgC.address.full}</p>
           </div>
           <div className="atelier-footer-contact">
-            <p>Téléphone : <strong style={{ color: '#fff' }}>{cfgC.phone}</strong></p>
-            <p>Horaires : Mardi au Dimanche (11h30–14h30 &amp; 18h30–23h00)</p>
+            <p>{t('phoneLabel')} <strong style={{ color: '#fff' }}>{cfgC.phone}</strong></p>
+            <p>{t('hoursLabel')}</p>
           </div>
         </div>
         <div className="atelier-footer-legal">

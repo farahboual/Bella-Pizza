@@ -212,7 +212,7 @@ export function CartDrawer(){
 
  if(!open||!cfg)return null
 
- const payment=pay||(cfg.online?'online':'sur_place'),upd=k=>e=>{const val=e.target.value;setF(prev=>{const next={...prev,[k]:val};try{localStorage.setItem('tp_customer',JSON.stringify(next))}catch{}return next})}
+ const payment=pay||(cfg?.online!==false?'online':'sur_place'),upd=k=>e=>{const val=e.target.value;setF(prev=>{const next={...prev,[k]:val};try{localStorage.setItem('tp_customer',JSON.stringify(next))}catch{}return next})}
  const offer=type==='emporter'?baseOffer:0
  const currentTotal=subtotal-offer-drinkDeal
  const short=type=='livraison'&&subtotal<RULES.deliveryMin,closed=!cfg.open
@@ -352,7 +352,7 @@ export function CartDrawer(){
     return (
       <div className="cart-upsell">
         <div className="cart-upsell-title">
-          <span>À ajouter à votre commande</span>
+          <span>{t('cartAddMore')}</span>
         </div>
         <div className="cart-upsell-grid">
           {availableUpsells.map(u => {
@@ -373,9 +373,9 @@ export function CartDrawer(){
                   type="button"
                   className={`cart-upsell-btn ${inCart ? 'added' : ''}`}
                   onClick={() => add(u.id)}
-                  aria-label={`Ajouter ${u.name}`}
+                  aria-label={`${t('cartAddBtn')} ${u.name}`}
                 >
-                  {inCart ? `${inCart.qty} +` : '+ Ajouter'}
+                  {inCart ? `${inCart.qty} +` : t('cartAddBtn')}
                 </button>
               </div>
             )
@@ -391,13 +391,13 @@ export function CartDrawer(){
    {canetteAlone&&<p className="note">Canette seule : 1,50 €. Passe à 1,00 € avec un plat.</p>}
 
    <div className="cart-mode-card">
-    <fieldset className="seg"><legend>Mode de commande</legend>{[['emporter','À emporter'],['livraison','Livraison'],['sur_place','Sur place']].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
+    <fieldset className="seg"><legend>{t('cartOrderMode')}</legend>{[['emporter',t('cartTakeaway')],['livraison',t('cartDelivery')],['sur_place',t('cartDineIn')]].filter(([v])=>RESTAURANT_CONFIG?.features?.[v==='emporter'?'takeaway':v==='livraison'?'delivery':'dineIn']!==false).map(([v,l])=><label key={v} className={type==v?'on':''}><input type="radio" name="type" checked={type==v} onChange={()=>setType(v)}/>{l}</label>)}</fieldset>
 
     {/* Contextual notice per order mode */}
     {type === 'emporter' && (
       <div className="cart-context-pill">
         <span className="cart-context-dot" />
-        <span>Retrait direct à l'Atelier : {RESTAURANT_CONFIG?.contact?.address?.street || '12 Rue de la Pizza Napolitaine, 75002 Paris'}</span>
+        <span>{t('cartContextPickup')} {RESTAURANT_CONFIG?.contact?.address?.street || '12 Rue de la Pizza Napolitaine, 75002 Paris'}</span>
       </div>
     )}
 
@@ -405,9 +405,9 @@ export function CartDrawer(){
       <div className={`cart-context-pill ${short ? 'warn' : 'ok'}`}>
         <span className="cart-context-dot" />
         {short ? (
-          <span>Minimum de livraison : {eur(RULES.deliveryMin)} (plus que {eur(RULES.deliveryMin - subtotal)} à ajouter)</span>
+          <span>{t('cartContextDeliveryMin')} {eur(RULES.deliveryMin)} ({t('cartContextDeliveryShort').replace('{diff}', eur(RULES.deliveryMin - subtotal))})</span>
         ) : (
-          <span>✓ Minimum de commande atteint pour la livraison</span>
+          <span>{t('cartContextDeliveryOk')}</span>
         )}
       </div>
     )}
@@ -415,7 +415,7 @@ export function CartDrawer(){
     {type === 'sur_place' && (
       <div className="cart-context-pill">
         <span className="cart-context-dot" />
-        <span>Service à table — dégustation minute</span>
+        <span>{t('cartContextTable')}</span>
       </div>
     )}
    </div>
@@ -423,8 +423,8 @@ export function CartDrawer(){
    {/* Specific fields for Sur place */}
    {type === 'sur_place' && (
      <div className="cart-section-box">
-       <label>Numéro de Table
-         <input required placeholder="Ex: Table 4" value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/>
+       <label>{t('cartTableNumber')}
+         <input required placeholder={t('cartTablePlaceholder')} value={tableNumber} onChange={e=>setTableNumber(e.target.value)}/>
        </label>
      </div>
    )}
@@ -432,10 +432,10 @@ export function CartDrawer(){
    {/* Specific fields for Livraison */}
    {type === 'livraison' && (
      <div className="cart-section-box">
-       <label>Adresse de livraison
-         <input required autoComplete="street-address" placeholder="N° et nom de voie" value={f.address} onChange={upd('address')}/>
+       <label>{t('cartDeliveryAddress')}
+         <input required autoComplete="street-address" placeholder={t('cartAddressPlaceholder')} value={f.address} onChange={upd('address')}/>
        </label>
-       <label>Code postal
+       <label>{t('cartPostcode')}
          <input required inputMode="numeric" pattern="\d{5}" maxLength={5} placeholder="75002" autoComplete="postal-code" value={f.postcode} onChange={upd('postcode')}/>
        </label>
      </div>
@@ -445,13 +445,13 @@ export function CartDrawer(){
    {type !== 'sur_place' ? (
      <label>
        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
-        <span style={{fontWeight:700,fontSize:13}}>Créneau horaire souhaité</span>
-        <span style={{fontSize:11.5,color:'var(--mute)'}}>{slot === 'asap' ? 'Immédiat (~25-35 min)' : `Pour ${slot}`}</span>
+        <span style={{fontWeight:700,fontSize:13}}>{t('cartScheduleTitle')}</span>
+        <span style={{fontSize:11.5,color:'var(--mute)'}}>{slot === 'asap' ? t('cartScheduleAsap') : `${t('cartScheduleFor')} ${slot}`}</span>
        </div>
        <select value={slot} onChange={e=>setSlot(e.target.value)} style={{font:'600 14px var(--d)',padding:'11px 12px',borderRadius:12,border:'1.5px solid var(--line)',background:'#fff',width:'100%'}}>
-        <option value="asap">Dès que possible (~25-35 min)</option>
+        <option value="asap">{t('cartScheduleAsap')}</option>
         {getAvailableSlots().map(s => (
-          <option key={s} value={s}>Pour aujourd'hui à {s}</option>
+          <option key={s} value={s}>{t('cartScheduleFor')} {s}</option>
         ))}
        </select>
      </label>
@@ -460,36 +460,36 @@ export function CartDrawer(){
    {/* Customer coordinates */}
    <div className="cart-section-box">
      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
-       <span style={{fontWeight:800,fontSize:13.5}}>{type === 'sur_place' ? 'Votre identifiant' : 'Vos coordonnées'}</span>
-       {f.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>✓ Mémorisé</span>}
+       <span style={{fontWeight:800,fontSize:13.5}}>{type === 'sur_place' ? t('cartIdentity') : t('cartCoordinates')}</span>
+       {f.name&&<span style={{fontSize:11.5,color:'var(--green)',fontWeight:700}}>{t('cartSaved')}</span>}
      </div>
-     <label>Nom ou Prénom<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
-     <label>Téléphone<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
+     <label>{t('cartNameLabel')}<input required autoComplete="name" value={f.name} onChange={upd('name')}/></label>
+     <label>{t('cartPhoneLabel')}<input required type="tel" autoComplete="tel" value={f.phone} onChange={upd('phone')}/></label>
      {type !== 'sur_place' && (
-       <label>E-mail <small>(reçu de paiement, facultatif)</small><input type="email" autoComplete="email" value={f.email} onChange={upd('email')}/></label>
+       <label>{t('cartEmailLabel')} <small>{t('cartEmailOptional')}</small><input type="email" autoComplete="email" value={f.email} onChange={upd('email')}/></label>
      )}
    </div>
 
-   <label>Code Promo <small>(facultatif)</small>
+   <label>{t('cartPromoLabel')} <small>{t('cartOptional')}</small>
     <div style={{display:'flex',gap:8}}>
      <input placeholder="Ex: WELCOME10" value={promoInput} onChange={e=>setPromoInput(e.target.value.toUpperCase())} style={{textTransform:'uppercase'}}/>
-     <button type="button" className="btn ghost" onClick={applyPromo} style={{flex:'none',padding:'0 16px',borderRadius:12}}>Appliquer</button>
+     <button type="button" className="btn ghost" onClick={applyPromo} style={{flex:'none',padding:'0 16px',borderRadius:12}}>{t('cartPromoApply')}</button>
     </div>
 
     {appliedPromo&&<span style={{color:'var(--green)',fontSize:13,fontWeight:700}}>✓ Code {appliedPromo.code} appliqué ({appliedPromo.discountType==='percent'?`-${appliedPromo.discountValue}%`:`-${eur(appliedPromo.discountValue)}`})</span>}
     {promoErr&&<span style={{color:'var(--red)',fontSize:13,fontWeight:700}}>{promoErr}</span>}
    </label>
 
-   <label>Message pour le restaurant <small>(facultatif)</small><textarea rows={2} maxLength={300} value={note} onChange={e=>setNoteAll(e.target.value)}/></label>
+   <label>{t('cartMessageLabel')} <small>{t('cartOptional')}</small><textarea rows={2} maxLength={300} value={note} onChange={e=>setNoteAll(e.target.value)}/></label>
 
    <div className="cart-payment-card">
     <div className="cart-section-label">
-     <span>Mode de règlement</span>
+     <span>{t('cartPaymentMode')}</span>
     </div>
     <fieldset className="seg seg-payment">
-     <legend className="sr-only">Mode de règlement</legend>
-     {cfg.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>Carte en ligne</label>}
-     <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?'À la livraison':'Sur place'}</label>
+     <legend className="sr-only">{t('cartPaymentMode')}</legend>
+     {cfg?.online&&<label className={payment=='online'?'on':''}><input type="radio" name="pay" checked={payment=='online'} onChange={()=>setPay('online')}/>{t('cartPayOnline')}</label>}
+     <label className={payment=='sur_place'?'on':''}><input type="radio" name="pay" checked={payment=='sur_place'} onChange={()=>setPay('sur_place')}/>{type=='livraison'?t('cartPayOnDelivery'):t('cartPayOnSite')}</label>
     </fieldset>
    </div>
 
@@ -508,10 +508,10 @@ export function CartDrawer(){
     <div className="tot"><span>Total</span><b>{eur(finalTotal)}</b></div>
 
     <button className="btn ink" disabled={busy||short||closed}>
-     {busy?'Envoi…':payment=='online'?`Payer ${eur(finalTotal)}`:'Envoyer ma commande'}
+     {busy?t('cartSending'):payment=='online'?`${t('cartPayAmount')} ${eur(finalTotal)}`:t('cartSendOrder')}
     </button>
 
-    <p className="legal">Paiement par carte sécurisé par Stripe. Les prix sont en euros TTC. En commandant vous acceptez nos conditions de vente. Allergènes : demandez-nous la liste au {RESTAURANT_CONFIG?.contact?.phone}.</p>
+    <p className="legal">{t('cartSecureNotice')} En commandant vous acceptez nos conditions de vente. Allergènes : demandez-nous la liste au {RESTAURANT_CONFIG?.contact?.phone}.</p>
    </div>
 
   </form>}

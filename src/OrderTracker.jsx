@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { RESTAURANT_CONFIG } from '../shared/restaurant.config.js'
 import { eur } from '../shared/catalog.js'
+import { useLang } from './i18n.jsx'
 
 const cfgB = RESTAURANT_CONFIG?.brand || {}
 const cfgC = RESTAURANT_CONFIG?.contact || {}
@@ -9,6 +10,7 @@ const cfgC = RESTAURANT_CONFIG?.contact || {}
 const cleanWaPhone = (cfgC.phoneRaw || '').replace(/\D/g, '')
 
 export function OrderTracker() {
+  const { t, lang } = useLang()
   const [order, setOrder] = useState(() => {
     try {
       const saved = localStorage.getItem('tp_active_order')
@@ -129,44 +131,44 @@ export function OrderTracker() {
   // Status badges & text
   const statusInfo = {
     pending: {
-      title: 'Validation du paiement…',
-      desc: 'Votre paiement est en cours de traitement sécurisé.',
-      label: 'Paiement…',
+      title: lang === 'en' ? 'Verifying payment…' : 'Validation du paiement…',
+      desc: lang === 'en' ? 'Your payment is being securely processed.' : 'Votre paiement est en cours de traitement sécurisé.',
+      label: lang === 'en' ? 'Payment…' : 'Paiement…',
       badgeClass: 'orange'
     },
     new: {
-      title: 'Commande reçue par le restaurant !',
-      desc: 'Votre commande a été transmise en cuisine. Elle va être préparée dans un instant.',
-      label: 'Reçue',
+      title: lang === 'en' ? 'Order received by restaurant!' : 'Commande reçue par le restaurant !',
+      desc: lang === 'en' ? 'Your order has been sent to the kitchen and will be prepared shortly.' : 'Votre commande a été transmise en cuisine. Elle va être préparée dans un instant.',
+      label: lang === 'en' ? 'Received' : 'Reçue',
       badgeClass: 'blue'
     },
     accepted: {
-      title: 'En préparation en cuisine',
-      desc: 'Nos cuisiniers préparent votre repas avec des ingrédients frais. Temps estimé : environ 20-30 min.',
-      label: 'En cuisine',
+      title: lang === 'en' ? 'Preparation in the kitchen' : 'En préparation en cuisine',
+      desc: lang === 'en' ? 'Our pizza chefs are crafting your order with fresh Italian ingredients.' : 'Nos cuisiniers préparent votre repas avec des ingrédients frais. Temps estimé : environ 20-30 min.',
+      label: lang === 'en' ? 'Kitchen' : 'En cuisine',
       badgeClass: 'orange'
     },
     ready: {
-      title: order.type === 'livraison' ? 'En cours de livraison' : 'Votre commande est prête !',
+      title: order.type === 'livraison' ? (lang === 'en' ? 'Out for delivery' : 'En cours de livraison') : (lang === 'en' ? 'Your order is ready!' : 'Votre commande est prête !'),
       desc:
         order.type === 'livraison'
-          ? 'Le livreur est en route vers votre adresse avec votre repas bien chaud.'
+          ? (lang === 'en' ? 'The courier is on their way to your address with your hot order.' : 'Le livreur est en route vers votre adresse avec votre repas bien chaud.')
           : order.type === 'sur_place'
-          ? 'Votre commande arrive à votre table !'
-          : 'Vous pouvez vous présenter au comptoir du restaurant pour la récupérer.',
-      label: order.type === 'livraison' ? 'En livraison' : 'Prête !',
+          ? (lang === 'en' ? 'Your order is being served at your table!' : 'Votre commande arrive à votre table !')
+          : (lang === 'en' ? 'You can pick up your order at the restaurant counter.' : 'Vous pouvez vous présenter au comptoir du restaurant pour la récupérer.'),
+      label: order.type === 'livraison' ? (lang === 'en' ? 'Delivering' : 'En livraison') : (lang === 'en' ? 'Ready!' : 'Prête !'),
       badgeClass: 'green'
     },
     done: {
-      title: 'Commande remise & terminée',
-      desc: `Bon appétit et merci de votre commande chez ${cfgB.name || 'le restaurant'} !`,
-      label: 'Terminée',
+      title: lang === 'en' ? 'Order Completed' : 'Commande remise & terminée',
+      desc: lang === 'en' ? `Enjoy your meal and thank you for ordering from ${cfgB.name || 'our restaurant'}!` : `Bon appétit et merci de votre commande chez ${cfgB.name || 'le restaurant'} !`,
+      label: lang === 'en' ? 'Completed' : 'Terminée',
       badgeClass: 'green'
     },
     cancelled: {
-      title: 'Commande annulée',
-      desc: 'Cette commande a été annulée. N’hésitez pas à contacter le restaurant pour plus de détails.',
-      label: 'Annulée',
+      title: lang === 'en' ? 'Order Cancelled' : 'Commande annulée',
+      desc: lang === 'en' ? 'This order was cancelled. Please contact the restaurant for more details.' : 'Cette commande a été annulée. N’hésitez pas à contacter le restaurant pour plus de détails.',
+      label: lang === 'en' ? 'Cancelled' : 'Annulée',
       badgeClass: 'red'
     }
   }
@@ -317,7 +319,7 @@ export function OrderTracker() {
                 className="btn outline"
                 style={{ fontSize: 13, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
               >
-                Appeler le restaurant
+                {t('trackerCall')}
               </a>
             </div>
 
@@ -331,14 +333,14 @@ export function OrderTracker() {
                   setOpen(false)
                 }}
               >
-                Nouvelle commande
+                {t('trackerNewOrder')}
               </button>
             ) : (
               <button
                 className="tracker-btn-minimize"
                 onClick={() => setOpen(false)}
               >
-                Réduire cette fenêtre (le suivi reste actif)
+                {t('trackerMinimize')}
               </button>
             )}
           </div>
