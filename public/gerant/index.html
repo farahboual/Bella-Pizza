@@ -1122,6 +1122,10 @@ function switchTab(name){
   try{renderWeeklySchedule()}catch(e){}
   try{renderExceptions()}catch(e){}
  }
+ if(name === 'sales'){
+  // Always re-render fresh when user opens the tab — never show stale/blank data
+  try{renderSales()}catch(e){}
+ }
 }
 
 document.querySelectorAll('.tab').forEach(b=>{
@@ -1293,6 +1297,7 @@ function renderMenu(query=''){
 }
 
 let lastSalesCount = -1
+let lastSalesSig = ''
 function playOrderChime(){
  try{
   const ctx = new (window.AudioContext || window.webkitAudioContext)()
@@ -2164,14 +2169,25 @@ async function pollLiveSales(){
   if(r.status === 401) return
   const j = await r.json()
   const newSales = j.sales || []
+  // Detect new orders (chime + toast)
   if (lastSalesCount !== -1 && newSales.length > lastSalesCount) {
    playOrderChime()
    showToast('🔔 Nouvelle commande reçue !')
   }
+  // Only re-render if data actually changed (avoid wiping the tab on every poll)
+  const newSig = newSales.length + '|' + newSales.reduce((s,o)=>s+o.total+o.status,0)
+  const changed = newSig !== lastSalesSig
   lastSalesCount = newSales.length
+  lastSalesSig = newSig
   sales = newSales
-  try{renderSales()}catch(e){}
-  try{updateDashboardMetrics()}catch(e){}
+  // Only re-render sales list when the tab is visible AND data changed
+  const salesTabVisible = $('#tab-sales') && $('#tab-sales').style.display !== 'none'
+  if(changed || salesTabVisible){
+   try{updateDashboardMetrics()}catch(e){}
+  }
+  if(changed && salesTabVisible){
+   try{renderSales()}catch(e){}
+  }
  }catch(e){}
 }
 
