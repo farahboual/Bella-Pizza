@@ -134,6 +134,16 @@ function resolveIntentFallback(messageText, catalog = {}, sales = []) {
   const pm = count > 0 ? (ca / count / 100).toFixed(2) : '0,00'
   const caFormatted = (ca / 100).toFixed(2)
 
+  let drinksCount = 0
+  let dessertsCount = 0
+  sales.forEach(o => (o.items || o.lines || []).forEach(l => {
+    const name = l.name || l.id || ''
+    const qty = l.qty || 1
+    const low = name.toLowerCase()
+    if (low.includes('boisson') || low.includes('pellegrino') || low.includes('coca') || low.includes('tea')) drinksCount += qty
+    if (low.includes('dessert') || low.includes('tiramisu') || low.includes('dolci') || low.includes('choco')) dessertsCount += qty
+  }))
+
   // Strategic Playbook 1: Audit de rentabilité & performance
   if (norm.includes('audit') || norm.includes('rentabilit') || norm.includes('levier') || norm.includes('bilan') || norm.includes('perfor')) {
     if (count === 0) {
@@ -145,10 +155,13 @@ function resolveIntentFallback(messageText, catalog = {}, sales = []) {
         confirm: false
       }
     }
+    const attachText = drinksCount === 0 && dessertsCount === 0
+      ? "zéro boisson ni dessert attachés"
+      : `${drinksCount} boisson(s) et ${dessertsCount} dessert(s) attachés`
     return {
       intent: 'query',
       params: {},
-      reply: `Bilan en temps réel : ${caFormatted} € sur ${count} commande(s), avec un panier moyen de ${pm} €. Levier prioritaire : pousser le taux d'attachement des desserts italiens et boissons pour viser un panier moyen supérieur à ${(parseFloat(pm) + 2.5).toFixed(2)} €.`,
+      reply: `Bilan en temps réel : ${caFormatted} € sur ${count} commande(s), panier moyen de ${pm} € avec ${attachText}. Levier prioritaire : pousser les boissons et desserts italiens pour faire passer le panier moyen au-dessus de ${(parseFloat(pm) + 2.5).toFixed(2)} €.`,
       impact: "Optimisation de la marge nette",
       confirm: false
     }
@@ -418,10 +431,14 @@ export async function processAiAssistant(messageText) {
   const catalog = { ...CATALOG, ...customItems }
   const restaurantName = RESTAURANT_CONFIG?.brand?.name || 'le restaurant'
 
+  // 1. FAST-PATH: Instant deterministic resolution (0ms, 100% reliable, zero timeout risk)
+  const instantMatch = resolveIntentFallback(message, catalog, sales)
+  if (instantMatch) {
+    return instantMatch
+  }
+
   const openrouterKey = (env.OPENROUTER_API_KEY || '').trim()
   if (!openrouterKey) {
-    const fallback = resolveIntentFallback(message, catalog, sales)
-    if (fallback) return fallback
     return {
       intent: 'query',
       params: {},
@@ -430,16 +447,15 @@ export async function processAiAssistant(messageText) {
       confirm: false
     }
   }
+
   const systemPrompt = buildSystemPrompt(catalog, overrides, sales, restaurantName)
 
+  // Use fast models with a strict 4.5s timeout per call to guarantee no Vercel function timeout
   const configuredModel = (env.OPENROUTER_MODEL || '').trim()
   const modelCandidates = configuredModel
     ? [configuredModel]
     : [
         'openrouter/free',
-        'google/gemma-4-31b-it:free',
-        'google/gemma-4-26b-a4b-it:free',
-        'nvidia/nemotron-3.5-lightning:free',
         'meta-llama/llama-3.1-8b-instruct'
       ]
 
@@ -455,7 +471,7 @@ export async function processAiAssistant(messageText) {
           { role: 'user', content: message }
         ],
         temperature: 0.2,
-        max_tokens: 400,
+        max_tokens: 350,
         response_format: { type: 'json_object' },
       }
 
@@ -467,7 +483,8 @@ export async function processAiAssistant(messageText) {
           'HTTP-Referer': 'https://github.com/farahboual/Bella-Pizza',
           'X-Title': `${restaurantName} AI Assistant`,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(4500)
       })
 
       // If the model rejects response_format, retry without it
@@ -483,7 +500,8 @@ export async function processAiAssistant(messageText) {
               'HTTP-Referer': 'https://github.com/farahboual/Bella-Pizza',
               'X-Title': `${restaurantName} AI Assistant`,
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: AbortSignal.timeout(4500)
           })
         }
       }
