@@ -160,38 +160,66 @@ export async function processAiAssistant(messageText) {
   const restaurantName = RESTAURANT_CONFIG?.brand?.name || 'le restaurant'
   const systemPrompt = buildSystemPrompt(catalog, overrides, sales, restaurantName)
 
-  try {
-    const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openrouterKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://github.com/farahboual/Bella-Pizza',
-        'X-Title': `${restaurantName} AI Assistant`,
-      },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-3.1-8b-instruct:free',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
-        ],
-        temperature: 0.2,
-        max_tokens: 400,
-        response_format: { type: 'json_object' },
+  const configuredModel = (env.OPENROUTER_MODEL || '').trim()
+  const modelCandidates = configuredModel
+    ? [configuredModel]
+    : [
+        'google/gemma-4-31b-it:free',
+        'google/gemma-4-26b-a4b-it:free',
+        'nvidia/nemotron-3.5-lightning:free',
+        'meta-llama/llama-3.1-8b-instruct'
+      ]
+
+  let orRes = null
+  let lastErr = ''
+
+  for (const model of modelCandidates) {
+    try {
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openrouterKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://github.com/farahboual/Bella-Pizza',
+          'X-Title': `${restaurantName} AI Assistant`,
+        },
+        body: JSON.stringify({
+          model,
+          models: modelCandidates,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: message }
+          ],
+          temperature: 0.2,
+          max_tokens: 400,
+          response_format: { type: 'json_object' },
+        })
       })
-    })
 
-    if (!orRes.ok) {
-      const errText = await orRes.text().catch(() => '')
-      console.error('[AI Assistant] OpenRouter error:', orRes.status, errText.slice(0, 200))
-      return {
-        intent: 'query',
-        params: {},
-        reply: `Le service OpenRouter est temporairement indisponible (code ${orRes.status}). Veuillez réessayer dans quelques instants.`,
-        confirm: false
+      if (resp.ok) {
+        orRes = resp
+        break
+      } else {
+        lastErr = await resp.text().catch(() => '')
+        console.warn(`[AI Assistant] Model ${model} returned ${resp.status}: ${lastErr.slice(0, 120)}`)
       }
+    } catch (err) {
+      lastErr = err.message
+      console.warn(`[AI Assistant] Model ${model} network error: ${err.message}`)
     }
+  }
 
+  if (!orRes) {
+    console.error('[AI Assistant] All models failed. Last error:', lastErr.slice(0, 300))
+    return {
+      intent: 'query',
+      params: {},
+      reply: "Le service IA OpenRouter est temporairement saturé ou indisponible. Veuillez réessayer dans un instant.",
+      confirm: false
+    }
+  }
+
+  try {
     const orJson = await orRes.json()
     const rawContent = orJson.choices?.[0]?.message?.content || ''
 
