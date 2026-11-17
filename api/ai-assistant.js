@@ -48,103 +48,150 @@ function buildCatalogContext(catalog, overrides = {}) {
 
 // ── Build sales summary for the prompt ────────────────────────────────────
 function buildSalesContext(sales = []) {
-  if (!sales.length) return 'Aucune commande enregistrée aujourd\'hui.'
-  const ca = sales.reduce((s, o) => s + o.total, 0)
+  if (!sales.length) return 'Aucune commande enregistrée aujourd\'hui pour le moment. CA: 0,00€.'
+  const ca = sales.reduce((s, o) => s + (o.total || 0), 0)
   const itemCounts = {}
+  let drinksCount = 0
+  let dessertsCount = 0
+
   sales.forEach(o => (o.items || o.lines || []).forEach(l => {
-    const name = l.name || l.id
-    itemCounts[name] = (itemCounts[name] || 0) + (l.qty || 1)
+    const name = l.name || l.id || ''
+    const qty = l.qty || 1
+    itemCounts[name] = (itemCounts[name] || 0) + qty
+    const low = name.toLowerCase()
+    if (low.includes('boisson') || low.includes('pellegrino') || low.includes('coca') || low.includes('tea')) drinksCount += qty
+    if (low.includes('dessert') || low.includes('tiramisu') || low.includes('dolci')) dessertsCount += qty
   }))
+
   const top = Object.entries(itemCounts).sort(([, a], [, b]) => b - a).slice(0, 5)
     .map(([n, q]) => `${n} (${q}x)`).join(', ')
-  const last3 = sales.slice(0, 3).map(o =>
-    `#${o.number} ${o.customer?.name || 'Client'} — ${(o.total / 100).toFixed(2)}€`
-  ).join(' | ')
-  const byType = {
-    livraison: sales.filter(o => o.type === 'livraison').length,
-    emporter: sales.filter(o => o.type === 'emporter').length,
-    sur_place: sales.filter(o => o.type === 'sur_place').length,
-  }
+
+  const pm = (ca / sales.length / 100).toFixed(2)
   return [
-    `Commandes: ${sales.length} | CA: ${(ca / 100).toFixed(2)}€ | Panier moyen: ${(ca / sales.length / 100).toFixed(2)}€`,
-    `Répartition: Livraison ${byType.livraison} | À emporter ${byType.emporter} | Sur place ${byType.sur_place}`,
-    `Top ventes: ${top || 'N/A'}`,
-    `Dernières commandes: ${last3}`
+    `Commandes: ${sales.length} | CA: ${(ca / 100).toFixed(2)}€ | Panier moyen: ${pm}€`,
+    `Attachement: ${drinksCount} boissons | ${dessertsCount} desserts vendus`,
+    `Top ventes: ${top || 'N/A'}`
   ].join('\n')
 }
 
 // ── System prompt ──────────────────────────────────────────────────────────
 function buildSystemPrompt(catalog, overrides, sales, restaurantName) {
-  return `Tu es l'assistant d'exploitation de "${restaurantName}", intégré dans l'espace gérant.
-Tu aides le gérant pendant le service en exécutant des actions et en répondant à ses questions.
-Réponds TOUJOURS en français, de façon courte et directe comme un collègue.
+  return `Tu es le Directeur Stratégique d'Exploitation et de Rentabilité de "${restaurantName}", intégré au copilote de gestion.
+Ton rôle est d'analyser la rentabilité, piloter les stocks en direct et conseiller le restaurateur comme un expert SaaS F&B de haut niveau.
+Réponds TOUJOURS en français, de façon sobre, percutante, chiffrée et orientée optimisation de la marge et du panier moyen.
 
-## MENU ACTUEL (ID | Nom | Prix | Catégorie | Disponibilité)
+## CATALOGUE ACTUEL (ID | Nom | Prix | Catégorie | Disponibilité)
 ${buildCatalogContext(catalog, overrides)}
 
-## COMMANDES DU JOUR
+## SITUATION COMMERCIALE EN DIRECT
 ${buildSalesContext(sales)}
 
-## ACTIONS DISPONIBLES
-Tu peux exécuter ces actions. Pour identifier un item, trouve l'ID exact dans le menu ci-dessus en matchant le nom mentionné par le gérant.
+## ACTIONS EXÉCUTABLES
+Tu peux déclencher directement ces actions ou répondre aux questions stratégiques :
+- markOutOfStock: marquer un plat épuisé. Recommande systématiquement une alternative rentable dans reply.
+- restoreItem: remettre un plat disponible.
+- hideItem: masquer un plat de la carte en ligne.
+- showItem: réactiver un plat sur la carte.
+- updatePrice: réajuster un prix (indique l'impact sur le ticket moyen dans reply).
+- closeNow: suspendre exceptionnellement les commandes en ligne (ex: coup de feu en cuisine).
+- openNow: réouvrir le flux de commandes en direct.
+- createPromo: créer un code promo tactique pour dynamiser un rush creux.
+- query: analyse stratégique, chiffre d'affaires, panier moyen, leviers d'optimisation.
+- unknown: demande incomprise.
 
-- markOutOfStock: marquer un item épuisé (ex: "la calzone est épuisée", "plus de margherita")  
-- restoreItem: remettre un item disponible (ex: "remet la calzone", "la margherita est de retour")
-- hideItem: masquer un item du menu (ex: "cache le tiramisu", "retire le tiramisu du menu")
-- showItem: remettre un item visible (ex: "remets le tiramisu")
-- updatePrice: changer le prix d'un item (ex: "mets la margherita à 13€", "le burger passe à 14.50")
-- closeNow: fermer le restaurant maintenant (ex: "ferme le resto", "on ferme")
-- openNow: ouvrir le restaurant maintenant (ex: "ouvre le resto", "on ouvre")
-- createPromo: créer un code promo (ex: "crée un code LUNDI20 à -20%", "promo PIZZA10 de 10%")
-- query: répondre à une question sur les ventes, le menu, etc.
-- unknown: tu n'as pas compris la demande
-
-## FORMAT DE RÉPONSE OBLIGATOIRE
-Réponds UNIQUEMENT avec ce JSON valide, sans texte avant ni après:
+## FORMAT DE RÉPONSE OBLIGATOIRE (JSON STRICT)
+Réponds UNIQUEMENT avec ce JSON valide sans texte avant ni après:
 {
   "intent": "markOutOfStock|restoreItem|hideItem|showItem|updatePrice|closeNow|openNow|createPromo|query|unknown",
   "params": {
-    "itemId": "l'ID exact du menu ci-dessus (ou null si non applicable)",
-    "itemName": "le nom lisible de l'item (ou null)",
+    "itemId": "l'ID exact ou null",
+    "itemName": "nom lisible ou null",
     "price": null,
     "promoCode": null,
     "discountType": null,
     "discountValue": null
   },
-  "reply": "Ta réponse courte en français pour le gérant (1-2 phrases max)",
+  "reply": "Ton analyse ou confirmation d'action en français, concise et orientée business (max 2 phrases).",
+  "impact": "Indicateur stratégique court (ex: 'Alternative : Burratissima di Bella', 'Levier panier moyen', 'Protection cadence cuisine')",
   "confirm": false
 }
 
-RÈGLES STRICTES:
-- Pour updatePrice, closeNow, createPromo: mets "confirm": true (actions importantes nécessitant confirmation)
-- Pour markOutOfStock, restoreItem, hideItem, showItem, query: mets "confirm": false
-- Pour updatePrice: mets le prix en centimes dans params.price (ex: 13€ → 1300)
-- Pour createPromo: discountType = "percent" ou "fixed", discountValue = nombre
-- Si l'item n'est pas trouvé dans le menu, dis-le dans reply et mets intent = "unknown"
-- reply doit être court, sobre et direct — pas de formules de politesse superflues
-- N'utilise JAMAIS d'émojis dans tes réponses. Aucun symbole cartoon, reste professionnel.`
+RÈGLES ABSOLUES:
+- RÈGLE FONDAMENTALE : ZÉRO ÉMOJIS. Aucun symbole cartoon (pas de robot, pizza, flamme, etc.). Ton professionnel, précis et élégant.
+- Pour updatePrice, closeNow, createPromo: mets "confirm": true (requiert validation du gérant).
+- Pour markOutOfStock, restoreItem, hideItem, showItem, query: mets "confirm": false.
+- Pour updatePrice: prix en centimes dans params.price (ex: 13€ → 1300).
+- Pour les pizzas multi-tailles (medium-28cm, large-33cm, xxl-partage-40cm) : si la taille n'est pas spécifiée, utilise la taille medium-28cm (l'interface synchronise automatiquement toutes les déclinaisons).
+- Reconnaissance intelligente : sois tolérant sur les noms ("Margherita" = "Pizza MARGHERITA DOP", "Regina" = "Pizza REGINA ROYALE", "4 fromages" = "Pizza 4 FORMAGGI RUSTICA", etc.).`
 }
 
 // ── Hybrid Intent Fallback Resolver ─────────────────────────────────────────
 function resolveIntentFallback(messageText, catalog = {}, sales = []) {
   const norm = String(messageText || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
-  // CA & Sales queries fallback
-  if (norm.includes('chiffre') || norm.includes(' ca') || norm.includes('ventes') || norm.includes('recette') || norm.includes('commandes')) {
-    const ca = (sales || []).reduce((s, o) => s + (o.total || 0), 0)
-    const count = (sales || []).length
+  const ca = (sales || []).reduce((s, o) => s + (o.total || 0), 0)
+  const count = (sales || []).length
+  const pm = count > 0 ? (ca / count / 100).toFixed(2) : '0,00'
+  const caFormatted = (ca / 100).toFixed(2)
+
+  // Strategic Playbook 1: Audit de rentabilité & performance
+  if (norm.includes('audit') || norm.includes('rentabilit') || norm.includes('levier') || norm.includes('bilan') || norm.includes('perfor')) {
     if (count === 0) {
       return {
         intent: 'query',
         params: {},
-        reply: "Aucune commande enregistrée aujourd'hui pour le moment. Le chiffre d'affaires est de 0,00 €.",
+        reply: "Bilan en temps réel : 0 commande enregistrée pour l'instant (0,00 €). Levier recommandé : activez une offre flash sur le panier moyen pour inciter aux commandes groupées dès l'ouverture du service.",
+        impact: "Objectif : amorcer le volume de début de service",
         confirm: false
       }
     }
     return {
       intent: 'query',
       params: {},
-      reply: `Aujourd'hui, ${count} commande${count > 1 ? 's ont été enregistrées' : ' a été enregistrée'} pour un chiffre d'affaires total de ${(ca / 100).toFixed(2)} €.`,
+      reply: `Bilan en temps réel : ${caFormatted} € sur ${count} commande(s), avec un panier moyen de ${pm} €. Levier prioritaire : pousser le taux d'attachement des desserts italiens et boissons pour viser un panier moyen supérieur à ${(parseFloat(pm) + 2.5).toFixed(2)} €.`,
+      impact: "Optimisation de la marge nette",
+      confirm: false
+    }
+  }
+
+  // Strategic Playbook 2: Boost Rush du soir
+  if (norm.includes('boost') || norm.includes('rush') || (norm.includes('dynamis') && norm.includes('soir'))) {
+    return {
+      intent: 'createPromo',
+      params: { promoCode: 'RUSH15', discountType: 'percent', discountValue: 15 },
+      reply: "Stratégie rush recommandée : activation du code RUSH15 (-15%) pour stimuler les prises de commande dès le début de service et lisser la charge en cuisine. Souhaitez-vous le déployer ?",
+      impact: "Volume ciblé + lissage de la cadence",
+      confirm: true
+    }
+  }
+
+  // Strategic Playbook 3: Mode coup de feu / Anti-surcharge
+  if (norm.includes('coup de feu') || norm.includes('surcharge') || norm.includes('debord') || (norm.includes('proteger') && norm.includes('cuisine'))) {
+    return {
+      intent: 'closeNow',
+      params: {},
+      reply: "Alerte cadence cuisine : pour protéger la qualité des cuissons et maîtriser les délais, souhaitez-vous suspendre temporairement les commandes en ligne le temps de désengorger le poste four ?",
+      impact: "Protection qualité & maîtrise des délais",
+      confirm: true
+    }
+  }
+
+  // CA & Sales queries fallback
+  if (norm.includes('chiffre') || norm.includes(' ca') || norm.includes('ventes') || norm.includes('recette') || norm.includes('commandes')) {
+    if (count === 0) {
+      return {
+        intent: 'query',
+        params: {},
+        reply: "Aucune commande enregistrée aujourd'hui pour le moment. Le chiffre d'affaires est de 0,00 €.",
+        impact: "Activité du jour",
+        confirm: false
+      }
+    }
+    return {
+      intent: 'query',
+      params: {},
+      reply: `Aujourd'hui, ${count} commande${count > 1 ? 's ont été enregistrées' : ' a été enregistrée'} pour un chiffre d'affaires total de ${caFormatted} € (panier moyen: ${pm} €).`,
+      impact: "Activité du jour",
       confirm: false
     }
   }
@@ -425,6 +472,7 @@ export async function processAiAssistant(messageText) {
       intent: parsed.intent || 'unknown',
       params: parsed.params || {},
       reply: String(parsed.reply || 'Ordre reçu.').slice(0, 300),
+      impact: parsed.impact ? String(parsed.impact).slice(0, 100) : null,
       confirm: !!parsed.confirm
     }
 
