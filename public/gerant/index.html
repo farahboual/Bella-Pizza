@@ -1369,15 +1369,15 @@ input:focus, select:focus, textarea:focus {
        <!-- Quick suggestions bar with zero emojis and robust data-prompt attributes -->
        <div class="ai-chips-bar" id="ai-chips-bar">
          <span class="ai-chips-label">Actions :</span>
-         <button type="button" class="ai-chip" onclick="handleChipClick(this)" data-prompt="La Calzone est épuisée">
+         <button type="button" class="ai-chip" onclick="handleChipClick(this)" data-prompt="La Pizza Margherita DOP est épuisée">
            <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-           <span>Calzone épuisée</span>
+           <span>Margherita épuisée</span>
          </button>
-         <button type="button" class="ai-chip" onclick="handleChipClick(this)" data-prompt="La Calzone est de retour en stock">
+         <button type="button" class="ai-chip" onclick="handleChipClick(this)" data-prompt="La Pizza Margherita DOP est de retour en stock">
            <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
-           <span>Calzone en stock</span>
+           <span>Margherita en stock</span>
          </button>
-         <button type="button" class="ai-chip" onclick="handleChipClick(this)" data-prompt="Mets la Margherita à 13€">
+         <button type="button" class="ai-chip" onclick="handleChipClick(this)" data-prompt="Mets la Pizza Margherita DOP à 13€">
            <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
            <span>Margherita à 13€</span>
          </button>
@@ -2670,6 +2670,8 @@ if(testDbBtn){
 }
 
 // ── AI Assistant JavaScript Logic ──────────────────────────────────────────
+const AI_STORAGE_KEY = 'bella_gerant_ai_history'
+
 function getNowTime() {
   try {
     return new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit' }).format(new Date())
@@ -2679,13 +2681,31 @@ function getNowTime() {
   }
 }
 
-aiMessages = [
-  {
-    role: 'assistant',
-    text: "Bonjour. Je suis votre copilote d'exploitation. Vous pouvez me demander de gérer les ruptures de stock, ajuster les tarifs, créer des offres promotionnelles ou consulter les performances du jour.",
-    time: getNowTime()
-  }
-]
+function loadAiHistory() {
+  try {
+    const raw = localStorage.getItem(AI_STORAGE_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length) return parsed
+    }
+  } catch(e) {}
+  return [
+    {
+      role: 'assistant',
+      text: "Bonjour. Je suis votre copilote d'exploitation. Vous pouvez me demander de gérer les ruptures de stock, ajuster les tarifs, créer des offres promotionnelles ou consulter les performances du jour.",
+      time: getNowTime()
+    }
+  ]
+}
+
+function saveAiHistory() {
+  try {
+    const toSave = (aiMessages || []).slice(-40)
+    localStorage.setItem(AI_STORAGE_KEY, JSON.stringify(toSave))
+  } catch(e) {}
+}
+
+aiMessages = loadAiHistory()
 
 function handleChipClick(btn) {
   if (!btn) return
@@ -2715,6 +2735,7 @@ function clearAiChat() {
       time: getNowTime()
     }
   ]
+  try { localStorage.removeItem(AI_STORAGE_KEY) } catch(e) {}
   renderAiChat()
 }
 
@@ -2731,13 +2752,7 @@ function renderAiChat() {
   const list = $('#ai-messages-list')
   if (!list) return
   if (!Array.isArray(aiMessages) || !aiMessages.length) {
-    aiMessages = [
-      {
-        role: 'assistant',
-        text: "Bonjour. Je suis votre copilote d'exploitation. Vous pouvez me demander de gérer les ruptures de stock, ajuster les tarifs, créer des offres promotionnelles ou consulter les performances du jour.",
-        time: getNowTime()
-      }
-    ]
+    aiMessages = loadAiHistory()
   }
 
   list.innerHTML = aiMessages.map((m, idx) => {
@@ -2793,6 +2808,7 @@ async function sendAiMessage(text) {
   text = text.trim()
   const list = $('#ai-messages-list')
   aiMessages.push({ role: 'user', text, time: getNowTime() })
+  saveAiHistory()
   renderAiChat()
 
   const typingEl = document.createElement('div')
@@ -2820,6 +2836,7 @@ async function sendAiMessage(text) {
         text: errBody.error || "Désolé, une erreur est survenue lors de la communication avec le copilote.",
         time: getNowTime()
       })
+      saveAiHistory()
       renderAiChat()
       return
     }
@@ -2842,10 +2859,12 @@ async function sendAiMessage(text) {
 
       if (!confirm) {
         aiMessages.push(msgObj)
+        saveAiHistory()
         renderAiChat()
         const success = await executeAiAction(intent, params)
         if (success) {
           msgObj.action.status = 'done'
+          saveAiHistory()
           renderAiChat()
         }
         return
@@ -2853,6 +2872,7 @@ async function sendAiMessage(text) {
     }
 
     aiMessages.push(msgObj)
+    saveAiHistory()
     renderAiChat()
 
   } catch (err) {
@@ -2864,6 +2884,7 @@ async function sendAiMessage(text) {
       text: "Erreur de connexion : " + err.message,
       time: getNowTime()
     })
+    saveAiHistory()
     renderAiChat()
   }
 }
@@ -2894,6 +2915,7 @@ async function confirmAiAction(msgIdx) {
   const ok = await executeAiAction(intent, params)
   if (ok) {
     msg.action.status = 'done'
+    saveAiHistory()
     renderAiChat()
   }
 }
@@ -2902,39 +2924,39 @@ function cancelAiAction(msgIdx) {
   const msg = aiMessages[msgIdx]
   if (!msg || !msg.action) return
   msg.action.status = 'cancelled'
+  saveAiHistory()
   renderAiChat()
   showToast('Opération ignorée.')
 }
 
 async function executeAiAction(intent, params) {
   try {
-    if (intent === 'markOutOfStock') {
+    if (intent === 'markOutOfStock' || intent === 'restoreItem') {
+      const isOut = intent === 'markOutOfStock'
       const id = params.itemId
       if (!id) return false
-      const ov = overrides[id] || {}
-      const res = await api({ action: 'saveOverride', data: { id, price: ov.price, outOfStock: true } })
-      if (res.ok) {
-        const j = await res.json()
-        overrides = j.overrides || j
-        try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
-        updateDashboardMetrics()
-        showToast((params.itemName || 'Produit') + ' marqué en rupture de stock')
-        return true
+
+      const parts = String(id).split(':')
+      const targetIds = [id]
+      if (parts[0] === 'pizzas' && parts[1]) {
+        ['medium-28cm', 'large-33cm', 'xxl-partage-40cm'].forEach(sz => {
+          const szId = `pizzas:${parts[1]}:${sz}`
+          if (catalog[szId] && !targetIds.includes(szId)) targetIds.push(szId)
+        })
       }
-    }
-    if (intent === 'restoreItem') {
-      const id = params.itemId
-      if (!id) return false
-      const ov = overrides[id] || {}
-      const res = await api({ action: 'saveOverride', data: { id, price: ov.price, outOfStock: false } })
-      if (res.ok) {
-        const j = await res.json()
-        overrides = j.overrides || j
-        try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
-        updateDashboardMetrics()
-        showToast((params.itemName || 'Produit') + ' remis en stock')
-        return true
+
+      for (const tId of targetIds) {
+        const ov = overrides[tId] || {}
+        const res = await api({ action: 'saveOverride', data: { id: tId, price: ov.price, outOfStock: isOut } })
+        if (res.ok) {
+          const j = await res.json()
+          overrides = j.overrides || j
+        }
       }
+      try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
+      updateDashboardMetrics()
+      showToast((params.itemName || 'Produit') + (isOut ? ' marqué en rupture de stock' : ' remis en stock'))
+      return true
     }
     if (intent === 'hideItem') {
       const id = params.itemId

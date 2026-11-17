@@ -125,6 +125,129 @@ RÈGLES STRICTES:
 - N'utilise JAMAIS d'émojis dans tes réponses. Aucun symbole cartoon, reste professionnel.`
 }
 
+// ── Hybrid Intent Fallback Resolver ─────────────────────────────────────────
+function resolveIntentFallback(messageText, catalog = {}) {
+  const norm = String(messageText || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+
+  const isOutOfStock = norm.includes('epuis') || norm.includes('rupture') || norm.includes('plus de') || norm.includes('fini')
+  const isRestore = norm.includes('retour') || norm.includes('remet') || norm.includes('en stock') || norm.includes('dispo')
+  const isHide = norm.includes('masqu') || norm.includes('cach') || norm.includes('retir')
+  const isShow = norm.includes('visib') || norm.includes('remontr')
+  const isPrice = (norm.includes('prix') || norm.includes('pass') || norm.includes('met') || norm.includes(' a ')) && (norm.includes('€') || /\d+[\.,]?\d*\s*e/.test(norm) || /\d+[\.,]?\d*$/.test(norm))
+
+  const aliases = [
+    { match: ['margherita', 'margerita'], id: 'pizzas:margherita-dop:medium-28cm', name: 'Pizza MARGHERITA DOP' },
+    { match: ['regina', 'reine'], id: 'pizzas:regina-royale:medium-28cm', name: 'Pizza REGINA ROYALE' },
+    { match: ['diavola', 'piquante', 'diavolo'], id: 'pizzas:diavola-piccante:medium-28cm', name: 'Pizza DIAVOLA PICCANTE' },
+    { match: ['4 fromage', 'quatre fromage', 'formaggi'], id: 'pizzas:4-formaggi-rustica:medium-28cm', name: 'Pizza 4 FORMAGGI RUSTICA' },
+    { match: ['burrata', 'burratissima'], id: 'pizzas:burratissima-di-bella:medium-28cm', name: 'Pizza BURRATISSIMA DI BELLA' },
+    { match: ['truffe', 'tartufo'], id: 'pizzas:tartufo-suprema:medium-28cm', name: 'Pizza TARTUFO SUPREMA' },
+    { match: ['double smash', 'smash cheese'], id: 'burgers:double-smash-cheese', name: 'Double Smash Cheese' },
+    { match: ['truffle smash'], id: 'burgers:truffle-smash-burger', name: 'Truffle Smash Burger' },
+    { match: ['smokey bacon', 'bacon bbq'], id: 'burgers:smokey-bacon-bbq', name: 'Smokey Bacon BBQ' },
+    { match: ['crispy chicken', 'chicken spicy'], id: 'burgers:crispy-chicken-spicy', name: 'Crispy Chicken Spicy' },
+    { match: ['tiramisu'], id: 'desserts:tiramisu-maison-tradizionale', name: 'Tiramisu Maison' },
+    { match: ['pizza choco', 'choco noisette'], id: 'desserts:pizza-choco-noisette-pistache', name: 'Pizza Choco-Noisette' },
+  ]
+
+  let matchedId = null
+  let matchedItem = null
+
+  for (const alias of aliases) {
+    if (alias.match.some(m => norm.includes(m))) {
+      matchedId = alias.id
+      matchedItem = alias.name
+      break
+    }
+  }
+
+  if (matchedId) {
+    if (isOutOfStock) {
+      return {
+        intent: 'markOutOfStock',
+        params: { itemId: matchedId, itemName: matchedItem },
+        reply: `${matchedItem} marquée en rupture de stock.`,
+        confirm: false
+      }
+    }
+    if (isRestore) {
+      return {
+        intent: 'restoreItem',
+        params: { itemId: matchedId, itemName: matchedItem },
+        reply: `${matchedItem} remise en stock.`,
+        confirm: false
+      }
+    }
+    if (isHide) {
+      return {
+        intent: 'hideItem',
+        params: { itemId: matchedId, itemName: matchedItem },
+        reply: `${matchedItem} masquée de la carte.`,
+        confirm: false
+      }
+    }
+    if (isShow) {
+      return {
+        intent: 'showItem',
+        params: { itemId: matchedId, itemName: matchedItem },
+        reply: `${matchedItem} réactivée sur la carte.`,
+        confirm: false
+      }
+    }
+    if (isPrice) {
+      const priceMatch = norm.match(/(\d+[\.,]?\d*)\s*(?:€|euro|e)?/)
+      if (priceMatch) {
+        const val = parseFloat(priceMatch[1].replace(',', '.'))
+        if (!isNaN(val) && val > 0) {
+          const cents = Math.round(val * 100)
+          return {
+            intent: 'updatePrice',
+            params: { itemId: matchedId, itemName: matchedItem, price: cents },
+            reply: `Confirmez-vous le passage de ${matchedItem} à ${(cents / 100).toFixed(2)} € ?`,
+            confirm: true
+          }
+        }
+      }
+    }
+  }
+
+  if (norm.includes('ferm') && (norm.includes('restaurant') || norm.includes('resto') || norm.includes('service') || norm.includes('maintenant'))) {
+    return {
+      intent: 'closeNow',
+      params: {},
+      reply: 'Confirmez-vous la fermeture immédiate du restaurant pour les commandes en ligne ?',
+      confirm: true
+    }
+  }
+  if (norm.includes('ouvr') && (norm.includes('restaurant') || norm.includes('resto') || norm.includes('service') || norm.includes('maintenant'))) {
+    return {
+      intent: 'openNow',
+      params: {},
+      reply: 'Le restaurant est maintenant ouvert en direct.',
+      confirm: false
+    }
+  }
+
+  return null
+}
+
+function extractJson(str) {
+  if (!str) return null
+  const cleaned = str.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim()
+  try {
+    return JSON.parse(cleaned)
+  } catch {}
+
+  const firstBrace = str.indexOf('{')
+  const lastBrace = str.lastIndexOf('}')
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    try {
+      return JSON.parse(str.substring(firstBrace, lastBrace + 1))
+    } catch {}
+  }
+  return null
+}
+
 // ── Core processing function usable by both /api/ai-assistant and managerApi ──
 export async function processAiAssistant(messageText) {
   const message = String(messageText || '').trim().slice(0, 500)
@@ -243,22 +366,31 @@ export async function processAiAssistant(messageText) {
     const orJson = await orRes.json()
     const rawContent = orJson.choices?.[0]?.message?.content || ''
 
-    let parsed
-    try {
-      const cleaned = rawContent.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim()
-      parsed = JSON.parse(cleaned)
-    } catch {
+    let parsed = extractJson(rawContent)
+
+    if (!parsed || !parsed.intent || parsed.intent === 'unknown') {
+      const fallback = resolveIntentFallback(message, catalog)
+      if (fallback) {
+        return fallback
+      }
+    }
+
+    if (!parsed) {
       console.error('[AI Assistant] Failed to parse LLM response:', rawContent.slice(0, 300))
       return {
         intent: 'unknown',
         params: {},
-        reply: 'Je n\'ai pas pu interpréter cette consigne. Essayez de reformuler (ex: "La Calzone est épuisée").',
+        reply: 'Je n\'ai pas pu interpréter cette consigne. Essayez de reformuler (ex: "La Pizza Margherita est épuisée").',
         confirm: false
       }
     }
 
     const validIntents = ['markOutOfStock', 'restoreItem', 'hideItem', 'showItem', 'updatePrice', 'closeNow', 'openNow', 'createPromo', 'query', 'unknown']
-    if (!validIntents.includes(parsed.intent)) parsed.intent = 'unknown'
+    if (!validIntents.includes(parsed.intent)) {
+      const fallback = resolveIntentFallback(message, catalog)
+      if (fallback) return fallback
+      parsed.intent = 'unknown'
+    }
 
     return {
       intent: parsed.intent || 'unknown',
