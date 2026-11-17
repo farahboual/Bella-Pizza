@@ -36,7 +36,7 @@ const readBody = async req => {
 function buildCatalogContext(catalog, overrides = {}) {
   return Object.entries(catalog)
     .filter(([, item]) => item && item.name)
-    .slice(0, 60) // keep prompt tight, free models have limited context
+    .slice(0, 60)
     .map(([id, item]) => {
       const ov = overrides[id] || {}
       const price = typeof ov.price === 'number' ? ov.price : item.price
@@ -75,7 +75,7 @@ function buildSalesContext(sales = []) {
 
 // ── System prompt ──────────────────────────────────────────────────────────
 function buildSystemPrompt(catalog, overrides, sales, restaurantName) {
-  return `Tu es l'assistant IA de "${restaurantName}", intégré dans l'espace gérant.
+  return `Tu es l'assistant d'exploitation de "${restaurantName}", intégré dans l'espace gérant.
 Tu aides le gérant pendant le service en exécutant des actions et en répondant à ses questions.
 Réponds TOUJOURS en français, de façon courte et directe comme un collègue.
 
@@ -115,59 +115,52 @@ Réponds UNIQUEMENT avec ce JSON valide, sans texte avant ni après:
   "confirm": false
 }
 
-RÈGLES:
-- Pour updatePrice, closeNow, createPromo: mets "confirm": true (actions importantes)
+RÈGLES STRICTES:
+- Pour updatePrice, closeNow, createPromo: mets "confirm": true (actions importantes nécessitant confirmation)
 - Pour markOutOfStock, restoreItem, hideItem, showItem, query: mets "confirm": false
 - Pour updatePrice: mets le prix en centimes dans params.price (ex: 13€ → 1300)
 - Pour createPromo: discountType = "percent" ou "fixed", discountValue = nombre
 - Si l'item n'est pas trouvé dans le menu, dis-le dans reply et mets intent = "unknown"
-- reply doit être court, humain et direct — pas de formules de politesse inutiles
-- N'utilise JAMAIS d'émojis dans tes réponses (pas de 🤖, ni de 🔴, 🟢, 🍕, etc.). Utilise uniquement du texte sobre et professionnel.`
+- reply doit être court, sobre et direct — pas de formules de politesse superflues
+- N'utilise JAMAIS d'émojis dans tes réponses. Aucun symbole cartoon, reste professionnel.`
 }
 
-// ── Main handler ───────────────────────────────────────────────────────────
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.setHeader('allow', 'POST')
-    return send(res, 405, { error: 'method not allowed' })
+// ── Core processing function usable by both /api/ai-assistant and managerApi ──
+export async function processAiAssistant(messageText) {
+  const message = String(messageText || '').trim().slice(0, 500)
+  if (!message) {
+    return {
+      intent: 'unknown',
+      params: {},
+      reply: 'Consigne vide. Veuillez formuler une demande pour le copilote.',
+      confirm: false
+    }
   }
 
+  const openrouterKey = (env.OPENROUTER_API_KEY || '').trim()
+  if (!openrouterKey) {
+    return {
+      intent: 'query',
+      params: {},
+      reply: "La clé API OpenRouter (OPENROUTER_API_KEY) n'est pas encore configurée dans vos variables d'environnement Vercel. Ajoutez-la dans votre tableau de bord Vercel pour activer le copilote.",
+      missingKey: true,
+      confirm: false
+    }
+  }
+
+  // Load live context
+  const [overrides, promos, customItems, sales] = await Promise.all([
+    store.getMenuOverrides().catch(() => ({})),
+    store.getPromos().catch(() => ({})),
+    store.getCustomItems().catch(() => ({})),
+    store.getSalesReport(Date.now() - 24 * 3600e3).catch(() => []),
+  ])
+
+  const catalog = { ...CATALOG, ...customItems }
+  const restaurantName = RESTAURANT_CONFIG?.brand?.name || 'le restaurant'
+  const systemPrompt = buildSystemPrompt(catalog, overrides, sales, restaurantName)
+
   try {
-    // Auth — same pattern as managerApi
-    const cfg = await store.getConfigData().catch(() => ({}))
-    const expectedKey = cfg.gerantPassword || env.GERANT_PASSWORD || env.KITCHEN_PASSWORD || ''
-    const providedKey = req.headers['x-kitchen-key'] || ''
-    if (!expectedKey || !safeEq(providedKey, expectedKey)) {
-      return send(res, 401, { error: 'unauthorized' })
-    }
-
-    const openrouterKey = (env.OPENROUTER_API_KEY || '').trim()
-    if (!openrouterKey) {
-      return send(res, 200, {
-        intent: 'query',
-        params: {},
-        reply: "⚠️ La clé API OpenRouter (OPENROUTER_API_KEY) n'est pas encore configurée dans Vercel. Ajoutez la variable d'environnement `OPENROUTER_API_KEY` dans votre projet Vercel pour activer l'assistant en direct !",
-        missingKey: true
-      })
-    }
-
-    const body = await readBody(req)
-    const message = String(body.message || '').trim().slice(0, 500)
-    if (!message) return send(res, 400, { error: 'message is required' })
-
-    // Load live context
-    const [overrides, promos, customItems, sales] = await Promise.all([
-      store.getMenuOverrides().catch(() => ({})),
-      store.getPromos().catch(() => ({})),
-      store.getCustomItems().catch(() => ({})),
-      store.getSalesReport(Date.now() - 24 * 3600e3).catch(() => []),
-    ])
-
-    const catalog = { ...CATALOG, ...customItems }
-    const restaurantName = RESTAURANT_CONFIG?.brand?.name || 'le restaurant'
-    const systemPrompt = buildSystemPrompt(catalog, overrides, sales, restaurantName)
-
-    // Call OpenRouter
     const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -191,38 +184,70 @@ export default async function handler(req, res) {
     if (!orRes.ok) {
       const errText = await orRes.text().catch(() => '')
       console.error('[AI Assistant] OpenRouter error:', orRes.status, errText.slice(0, 200))
-      return send(res, 502, { error: `OpenRouter error ${orRes.status}` })
+      return {
+        intent: 'query',
+        params: {},
+        reply: `Le service OpenRouter est temporairement indisponible (code ${orRes.status}). Veuillez réessayer dans quelques instants.`,
+        confirm: false
+      }
     }
 
     const orJson = await orRes.json()
     const rawContent = orJson.choices?.[0]?.message?.content || ''
 
-    // Parse JSON from LLM response
     let parsed
     try {
-      // LLM sometimes wraps in ```json ... ``` — strip it
       const cleaned = rawContent.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim()
       parsed = JSON.parse(cleaned)
     } catch {
       console.error('[AI Assistant] Failed to parse LLM response:', rawContent.slice(0, 300))
-      return send(res, 200, {
+      return {
         intent: 'unknown',
         params: {},
-        reply: 'Je n\'ai pas pu traiter cette demande. Essayez de reformuler.',
+        reply: 'Je n\'ai pas pu interpréter cette consigne. Essayez de reformuler (ex: "La Calzone est épuisée").',
         confirm: false
-      })
+      }
     }
 
-    // Validate intent is one of the known ones
     const validIntents = ['markOutOfStock', 'restoreItem', 'hideItem', 'showItem', 'updatePrice', 'closeNow', 'openNow', 'createPromo', 'query', 'unknown']
     if (!validIntents.includes(parsed.intent)) parsed.intent = 'unknown'
 
-    return send(res, 200, {
+    return {
       intent: parsed.intent || 'unknown',
       params: parsed.params || {},
-      reply: String(parsed.reply || 'Action effectuée.').slice(0, 300),
+      reply: String(parsed.reply || 'Ordre reçu.').slice(0, 300),
       confirm: !!parsed.confirm
-    })
+    }
+
+  } catch (err) {
+    console.error('[AI Assistant] Network error:', err)
+    return {
+      intent: 'query',
+      params: {},
+      reply: "Erreur de connexion avec OpenRouter : " + err.message,
+      confirm: false
+    }
+  }
+}
+
+// ── HTTP handler for direct POST to /api/ai-assistant ─────────────────────────
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('allow', 'POST')
+    return send(res, 405, { error: 'method not allowed' })
+  }
+
+  try {
+    const cfg = await store.getConfigData().catch(() => ({}))
+    const expectedKey = cfg.gerantPassword || env.GERANT_PASSWORD || env.KITCHEN_PASSWORD || ''
+    const providedKey = req.headers['x-kitchen-key'] || ''
+    if (expectedKey && !safeEq(providedKey, expectedKey)) {
+      return send(res, 401, { error: 'unauthorized' })
+    }
+
+    const body = await readBody(req)
+    const result = await processAiAssistant(body.message)
+    return send(res, 200, result)
 
   } catch (e) {
     console.error('[AI Assistant] Fatal:', e)
