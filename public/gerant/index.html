@@ -547,17 +547,93 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid #BBF7D0 !important;
 }
 
-/* AI Assistant Tab Styles */
+/* AI Copilot SaaS Suite — Minimalist Professional Design */
+.db-ai-card {
+  background: var(--white) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  padding: 16px 18px !important;
+  margin-top: 14px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03) !important;
+}
+.db-ai-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.db-ai-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.db-ai-icon-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #FFF1F0;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.db-ai-title {
+  font: 700 14px var(--font);
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.db-ai-sub {
+  font-size: 12px;
+  color: var(--mute);
+}
+.db-ai-input-wrap {
+  position: relative;
+  flex: 1;
+}
+.db-ai-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+.db-ai-input {
+  width: 100%;
+  padding: 10px 14px 10px 36px !important;
+  font-size: 13.5px !important;
+  border-radius: 8px !important;
+  background: #F8FAFC !important;
+  border: 1.5px solid var(--line) !important;
+  color: var(--dark) !important;
+  outline: none;
+  transition: all .15s ease;
+}
+.db-ai-input:focus {
+  background: #FFFFFF !important;
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(122, 28, 28, 0.08) !important;
+}
+
+/* Full AI Tab View */
 .ai-chat-wrap {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 170px);
-  min-height: 540px;
+  height: calc(100vh - 190px);
+  min-height: 560px;
   background: #FFFFFF;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 .ai-chat-header {
   padding: 14px 20px;
@@ -567,71 +643,96 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
-.ai-badge {
+.ai-live-indicator {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
-  font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 9px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
   border-radius: 99px;
-  background: #F1F5F9;
-  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  color: #166534;
 }
-.ai-badge.live {
-  background: #FEF3C7;
-  color: #92400E;
-}
-.ai-badge .dot {
+.ai-live-indicator .live-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #16A34A;
 }
+
+/* Quick Action Chips */
 .ai-chips-bar {
   display: flex;
-  gap: 8px;
-  padding: 10px 18px;
-  background: #F8FAFC;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #FAFAFA;
   border-bottom: 1px solid var(--line);
   overflow-x: auto;
   white-space: nowrap;
+  scrollbar-width: none;
+}
+.ai-chips-bar::-webkit-scrollbar {
+  display: none;
+}
+.ai-chips-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94A3B8;
+  align-self: center;
+  margin-right: 6px;
+  flex-shrink: 0;
 }
 .ai-chip {
   background: #FFFFFF;
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  padding: 5px 12px;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  padding: 6px 11px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--dark);
+  color: #334155;
   cursor: pointer;
-  transition: all .15s;
+  transition: all .15s ease;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   flex-shrink: 0;
+  user-select: none;
 }
 .ai-chip:hover {
-  background: #FFF1F0;
-  border-color: var(--red);
-  color: var(--red);
-  transform: translateY(-1px);
+  background: #F8FAFC;
+  border-color: #0F172A;
+  color: #0F172A;
 }
+.ai-chip:active {
+  transform: translateY(1px);
+}
+.ai-chip-icon {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2;
+  color: #64748B;
+}
+
+/* Message Feed */
 .ai-messages-list {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  background: #FCFCFD;
 }
 .ai-msg {
   display: flex;
   gap: 12px;
-  max-width: 82%;
+  max-width: 78%;
 }
 .ai-msg.user {
   align-self: flex-end;
@@ -641,57 +742,76 @@ input:focus, select:focus, textarea:focus {
   align-self: flex-start;
 }
 .ai-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   flex-shrink: 0;
-  background: #F1F5F9;
-  border: 1px solid var(--line);
 }
-.ai-msg.user .ai-avatar {
-  background: var(--dark);
-  color: #fff;
+.ai-avatar.ai-avatar-user {
+  background: #0F172A;
+  color: #FFFFFF;
+}
+.ai-avatar.ai-avatar-bot {
+  background: #FFF1F0;
+  color: var(--red);
+  border: 1px solid #FFE4E2;
+}
+.ai-msg-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ai-msg.user .ai-msg-content {
+  align-items: flex-end;
 }
 .ai-bubble {
   padding: 12px 16px;
-  border-radius: 14px;
+  border-radius: 10px;
   font-size: 13.5px;
-  line-height: 1.5;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  line-height: 1.55;
   word-break: break-word;
 }
 .ai-msg.user .ai-bubble {
-  background: var(--red);
+  background: #0F172A;
   color: #FFFFFF;
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 2px;
 }
 .ai-msg.assistant .ai-bubble {
-  background: #F8FAFC;
+  background: #FFFFFF;
   border: 1px solid var(--line);
-  color: var(--dark);
-  border-bottom-left-radius: 4px;
+  color: #0F172A;
+  border-bottom-left-radius: 2px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
+.ai-msg-time {
+  font-size: 11px;
+  color: #94A3B8;
+  padding: 0 4px;
+}
+
+/* Action Card */
 .ai-action-card {
-  margin-top: 10px;
+  margin-top: 8px;
   padding: 12px 14px;
   background: #FFFFFF;
-  border: 1.5px solid #CBD5E1;
-  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+  border-left: 3px solid var(--red);
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .ai-action-card.confirmed {
-  border-color: #86EFAC;
+  border-left-color: #16A34A;
   background: #F0FDF4;
 }
 .ai-action-title {
   font-size: 13px;
   font-weight: 700;
+  color: #0F172A;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -701,8 +821,10 @@ input:focus, select:focus, textarea:focus {
   gap: 8px;
   margin-top: 4px;
 }
+
+/* Input Bar */
 .ai-input-bar {
-  padding: 14px 18px;
+  padding: 14px 20px;
   background: #FFFFFF;
   border-top: 1px solid var(--line);
   display: flex;
@@ -712,12 +834,13 @@ input:focus, select:focus, textarea:focus {
 .ai-input {
   flex: 1;
   font: 14px var(--font);
-  padding: 11px 16px;
-  border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
   border: 1.5px solid var(--line);
   background: #F8FAFC;
+  color: var(--dark);
   outline: none;
-  transition: border-color .15s;
+  transition: all .15s;
 }
 .ai-input:focus {
   border-color: var(--red);
@@ -726,20 +849,22 @@ input:focus, select:focus, textarea:focus {
 .ai-typing {
   display: inline-flex;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 4px 6px;
   align-items: center;
 }
 .ai-typing span {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: #94A3B8;
-  animation: aiBounce 1s infinite alternate;
+  animation: aiBounce 0.9s infinite alternate;
 }
 .ai-typing span:nth-child(2) { animation-delay: .2s; }
 .ai-typing span:nth-child(3) { animation-delay: .4s; }
 @keyframes aiBounce {
   from { transform: translateY(0); opacity: .4; }
+  to { transform: translateY(-3px); opacity: 1; }
+}
   to { transform: translateY(-4px); opacity: 1; }
 }
 
@@ -807,7 +932,7 @@ input:focus, select:focus, textarea:focus {
       <button type="button" class="tab" data-tab="ai" role="tab" style="position:relative">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><rect x="4" y="8" width="16" height="12" rx="4"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="15" cy="13" r="1.5" fill="currentColor"/><path d="M9 17c1 .8 2 .8 3 .8s2 0 3-.8"/></svg>
     <span>Assistant IA</span>
-    <span style="font-size:9px;background:linear-gradient(135deg,#7A1C1C,#C5A16B);color:#fff;padding:1px 6px;border-radius:99px;font-weight:700;margin-left:auto">AGENT</span>
+    <span style="font-size:10px;background:#F1F5F9;color:#475569;border:1px solid #E2E8F0;padding:2px 7px;border-radius:6px;font-weight:700;margin-left:auto">IA</span>
    </button>
    <button type="button" class="tab" data-tab="security" role="tab">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="1.5"/><line x1="12" y1="12.5" x2="12" y2="15"/></svg>
@@ -875,23 +1000,27 @@ input:focus, select:focus, textarea:focus {
     </div>
 
     <!-- AI Quick Command Box -->
-    <div class="card" style="background: linear-gradient(135deg, #1B1614 0%, #29201C 100%); color: #FAF7F2; border: 1.5px solid rgba(197, 161, 107, 0.4); border-radius: 14px; padding: 18px 20px; margin-top: 14px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:24px;">🤖</span>
+    <div class="db-ai-card">
+      <div class="db-ai-head">
+        <div class="db-ai-title-wrap">
+          <div class="db-ai-icon-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5.6L20 10l-4.2 3.6 1.4 5.8-5.2-3.2-5.2 3.2 1.4-5.8L4 10l5.6-2.4z"/></svg>
+          </div>
           <div>
-            <div style="font-weight:800; font-size:15px; color:#FFFFFF; display:flex; align-items:center; gap:8px;">
-              Assistant IA Gérant
-              <span style="font-size:10px; background:#801D1E; color:#FFFFFF; padding:2px 7px; border-radius:99px; font-weight:700; letter-spacing:0.04em;">PILOTAGE EN DIRECT</span>
-            </div>
-            <div style="font-size:12.5px; color:#C5A16B;">Donnez un ordre en langage naturel (rupture de stock, changement de prix, CA du jour).</div>
+            <div class="db-ai-title">Copilote d'exploitation en direct</div>
+            <div class="db-ai-sub">Contrôlez vos stocks, ajustez vos tarifs ou interrogez vos ventes en français.</div>
           </div>
         </div>
-        <button type="button" class="btn ghost" style="color:#FAF7F2; border-color:rgba(197,161,107,0.4); background:rgba(255,255,255,0.06); font-size:12px;" onclick="switchTab('ai')">Ouvrir l'Assistant complet →</button>
+        <button type="button" class="btn ghost" style="font-size:12px;padding:6px 12px" onclick="switchTab('ai')">Ouvrir le copilote →</button>
       </div>
-      <form id="db-ai-form" style="display:flex; gap:8px;" onsubmit="handleDashAiSubmit(event)">
-        <input type="text" id="db-ai-input" placeholder="Ex : 'La calzone est épuisée', 'Quel est notre CA aujourd\'hui ?', 'Mets la margherita à 13€'..." style="flex:1; background:rgba(255,255,255,0.1); border:1px solid rgba(197,161,107,0.3); color:#FFFFFF; border-radius:8px; padding:10px 14px; font-size:13.5px;" />
-        <button type="submit" class="btn red" style="padding:10px 18px; font-weight:700; white-space:nowrap;">Exécuter</button>
+      <form id="db-ai-form" class="db-ai-form" onsubmit="handleDashAiSubmit(event)">
+        <div class="db-ai-input-wrap">
+          <div class="db-ai-input-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <input type="text" id="db-ai-input" class="db-ai-input" placeholder="Consigne directe : 'La Calzone est épuisée', 'Chiffre d'affaires aujourd'hui', 'Mets la Margherita à 13€'..." autocomplete="off" />
+        </div>
+        <button type="submit" class="btn red" style="padding:10px 18px;font-weight:700">Exécuter</button>
       </form>
     </div>
   </div>
@@ -1218,58 +1347,73 @@ input:focus, select:focus, textarea:focus {
    <!-- TAB 6: ASSISTANT IA GÉRANT -->
    <div id="tab-ai" class="tab-content" style="display:none" role="tabpanel">
      <div class="sh-page-header">
-       <div class="sh-page-icon" style="background:#FFF1F0">
-         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><rect x="4" y="8" width="16" height="12" rx="4"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="15" cy="13" r="1.5" fill="currentColor"/><path d="M9 17c1 .8 2 .8 3 .8s2 0 3-.8"/></svg>
+       <div class="sh-page-icon" style="background:#FFF1F0;color:var(--red)">
+         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5.6L20 10l-4.2 3.6 1.4 5.8-5.2-3.2-5.2 3.2 1.4-5.8L4 10l5.6-2.4z"/></svg>
        </div>
        <div>
-         <div class="sh-page-title">Assistant IA Gérant</div>
-         <div class="sh-page-sub">Pilotez votre restaurant en direct par chat : marquez un plat épuisé, ajustez un prix, consultez vos ventes.</div>
+         <div class="sh-page-title">Copilote d'Exploitation</div>
+         <div class="sh-page-sub">Pilotez votre carte et votre restaurant en langage naturel sans naviguer dans les menus.</div>
        </div>
        <div style="margin-left:auto">
-         <span class="ai-badge live"><span class="dot"></span> OpenRouter AI Connecté</span>
+         <span class="ai-live-indicator"><span class="live-dot"></span> Système connecté</span>
        </div>
      </div>
 
      <div class="ai-chat-wrap">
        <div class="ai-chat-header">
-         <div style="font-weight:700;font-size:13px;color:var(--dark);display:flex;align-items:center;gap:6px">
-           <span>💬 Conversation en direct</span>
+         <div style="font-weight:700;font-size:13px;color:var(--dark);display:flex;align-items:center;gap:8px">
+           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+           <span>Session en direct</span>
          </div>
-         <button type="button" class="btn ghost" style="font-size:11.5px;padding:4px 10px" onclick="clearAiChat()">Effacer l'historique</button>
+         <button type="button" class="btn ghost" style="font-size:11.5px;padding:4px 10px" onclick="clearAiChat()">Réinitialiser l'échange</button>
        </div>
 
-       <!-- Quick suggestions bar -->
-       <div class="ai-chips-bar">
-         <span style="font-size:11.5px;font-weight:700;color:var(--mute);align-self:center;margin-right:4px">Exemples :</span>
-         <button type="button" class="ai-chip" onclick="quickAiSend('La Calzone est épuisée')">🔴 Calzone épuisée</button>
-         <button type="button" class="ai-chip" onclick="quickAiSend('La Calzone est de retour en stock')">🟢 Calzone de retour</button>
-         <button type="button" class="ai-chip" onclick="quickAiSend('Mets la Margherita à 13€')">💶 Margherita à 13€</button>
-         <button type="button" class="ai-chip" onclick="quickAiSend('Quel est notre CA aujourd\'hui ?')">📊 CA du jour</button>
-         <button type="button" class="ai-chip" onclick="quickAiSend('Quelles sont les meilleures ventes du jour ?')">🏆 Top ventes</button>
-         <button type="button" class="ai-chip" onclick="quickAiSend('Crée un code promo SOIR10 à -10%')">🎟️ Promo SOIR10 (-10%)</button>
-         <button type="button" class="ai-chip" onclick="quickAiSend('Ferme le restaurant maintenant')">🔒 Fermer le restaurant</button>
+       <!-- Quick suggestions bar with zero emojis and robust data-prompt attributes -->
+       <div class="ai-chips-bar" id="ai-chips-bar">
+         <span class="ai-chips-label">Actions :</span>
+         <button type="button" class="ai-chip" data-prompt="La Calzone est épuisée">
+           <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+           <span>Calzone épuisée</span>
+         </button>
+         <button type="button" class="ai-chip" data-prompt="La Calzone est de retour en stock">
+           <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>
+           <span>Calzone en stock</span>
+         </button>
+         <button type="button" class="ai-chip" data-prompt="Mets la Margherita à 13€">
+           <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+           <span>Margherita à 13€</span>
+         </button>
+         <button type="button" class="ai-chip" data-prompt="Quel est notre chiffre d'affaires aujourd'hui ?">
+           <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+           <span>Chiffre du jour</span>
+         </button>
+         <button type="button" class="ai-chip" data-prompt="Quelles sont les meilleures ventes du jour ?">
+           <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+           <span>Top ventes</span>
+         </button>
+         <button type="button" class="ai-chip" data-prompt="Crée un code promo SOIR10 à -10%">
+           <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>
+           <span>Code SOIR10 (-10%)</span>
+         </button>
+         <button type="button" class="ai-chip" data-prompt="Ferme le restaurant maintenant">
+           <svg class="ai-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+           <span>Fermer le restaurant</span>
+         </button>
        </div>
 
        <!-- Messages Feed -->
        <div id="ai-messages-list" class="ai-messages-list">
-         <!-- Default welcome message -->
-         <div class="ai-msg assistant">
-           <div class="ai-avatar">🤖</div>
-           <div class="ai-bubble">
-             Bonjour chef ! Je suis votre copilote IA. Vous pouvez me demander de marquer des produits en rupture, modifier un tarif, créer des codes promo ou vous donner le résumé de vos ventes. Que souhaitez-vous faire ?
-           </div>
-         </div>
        </div>
 
        <!-- Input bar -->
        <form class="ai-input-bar" onsubmit="handleAiFormSubmit(event)">
-         <input type="text" id="ai-input" class="ai-input" placeholder="Tapez votre consigne ou question en français..." autocomplete="off" />
+         <input type="text" id="ai-input" class="ai-input" placeholder="Tapez une consigne ou une question pour le copilote..." autocomplete="off" />
          <button type="submit" id="ai-submit-btn" class="btn red" style="padding:10px 18px;font-weight:700">Envoyer</button>
        </form>
      </div>
    </div>
 
- </main>
+</main>
 </div>
 
 <!-- CHEVALET DE TABLE IMPRIMABLE -->
@@ -2523,8 +2667,28 @@ if(testDbBtn){
 
 // ── AI Assistant JavaScript Logic ──────────────────────────────────────────
 let aiMessages = [
-  { role: 'assistant', text: "Bonjour chef ! Je suis votre copilote IA. Vous pouvez me demander de marquer des produits en rupture, modifier un tarif, créer des codes promo ou vous donner le résumé de vos ventes. Que souhaitez-vous faire ?" }
+  {
+    role: 'assistant',
+    text: "Bonjour. Je suis votre copilote d'exploitation. Vous pouvez me demander de gérer les ruptures de stock, ajuster les tarifs, créer des offres promotionnelles ou consulter les performances du jour.",
+    time: getNowTime()
+  }
 ]
+
+function getNowTime() {
+  return new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit' }).format(new Date())
+}
+
+// Global click delegation for AI suggestion chips
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('.ai-chip[data-prompt]')
+  if (!chip) return
+  const prompt = chip.getAttribute('data-prompt')
+  if (prompt) {
+    const inp = $('#ai-input')
+    if (inp) inp.value = prompt
+    sendAiMessage(prompt)
+  }
+})
 
 function handleDashAiSubmit(e) {
   e.preventDefault()
@@ -2536,15 +2700,13 @@ function handleDashAiSubmit(e) {
   sendAiMessage(val)
 }
 
-function quickAiSend(text) {
-  const inp = $('#ai-input')
-  if (inp) inp.value = text
-  sendAiMessage(text)
-}
-
 function clearAiChat() {
   aiMessages = [
-    { role: 'assistant', text: "Historique réinitialisé. Comment puis-je vous aider ?" }
+    {
+      role: 'assistant',
+      text: "Échange réinitialisé. Quelle opération souhaitez-vous effectuer ?",
+      time: getNowTime()
+    }
   ]
   renderAiChat()
 }
@@ -2569,31 +2731,39 @@ function renderAiChat() {
       const isConfirmed = act.status === 'done'
       const isCancelled = act.status === 'cancelled'
       actionCardHtml = `
-        <div class="ai-action-card ${isConfirmed ? 'confirmed' : ''}" id="act-card-${idx}">
+        <div class="ai-action-card ${isConfirmed ? 'confirmed' : ''}">
           <div class="ai-action-title">
-            <span>${isConfirmed ? '✅' : isCancelled ? '❌' : '⚡'}</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${isConfirmed ? '#16A34A' : '#7A1C1C'}" stroke-width="2"><circle cx="12" cy="12" r="10"/>${isConfirmed ? '<polyline points="9 12 11 14 15 10"/>' : '<line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'}</svg>
             <span>${esc(act.title)}</span>
           </div>
-          <div style="font-size:12px;color:var(--mute)">${esc(act.detail || '')}</div>
+          <div style="font-size:12px;color:#64748B">${esc(act.detail || '')}</div>
           ${!isConfirmed && !isCancelled && act.needConfirm ? `
             <div class="ai-action-btns">
-              <button type="button" class="btn red" style="font-size:11.5px;padding:5px 12px" onclick="confirmAiAction(${idx})">✓ Confirmer</button>
-              <button type="button" class="btn ghost" style="font-size:11.5px;padding:5px 12px" onclick="cancelAiAction(${idx})">Annuler</button>
+              <button type="button" class="btn red" style="font-size:11.5px;padding:6px 12px" onclick="confirmAiAction(${idx})">Confirmer l'opération</button>
+              <button type="button" class="btn ghost" style="font-size:11.5px;padding:6px 12px" onclick="cancelAiAction(${idx})">Ignorer</button>
             </div>
           ` : isConfirmed ? `
-            <div style="font-size:11.5px;font-weight:700;color:#16a34a">Action appliquée en direct</div>
+            <div style="font-size:11.5px;font-weight:700;color:#16A34A;display:flex;align-items:center;gap:4px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Appliqué au catalogue</span>
+            </div>
           ` : isCancelled ? `
-            <div style="font-size:11.5px;color:var(--mute)">Action annulée</div>
+            <div style="font-size:11.5px;color:#64748B">Opération ignorée</div>
           ` : ''}
         </div>
       `
     }
+
+    const botAvatar = `<div class="ai-avatar ai-avatar-bot"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.6L20 10l-4.2 3.6 1.4 5.8-5.2-3.2-5.2 3.2 1.4-5.8L4 10l5.6-2.4z"/></svg></div>`
+    const userAvatar = `<div class="ai-avatar ai-avatar-user"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`
+
     return `
       <div class="ai-msg ${isUser ? 'user' : 'assistant'}">
-        <div class="ai-avatar">${isUser ? '👨‍🍳' : '🤖'}</div>
-        <div>
+        ${isUser ? userAvatar : botAvatar}
+        <div class="ai-msg-content">
           <div class="ai-bubble">${esc(m.text)}</div>
           ${actionCardHtml}
+          <div class="ai-msg-time">${m.time || ''}</div>
         </div>
       </div>
     `
@@ -2603,14 +2773,13 @@ function renderAiChat() {
 
 async function sendAiMessage(text) {
   const list = $('#ai-messages-list')
-  aiMessages.push({ role: 'user', text })
+  aiMessages.push({ role: 'user', text, time: getNowTime() })
   renderAiChat()
 
-  // Add temporary typing indicator
   const typingEl = document.createElement('div')
   typingEl.className = 'ai-msg assistant'
   typingEl.id = 'ai-typing-temp'
-  typingEl.innerHTML = `<div class="ai-avatar">🤖</div><div class="ai-bubble"><span class="ai-typing"><span></span><span></span><span></span></span></div>`
+  typingEl.innerHTML = `<div class="ai-avatar ai-avatar-bot"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.6L20 10l-4.2 3.6 1.4 5.8-5.2-3.2-5.2 3.2 1.4-5.8L4 10l5.6-2.4z"/></svg></div><div class="ai-msg-content"><div class="ai-bubble"><span class="ai-typing"><span></span><span></span><span></span></span></div></div>`
   if (list) {
     list.appendChild(typingEl)
     list.scrollTop = list.scrollHeight
@@ -2637,16 +2806,16 @@ async function sendAiMessage(text) {
     if (!res.ok && res.status !== 200) {
       aiMessages.push({
         role: 'assistant',
-        text: j.error || "Désolé, une erreur est survenue lors de la communication avec l'IA."
+        text: j.error || "Désolé, une erreur est survenue lors de la communication avec le copilote.",
+        time: getNowTime()
       })
       renderAiChat()
       return
     }
 
-    const { intent, params, reply, confirm, missingKey } = j
-    const msgObj = { role: 'assistant', text: reply || 'Action reçue.' }
+    const { intent, params, reply, confirm } = j
+    const msgObj = { role: 'assistant', text: reply || 'Ordre reçu.', time: getNowTime() }
 
-    // Check if an actionable intent was recognized
     if (intent && intent !== 'query' && intent !== 'unknown') {
       const actionTitle = formatActionTitle(intent, params)
       const actionDetail = formatActionDetail(intent, params)
@@ -2659,7 +2828,6 @@ async function sendAiMessage(text) {
         status: confirm ? 'pending' : 'executing'
       }
 
-      // If auto-execute (confirm: false)
       if (!confirm) {
         aiMessages.push(msgObj)
         renderAiChat()
@@ -2681,7 +2849,8 @@ async function sendAiMessage(text) {
     if (btn) btn.disabled = false
     aiMessages.push({
       role: 'assistant',
-      text: "Erreur de connexion : " + err.message
+      text: "Erreur de connexion : " + err.message,
+      time: getNowTime()
     })
     renderAiChat()
   }
@@ -2690,20 +2859,20 @@ async function sendAiMessage(text) {
 function formatActionTitle(intent, params) {
   if (intent === 'markOutOfStock') return 'Rupture de stock : ' + (params.itemName || params.itemId || 'Produit')
   if (intent === 'restoreItem') return 'Remise en stock : ' + (params.itemName || params.itemId || 'Produit')
-  if (intent === 'hideItem') return 'Masquer du menu : ' + (params.itemName || params.itemId || 'Produit')
-  if (intent === 'showItem') return 'Rendre visible : ' + (params.itemName || params.itemId || 'Produit')
-  if (intent === 'updatePrice') return 'Changement de prix : ' + (params.itemName || params.itemId || 'Produit') + ' → ' + eur(params.price || 0)
+  if (intent === 'hideItem') return 'Masquer de la carte : ' + (params.itemName || params.itemId || 'Produit')
+  if (intent === 'showItem') return 'Rendre visible sur la carte : ' + (params.itemName || params.itemId || 'Produit')
+  if (intent === 'updatePrice') return 'Mise à jour tarifaire : ' + (params.itemName || params.itemId || 'Produit') + ' → ' + eur(params.price || 0)
   if (intent === 'closeNow') return 'Fermeture exceptionnelle du restaurant'
-  if (intent === 'openNow') return 'Ouverture forcée du restaurant'
-  if (intent === 'createPromo') return 'Créer code promo ' + (params.promoCode || 'PROMO') + ' (' + (params.discountType === 'percent' ? '-' + params.discountValue + '%' : '-' + eur(params.discountValue || 0)) + ')'
-  return 'Action demandée'
+  if (intent === 'openNow') return 'Ouverture en direct du restaurant'
+  if (intent === 'createPromo') return 'Création code promo ' + (params.promoCode || 'PROMO') + ' (' + (params.discountType === 'percent' ? '-' + params.discountValue + '%' : '-' + eur(params.discountValue || 0)) + ')'
+  return 'Opération identifiée'
 }
 
 function formatActionDetail(intent, params) {
   if (intent === 'updatePrice') return 'Nouveau tarif public : ' + eur(params.price || 0)
-  if (intent === 'closeNow') return 'Les commandes en ligne seront immédiatement suspendues.'
-  if (intent === 'createPromo') return 'Code utilisable immédiatement lors du panier.'
-  return 'Mise à jour en direct dans le catalogue.'
+  if (intent === 'closeNow') return 'Les prises de commande en ligne seront suspendues.'
+  if (intent === 'createPromo') return 'Code immédiatement applicable sur le panier.'
+  return 'Synchronisation immédiate sur le site client.'
 }
 
 async function confirmAiAction(msgIdx) {
@@ -2722,7 +2891,7 @@ function cancelAiAction(msgIdx) {
   if (!msg || !msg.action) return
   msg.action.status = 'cancelled'
   renderAiChat()
-  showToast('Action annulée.')
+  showToast('Opération ignorée.')
 }
 
 async function executeAiAction(intent, params) {
@@ -2736,7 +2905,7 @@ async function executeAiAction(intent, params) {
         overrides = await res.json()
         try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
         updateDashboardMetrics()
-        showToast('🔴 ' + (params.itemName || 'Produit') + ' marqué en rupture de stock')
+        showToast((params.itemName || 'Produit') + ' marqué en rupture de stock')
         return true
       }
     }
@@ -2749,7 +2918,7 @@ async function executeAiAction(intent, params) {
         overrides = await res.json()
         try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
         updateDashboardMetrics()
-        showToast('🟢 ' + (params.itemName || 'Produit') + ' remis en stock')
+        showToast((params.itemName || 'Produit') + ' remis en stock')
         return true
       }
     }
@@ -2761,7 +2930,7 @@ async function executeAiAction(intent, params) {
         overrides = await res.json()
         try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
         updateDashboardMetrics()
-        showToast('🙈 ' + (params.itemName || 'Produit') + ' masqué du menu')
+        showToast((params.itemName || 'Produit') + ' masqué de la carte')
         return true
       }
     }
@@ -2773,7 +2942,7 @@ async function executeAiAction(intent, params) {
         overrides = await res.json()
         try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
         updateDashboardMetrics()
-        showToast('👁️ ' + (params.itemName || 'Produit') + ' rendu visible')
+        showToast((params.itemName || 'Produit') + ' réactivé sur la carte')
         return true
       }
     }
@@ -2787,7 +2956,7 @@ async function executeAiAction(intent, params) {
         overrides = await res.json()
         try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
         updateDashboardMetrics()
-        showToast('💶 Prix mis à jour pour ' + (params.itemName || id) + ' : ' + eur(priceVal))
+        showToast('Nouveau prix appliqué : ' + eur(priceVal))
         return true
       }
     }
@@ -2797,7 +2966,7 @@ async function executeAiAction(intent, params) {
         config = await res.json()
         try { renderStatus() } catch {}
         updateDashboardMetrics()
-        showToast('🔒 Restaurant fermé temporairement')
+        showToast('Restaurant fermé temporairement')
         return true
       }
     }
@@ -2807,7 +2976,7 @@ async function executeAiAction(intent, params) {
         config = await res.json()
         try { renderStatus() } catch {}
         updateDashboardMetrics()
-        showToast('🟢 Restaurant ouvert en direct')
+        showToast('Restaurant ouvert en direct')
         return true
       }
     }
@@ -2821,7 +2990,7 @@ async function executeAiAction(intent, params) {
         promos = await res.json()
         try { renderPromos() } catch {}
         updateDashboardMetrics()
-        showToast('🎟️ Code promo ' + code + ' créé avec succès !')
+        showToast('Code promo ' + code + ' activé avec succès')
         return true
       }
     }
@@ -2831,5 +3000,4 @@ async function executeAiAction(intent, params) {
   }
   return false
 }
-
 </script></body></html>

@@ -40,7 +40,7 @@ function buildCatalogContext(catalog, overrides = {}) {
     .map(([id, item]) => {
       const ov = overrides[id] || {}
       const price = typeof ov.price === 'number' ? ov.price : item.price
-      const status = ov.outOfStock ? '🔴 ÉPUISÉ' : ov.hidden ? '🙈 MASQUÉ' : '✅ dispo'
+      const status = ov.outOfStock ? '[Rupture]' : ov.hidden ? '[Masqué]' : '[Disponible]'
       return `ID:"${id}" | ${item.name} | ${(price / 100).toFixed(2)}€ | cat:${item.cat || '?'} | ${status}`
     })
     .join('\n')
@@ -121,7 +121,8 @@ RÈGLES:
 - Pour updatePrice: mets le prix en centimes dans params.price (ex: 13€ → 1300)
 - Pour createPromo: discountType = "percent" ou "fixed", discountValue = nombre
 - Si l'item n'est pas trouvé dans le menu, dis-le dans reply et mets intent = "unknown"
-- reply doit être court, humain et direct — pas de formules de politesse inutiles`
+- reply doit être court, humain et direct — pas de formules de politesse inutiles
+- N'utilise JAMAIS d'émojis dans tes réponses (pas de 🤖, ni de 🔴, 🟢, 🍕, etc.). Utilise uniquement du texte sobre et professionnel.`
 }
 
 // ── Main handler ───────────────────────────────────────────────────────────
