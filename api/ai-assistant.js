@@ -96,11 +96,10 @@ Tu peux déclencher directement ces actions ou répondre aux questions stratégi
 - closeNow: suspendre exceptionnellement les commandes en ligne (ex: coup de feu en cuisine).
 - openNow: réouvrir le flux de commandes en direct.
 - createPromo: créer un code promo tactique pour dynamiser un rush creux.
-- query: analyse stratégique, chiffre d'affaires, panier moyen, leviers d'optimisation.
+- query: salutations, politesse, analyse stratégique, chiffre d'affaires, panier moyen, top ventes, leviers d'optimisation.
 - unknown: demande incomprise.
 
 ## FORMAT DE RÉPONSE OBLIGATOIRE (JSON STRICT)
-Réponds UNIQUEMENT avec ce JSON valide sans texte avant ni après:
 {
   "intent": "markOutOfStock|restoreItem|hideItem|showItem|updatePrice|closeNow|openNow|createPromo|query|unknown",
   "params": {
@@ -118,6 +117,7 @@ Réponds UNIQUEMENT avec ce JSON valide sans texte avant ni après:
 
 RÈGLES ABSOLUES:
 - RÈGLE FONDAMENTALE : ZÉRO ÉMOJIS. Aucun symbole cartoon (pas de robot, pizza, flamme, etc.). Ton professionnel, précis et élégant.
+- Pour un message de salutation ou politesse ("bonjour", "salut", "merci", etc.), réponds chaleureusement en rappelant la situation commerciale du jour avec "intent": "query". Ne renvoie JAMAIS "unknown" pour une salutation.
 - Pour updatePrice, closeNow, createPromo: mets "confirm": true (requiert validation du gérant).
 - Pour markOutOfStock, restoreItem, hideItem, showItem, query: mets "confirm": false.
 - Pour updatePrice: prix en centimes dans params.price (ex: 13€ → 1300).
@@ -176,6 +176,67 @@ function resolveIntentFallback(messageText, catalog = {}, sales = []) {
     }
   }
 
+  // Top ventes / Meilleures ventes
+  if (norm.includes('top vente') || norm.includes('meilleur') || norm.includes('plus vendu') || norm.includes('populaire')) {
+    if (count === 0) {
+      return {
+        intent: 'query',
+        params: {},
+        reply: "Aucune commande enregistrée aujourd'hui pour le moment. Le palmarès des meilleures ventes se mettra à jour dès les premières commandes.",
+        impact: "Palmarès des ventes",
+        confirm: false
+      }
+    }
+    const itemCounts = {}
+    sales.forEach(o => (o.items || o.lines || []).forEach(l => {
+      const name = l.name || l.id || ''
+      const qty = l.qty || 1
+      itemCounts[name] = (itemCounts[name] || 0) + qty
+    }))
+    const top = Object.entries(itemCounts).sort(([, a], [, b]) => b - a).slice(0, 3)
+      .map(([n, q]) => `${n} (${q}x)`).join(', ')
+    return {
+      intent: 'query',
+      params: {},
+      reply: top ? `Meilleures ventes du jour : ${top}.` : `Aujourd'hui, ${count} commande(s) pour un chiffre d'affaires de ${caFormatted} €.`,
+      impact: "Palmarès des ventes",
+      confirm: false
+    }
+  }
+
+  // Promo code creation fallback
+  if (norm.includes('promo') || norm.includes('reduction') || norm.includes('rabais') || (norm.includes('remise') && !norm.includes('remet'))) {
+    const codeMatch = norm.match(/(?:code|promo)?\s*([a-z0-9_-]{3,15})/i)
+    const pctMatch = norm.match(/(\d+)\s*%/i) || norm.match(/-(\d+)/i) || norm.match(/(\d+)\s*(?:euro|€)/i)
+    let foundCode = ''
+    const tokens = norm.split(/\s+/)
+    for (const t of tokens) {
+      const cleanT = t.replace(/[^a-z0-9]/gi, '').toUpperCase()
+      if (cleanT.length >= 3 && cleanT.length <= 12 && !['CODE', 'PROMO', 'POUR', 'AVEC', 'CREE', 'CREER', 'FAIS', 'UN', 'UNE', 'DE', 'REMISE', 'RABAIS', 'REDUCTION'].includes(cleanT) && /\d/.test(cleanT)) {
+        foundCode = cleanT
+        break
+      }
+    }
+    if (!foundCode) {
+      for (const t of tokens) {
+        const cleanT = t.replace(/[^a-z0-9]/gi, '').toUpperCase()
+        if (cleanT.length >= 3 && cleanT.length <= 12 && !['CODE', 'PROMO', 'POUR', 'AVEC', 'CREE', 'CREER', 'FAIS', 'UN', 'UNE', 'DE', 'REMISE', 'RABAIS', 'REDUCTION'].includes(cleanT)) {
+          foundCode = cleanT
+          break
+        }
+      }
+    }
+    const finalCode = foundCode || (codeMatch ? codeMatch[1].toUpperCase() : 'FLASH10')
+    const discount = pctMatch ? parseInt(pctMatch[1], 10) : 10
+    return {
+      intent: 'createPromo',
+      params: { promoCode: finalCode, discountType: 'percent', discountValue: discount },
+      reply: `Confirmez-vous la création du code promo ${finalCode} avec une réduction de ${discount}% ?`,
+      impact: `Code promo -${discount}% immédiat`,
+      confirm: true
+    }
+  }
+
   // CA & Sales queries fallback
   if (norm.includes('chiffre') || norm.includes(' ca') || norm.includes('ventes') || norm.includes('recette') || norm.includes('commandes')) {
     if (count === 0) {
@@ -215,6 +276,10 @@ function resolveIntentFallback(messageText, catalog = {}, sales = []) {
     { match: ['crispy chicken', 'chicken spicy'], id: 'burgers:crispy-chicken-spicy', name: 'Crispy Chicken Spicy' },
     { match: ['tiramisu'], id: 'desserts:tiramisu-maison-tradizionale', name: 'Tiramisu Maison' },
     { match: ['pizza choco', 'choco noisette'], id: 'desserts:pizza-choco-noisette-pistache', name: 'Pizza Choco-Noisette' },
+    { match: ['san pellegrino', 'limonata'], id: 'boissons:san-pellegrino-limonata', name: 'San Pellegrino Limonata' },
+    { match: ['aranciata'], id: 'boissons:san-pellegrino-aranciata-rossa', name: 'San Pellegrino Aranciata Rossa' },
+    { match: ['coca', 'coke'], id: 'boissons:coca-cola-vintage-bouteille-verre', name: 'Coca-Cola Vintage' },
+    { match: ['fuze tea', 'ice tea', 'the peche'], id: 'boissons:fuze-tea-peche-intense', name: 'Fuze Tea Pêche' },
   ]
 
   let matchedId = null
@@ -295,6 +360,21 @@ function resolveIntentFallback(messageText, catalog = {}, sales = []) {
     }
   }
 
+  // Catch-all for greetings and conversational messages — always respond warmly
+  const greetings = ['bonjour', 'bonsoir', 'salut', 'hello', 'coucou', 'yo', 'hey', 'bonne nuit', 're ', 're!', 'rebonjour']
+  const isGreeting = greetings.some(g => norm.startsWith(g) || norm === g.trim()) || norm.length <= 20
+  if (isGreeting) {
+    const statusLine = count > 0
+      ? `${count} commande${count > 1 ? 's' : ''} enregistrée${count > 1 ? 's' : ''} aujourd'hui pour un CA de ${caFormatted} €`
+      : 'Aucune commande enregistrée pour le moment'
+    return {
+      intent: 'query',
+      params: {},
+      reply: `Bonjour. ${statusLine}. Je suis prêt à gérer votre carte, vos prix ou vos promos — dites-moi ce dont vous avez besoin.`,
+      confirm: false
+    }
+  }
+
   return null
 }
 
@@ -327,17 +407,6 @@ export async function processAiAssistant(messageText) {
     }
   }
 
-  const openrouterKey = (env.OPENROUTER_API_KEY || '').trim()
-  if (!openrouterKey) {
-    return {
-      intent: 'query',
-      params: {},
-      reply: "La clé API OpenRouter (OPENROUTER_API_KEY) n'est pas encore configurée dans vos variables d'environnement Vercel. Ajoutez-la dans votre tableau de bord Vercel pour activer le copilote.",
-      missingKey: true,
-      confirm: false
-    }
-  }
-
   // Load live context
   const [overrides, promos, customItems, sales] = await Promise.all([
     store.getMenuOverrides().catch(() => ({})),
@@ -348,6 +417,19 @@ export async function processAiAssistant(messageText) {
 
   const catalog = { ...CATALOG, ...customItems }
   const restaurantName = RESTAURANT_CONFIG?.brand?.name || 'le restaurant'
+
+  const openrouterKey = (env.OPENROUTER_API_KEY || '').trim()
+  if (!openrouterKey) {
+    const fallback = resolveIntentFallback(message, catalog, sales)
+    if (fallback) return fallback
+    return {
+      intent: 'query',
+      params: {},
+      reply: "La clé API OpenRouter (OPENROUTER_API_KEY) n'est pas encore configurée dans vos variables d'environnement Vercel. Ajoutez-la dans votre tableau de bord Vercel pour activer le copilote.",
+      missingKey: true,
+      confirm: false
+    }
+  }
   const systemPrompt = buildSystemPrompt(catalog, overrides, sales, restaurantName)
 
   const configuredModel = (env.OPENROUTER_MODEL || '').trim()
@@ -421,10 +503,14 @@ export async function processAiAssistant(messageText) {
 
   if (!orRes) {
     console.error('[AI Assistant] All models failed. Last error:', lastErr.slice(0, 300))
+    const fallback = resolveIntentFallback(message, catalog, sales)
+    if (fallback) {
+      return fallback
+    }
     return {
       intent: 'query',
       params: {},
-      reply: "Le service IA OpenRouter est temporairement saturé ou indisponible. Veuillez réessayer dans un instant.",
+      reply: "Le copilote est temporairement en mode restreint. Vous pouvez utiliser les boutons d'action ci-dessus pour piloter le restaurant en direct.",
       confirm: false
     }
   }
@@ -453,10 +539,12 @@ export async function processAiAssistant(messageText) {
         }
       }
       console.error('[AI Assistant] Failed to parse LLM response:', rawContent.slice(0, 300))
+      const fallback = resolveIntentFallback(message, catalog, sales)
+      if (fallback) return fallback
       return {
         intent: 'unknown',
         params: {},
-        reply: 'Je n\'ai pas pu interpréter cette consigne. Essayez de reformuler (ex: "La Pizza Margherita est épuisée").',
+        reply: 'Je n\'ai pas bien compris cette consigne. Vous pouvez me demander par exemple : "Audit du jour", "Margherita épuisée", ou "Créer un code promo".',
         confirm: false
       }
     }
@@ -477,11 +565,13 @@ export async function processAiAssistant(messageText) {
     }
 
   } catch (err) {
-    console.error('[AI Assistant] Network error:', err)
+    console.error('[AI Assistant] Processing error:', err)
+    const fallback = resolveIntentFallback(message, catalog, sales)
+    if (fallback) return fallback
     return {
       intent: 'query',
       params: {},
-      reply: "Erreur de connexion avec OpenRouter : " + err.message,
+      reply: "Une perturbation temporaire est survenue. Vous pouvez continuer d'utiliser les boutons d'action ci-dessus.",
       confirm: false
     }
   }
