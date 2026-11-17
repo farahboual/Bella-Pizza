@@ -874,6 +874,26 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
+    <!-- AI Quick Command Box -->
+    <div class="card" style="background: linear-gradient(135deg, #1B1614 0%, #29201C 100%); color: #FAF7F2; border: 1.5px solid rgba(197, 161, 107, 0.4); border-radius: 14px; padding: 18px 20px; margin-top: 14px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:24px;">🤖</span>
+          <div>
+            <div style="font-weight:800; font-size:15px; color:#FFFFFF; display:flex; align-items:center; gap:8px;">
+              Assistant IA Gérant
+              <span style="font-size:10px; background:#801D1E; color:#FFFFFF; padding:2px 7px; border-radius:99px; font-weight:700; letter-spacing:0.04em;">PILOTAGE EN DIRECT</span>
+            </div>
+            <div style="font-size:12.5px; color:#C5A16B;">Donnez un ordre en langage naturel (rupture de stock, changement de prix, CA du jour).</div>
+          </div>
+        </div>
+        <button type="button" class="btn ghost" style="color:#FAF7F2; border-color:rgba(197,161,107,0.4); background:rgba(255,255,255,0.06); font-size:12px;" onclick="switchTab('ai')">Ouvrir l'Assistant complet →</button>
+      </div>
+      <form id="db-ai-form" style="display:flex; gap:8px;" onsubmit="handleDashAiSubmit(event)">
+        <input type="text" id="db-ai-input" placeholder="Ex : 'La calzone est épuisée', 'Quel est notre CA aujourd\'hui ?', 'Mets la margherita à 13€'..." style="flex:1; background:rgba(255,255,255,0.1); border:1px solid rgba(197,161,107,0.3); color:#FFFFFF; border-radius:8px; padding:10px 14px; font-size:13.5px;" />
+        <button type="submit" class="btn red" style="padding:10px 18px; font-weight:700; white-space:nowrap;">Exécuter</button>
+      </form>
+    </div>
   </div>
 
  <!-- TAB 1: STATUS -->
@@ -1194,6 +1214,61 @@ input:focus, select:focus, textarea:focus {
     </div>
    </div>
   </div>
+
+   <!-- TAB 6: ASSISTANT IA GÉRANT -->
+   <div id="tab-ai" class="tab-content" style="display:none" role="tabpanel">
+     <div class="sh-page-header">
+       <div class="sh-page-icon" style="background:#FFF1F0">
+         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><rect x="4" y="8" width="16" height="12" rx="4"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="15" cy="13" r="1.5" fill="currentColor"/><path d="M9 17c1 .8 2 .8 3 .8s2 0 3-.8"/></svg>
+       </div>
+       <div>
+         <div class="sh-page-title">Assistant IA Gérant</div>
+         <div class="sh-page-sub">Pilotez votre restaurant en direct par chat : marquez un plat épuisé, ajustez un prix, consultez vos ventes.</div>
+       </div>
+       <div style="margin-left:auto">
+         <span class="ai-badge live"><span class="dot"></span> OpenRouter AI Connecté</span>
+       </div>
+     </div>
+
+     <div class="ai-chat-wrap">
+       <div class="ai-chat-header">
+         <div style="font-weight:700;font-size:13px;color:var(--dark);display:flex;align-items:center;gap:6px">
+           <span>💬 Conversation en direct</span>
+         </div>
+         <button type="button" class="btn ghost" style="font-size:11.5px;padding:4px 10px" onclick="clearAiChat()">Effacer l'historique</button>
+       </div>
+
+       <!-- Quick suggestions bar -->
+       <div class="ai-chips-bar">
+         <span style="font-size:11.5px;font-weight:700;color:var(--mute);align-self:center;margin-right:4px">Exemples :</span>
+         <button type="button" class="ai-chip" onclick="quickAiSend('La Calzone est épuisée')">🔴 Calzone épuisée</button>
+         <button type="button" class="ai-chip" onclick="quickAiSend('La Calzone est de retour en stock')">🟢 Calzone de retour</button>
+         <button type="button" class="ai-chip" onclick="quickAiSend('Mets la Margherita à 13€')">💶 Margherita à 13€</button>
+         <button type="button" class="ai-chip" onclick="quickAiSend('Quel est notre CA aujourd\'hui ?')">📊 CA du jour</button>
+         <button type="button" class="ai-chip" onclick="quickAiSend('Quelles sont les meilleures ventes du jour ?')">🏆 Top ventes</button>
+         <button type="button" class="ai-chip" onclick="quickAiSend('Crée un code promo SOIR10 à -10%')">🎟️ Promo SOIR10 (-10%)</button>
+         <button type="button" class="ai-chip" onclick="quickAiSend('Ferme le restaurant maintenant')">🔒 Fermer le restaurant</button>
+       </div>
+
+       <!-- Messages Feed -->
+       <div id="ai-messages-list" class="ai-messages-list">
+         <!-- Default welcome message -->
+         <div class="ai-msg assistant">
+           <div class="ai-avatar">🤖</div>
+           <div class="ai-bubble">
+             Bonjour chef ! Je suis votre copilote IA. Vous pouvez me demander de marquer des produits en rupture, modifier un tarif, créer des codes promo ou vous donner le résumé de vos ventes. Que souhaitez-vous faire ?
+           </div>
+         </div>
+       </div>
+
+       <!-- Input bar -->
+       <form class="ai-input-bar" onsubmit="handleAiFormSubmit(event)">
+         <input type="text" id="ai-input" class="ai-input" placeholder="Tapez votre consigne ou question en français..." autocomplete="off" />
+         <button type="submit" id="ai-submit-btn" class="btn red" style="padding:10px 18px;font-weight:700">Envoyer</button>
+       </form>
+     </div>
+   </div>
+
  </main>
 </div>
 
@@ -1323,6 +1398,9 @@ function switchTab(name){
  if(name === 'status'){
   try{renderWeeklySchedule()}catch(e){}
   try{renderExceptions()}catch(e){}
+ }
+ if(name === 'ai'){
+  try{renderAiChat()}catch(e){}
  }
  if(name === 'sales'){
   // Always re-render fresh when user opens the tab — never show stale/blank data
@@ -1549,6 +1627,7 @@ async function loadData(){
   try{renderMenu()}catch(e){console.error('renderMenu',e)}
   try{renderPromos()}catch(e){console.error('renderPromos',e)}
   try{renderSales()}catch(e){console.error('renderSales',e)}
+  try{renderAiChat()}catch(e){console.error('renderAiChat',e)}
   try{updateQrView(1)}catch(e){console.error('updateQrView',e)}
   try{updateDashboardMetrics()}catch(e){console.error('updateDashboardMetrics',e)}
  }catch(e){console.error('loadData fatal',e)}
