@@ -546,6 +546,203 @@ input:focus, select:focus, textarea:focus {
   color: #166534 !important;
   border: 1px solid #BBF7D0 !important;
 }
+
+/* AI Assistant Tab Styles */
+.ai-chat-wrap {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 170px);
+  min-height: 540px;
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+.ai-chat-header {
+  padding: 14px 20px;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: #F1F5F9;
+  color: #475569;
+}
+.ai-badge.live {
+  background: #FEF3C7;
+  color: #92400E;
+}
+.ai-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16A34A;
+}
+.ai-chips-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 18px;
+  background: #F8FAFC;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.ai-chip {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.ai-chip:hover {
+  background: #FFF1F0;
+  border-color: var(--red);
+  color: var(--red);
+  transform: translateY(-1px);
+}
+.ai-messages-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ai-msg {
+  display: flex;
+  gap: 12px;
+  max-width: 82%;
+}
+.ai-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+.ai-msg.assistant {
+  align-self: flex-start;
+}
+.ai-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  background: #F1F5F9;
+  border: 1px solid var(--line);
+}
+.ai-msg.user .ai-avatar {
+  background: var(--dark);
+  color: #fff;
+}
+.ai-bubble {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  word-break: break-word;
+}
+.ai-msg.user .ai-bubble {
+  background: var(--red);
+  color: #FFFFFF;
+  border-bottom-right-radius: 4px;
+}
+.ai-msg.assistant .ai-bubble {
+  background: #F8FAFC;
+  border: 1px solid var(--line);
+  color: var(--dark);
+  border-bottom-left-radius: 4px;
+}
+.ai-action-card {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ai-action-card.confirmed {
+  border-color: #86EFAC;
+  background: #F0FDF4;
+}
+.ai-action-title {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-action-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.ai-input-bar {
+  padding: 14px 18px;
+  background: #FFFFFF;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.ai-input {
+  flex: 1;
+  font: 14px var(--font);
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: #F8FAFC;
+  outline: none;
+  transition: border-color .15s;
+}
+.ai-input:focus {
+  border-color: var(--red);
+  background: #FFFFFF;
+}
+.ai-typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px 8px;
+  align-items: center;
+}
+.ai-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94A3B8;
+  animation: aiBounce 1s infinite alternate;
+}
+.ai-typing span:nth-child(2) { animation-delay: .2s; }
+.ai-typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes aiBounce {
+  from { transform: translateY(0); opacity: .4; }
+  to { transform: translateY(-4px); opacity: 1; }
+}
+
 </style></head><body>
 
 <!-- PASSWORD GATE -->
@@ -606,6 +803,11 @@ input:focus, select:focus, textarea:focus {
    <button type="button" class="tab" data-tab="sales" role="tab">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
     <span>Rapport de caisse</span>
+   </button>
+      <button type="button" class="tab" data-tab="ai" role="tab" style="position:relative">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><rect x="4" y="8" width="16" height="12" rx="4"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="15" cy="13" r="1.5" fill="currentColor"/><path d="M9 17c1 .8 2 .8 3 .8s2 0 3-.8"/></svg>
+    <span>Assistant IA</span>
+    <span style="font-size:9px;background:linear-gradient(135deg,#7A1C1C,#C5A16B);color:#fff;padding:1px 6px;border-radius:99px;font-weight:700;margin-left:auto">AGENT</span>
    </button>
    <button type="button" class="tab" data-tab="security" role="tab">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="1.5"/><line x1="12" y1="12.5" x2="12" y2="15"/></svg>
@@ -2239,4 +2441,316 @@ if(testDbBtn){
   }
  };
 }
+
+// ── AI Assistant JavaScript Logic ──────────────────────────────────────────
+let aiMessages = [
+  { role: 'assistant', text: "Bonjour chef ! Je suis votre copilote IA. Vous pouvez me demander de marquer des produits en rupture, modifier un tarif, créer des codes promo ou vous donner le résumé de vos ventes. Que souhaitez-vous faire ?" }
+]
+
+function handleDashAiSubmit(e) {
+  e.preventDefault()
+  const inp = $('#db-ai-input')
+  const val = (inp.value || '').trim()
+  if (!val) return
+  inp.value = ''
+  switchTab('ai')
+  sendAiMessage(val)
+}
+
+function quickAiSend(text) {
+  const inp = $('#ai-input')
+  if (inp) inp.value = text
+  sendAiMessage(text)
+}
+
+function clearAiChat() {
+  aiMessages = [
+    { role: 'assistant', text: "Historique réinitialisé. Comment puis-je vous aider ?" }
+  ]
+  renderAiChat()
+}
+
+function handleAiFormSubmit(e) {
+  e.preventDefault()
+  const inp = $('#ai-input')
+  const val = (inp.value || '').trim()
+  if (!val) return
+  inp.value = ''
+  sendAiMessage(val)
+}
+
+function renderAiChat() {
+  const list = $('#ai-messages-list')
+  if (!list) return
+  list.innerHTML = aiMessages.map((m, idx) => {
+    const isUser = m.role === 'user'
+    let actionCardHtml = ''
+    if (m.action) {
+      const act = m.action
+      const isConfirmed = act.status === 'done'
+      const isCancelled = act.status === 'cancelled'
+      actionCardHtml = `
+        <div class="ai-action-card ${isConfirmed ? 'confirmed' : ''}" id="act-card-${idx}">
+          <div class="ai-action-title">
+            <span>${isConfirmed ? '✅' : isCancelled ? '❌' : '⚡'}</span>
+            <span>${esc(act.title)}</span>
+          </div>
+          <div style="font-size:12px;color:var(--mute)">${esc(act.detail || '')}</div>
+          ${!isConfirmed && !isCancelled && act.needConfirm ? `
+            <div class="ai-action-btns">
+              <button type="button" class="btn red" style="font-size:11.5px;padding:5px 12px" onclick="confirmAiAction(${idx})">✓ Confirmer</button>
+              <button type="button" class="btn ghost" style="font-size:11.5px;padding:5px 12px" onclick="cancelAiAction(${idx})">Annuler</button>
+            </div>
+          ` : isConfirmed ? `
+            <div style="font-size:11.5px;font-weight:700;color:#16a34a">Action appliquée en direct</div>
+          ` : isCancelled ? `
+            <div style="font-size:11.5px;color:var(--mute)">Action annulée</div>
+          ` : ''}
+        </div>
+      `
+    }
+    return `
+      <div class="ai-msg ${isUser ? 'user' : 'assistant'}">
+        <div class="ai-avatar">${isUser ? '👨‍🍳' : '🤖'}</div>
+        <div>
+          <div class="ai-bubble">${esc(m.text)}</div>
+          ${actionCardHtml}
+        </div>
+      </div>
+    `
+  }).join('')
+  list.scrollTop = list.scrollHeight
+}
+
+async function sendAiMessage(text) {
+  const list = $('#ai-messages-list')
+  aiMessages.push({ role: 'user', text })
+  renderAiChat()
+
+  // Add temporary typing indicator
+  const typingEl = document.createElement('div')
+  typingEl.className = 'ai-msg assistant'
+  typingEl.id = 'ai-typing-temp'
+  typingEl.innerHTML = `<div class="ai-avatar">🤖</div><div class="ai-bubble"><span class="ai-typing"><span></span><span></span><span></span></span></div>`
+  if (list) {
+    list.appendChild(typingEl)
+    list.scrollTop = list.scrollHeight
+  }
+
+  const btn = $('#ai-submit-btn')
+  if (btn) btn.disabled = true
+
+  try {
+    const res = await fetch('/api/ai-assistant', {
+      method: 'POST',
+      headers: {
+        'x-kitchen-key': key,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ message: text })
+    })
+
+    const j = await res.json()
+    const temp = $('#ai-typing-temp')
+    if (temp) temp.remove()
+    if (btn) btn.disabled = false
+
+    if (!res.ok && res.status !== 200) {
+      aiMessages.push({
+        role: 'assistant',
+        text: j.error || "Désolé, une erreur est survenue lors de la communication avec l'IA."
+      })
+      renderAiChat()
+      return
+    }
+
+    const { intent, params, reply, confirm, missingKey } = j
+    const msgObj = { role: 'assistant', text: reply || 'Action reçue.' }
+
+    // Check if an actionable intent was recognized
+    if (intent && intent !== 'query' && intent !== 'unknown') {
+      const actionTitle = formatActionTitle(intent, params)
+      const actionDetail = formatActionDetail(intent, params)
+      msgObj.action = {
+        intent,
+        params,
+        title: actionTitle,
+        detail: actionDetail,
+        needConfirm: !!confirm,
+        status: confirm ? 'pending' : 'executing'
+      }
+
+      // If auto-execute (confirm: false)
+      if (!confirm) {
+        aiMessages.push(msgObj)
+        renderAiChat()
+        const success = await executeAiAction(intent, params)
+        if (success) {
+          msgObj.action.status = 'done'
+          renderAiChat()
+        }
+        return
+      }
+    }
+
+    aiMessages.push(msgObj)
+    renderAiChat()
+
+  } catch (err) {
+    const temp = $('#ai-typing-temp')
+    if (temp) temp.remove()
+    if (btn) btn.disabled = false
+    aiMessages.push({
+      role: 'assistant',
+      text: "Erreur de connexion : " + err.message
+    })
+    renderAiChat()
+  }
+}
+
+function formatActionTitle(intent, params) {
+  if (intent === 'markOutOfStock') return 'Rupture de stock : ' + (params.itemName || params.itemId || 'Produit')
+  if (intent === 'restoreItem') return 'Remise en stock : ' + (params.itemName || params.itemId || 'Produit')
+  if (intent === 'hideItem') return 'Masquer du menu : ' + (params.itemName || params.itemId || 'Produit')
+  if (intent === 'showItem') return 'Rendre visible : ' + (params.itemName || params.itemId || 'Produit')
+  if (intent === 'updatePrice') return 'Changement de prix : ' + (params.itemName || params.itemId || 'Produit') + ' → ' + eur(params.price || 0)
+  if (intent === 'closeNow') return 'Fermeture exceptionnelle du restaurant'
+  if (intent === 'openNow') return 'Ouverture forcée du restaurant'
+  if (intent === 'createPromo') return 'Créer code promo ' + (params.promoCode || 'PROMO') + ' (' + (params.discountType === 'percent' ? '-' + params.discountValue + '%' : '-' + eur(params.discountValue || 0)) + ')'
+  return 'Action demandée'
+}
+
+function formatActionDetail(intent, params) {
+  if (intent === 'updatePrice') return 'Nouveau tarif public : ' + eur(params.price || 0)
+  if (intent === 'closeNow') return 'Les commandes en ligne seront immédiatement suspendues.'
+  if (intent === 'createPromo') return 'Code utilisable immédiatement lors du panier.'
+  return 'Mise à jour en direct dans le catalogue.'
+}
+
+async function confirmAiAction(msgIdx) {
+  const msg = aiMessages[msgIdx]
+  if (!msg || !msg.action) return
+  const { intent, params } = msg.action
+  const ok = await executeAiAction(intent, params)
+  if (ok) {
+    msg.action.status = 'done'
+    renderAiChat()
+  }
+}
+
+function cancelAiAction(msgIdx) {
+  const msg = aiMessages[msgIdx]
+  if (!msg || !msg.action) return
+  msg.action.status = 'cancelled'
+  renderAiChat()
+  showToast('Action annulée.')
+}
+
+async function executeAiAction(intent, params) {
+  try {
+    if (intent === 'markOutOfStock') {
+      const id = params.itemId
+      if (!id) return false
+      const ov = overrides[id] || {}
+      const res = await api({ action: 'saveOverride', data: { id, price: ov.price, outOfStock: true } })
+      if (res.ok) {
+        overrides = await res.json()
+        try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
+        updateDashboardMetrics()
+        showToast('🔴 ' + (params.itemName || 'Produit') + ' marqué en rupture de stock')
+        return true
+      }
+    }
+    if (intent === 'restoreItem') {
+      const id = params.itemId
+      if (!id) return false
+      const ov = overrides[id] || {}
+      const res = await api({ action: 'saveOverride', data: { id, price: ov.price, outOfStock: false } })
+      if (res.ok) {
+        overrides = await res.json()
+        try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
+        updateDashboardMetrics()
+        showToast('🟢 ' + (params.itemName || 'Produit') + ' remis en stock')
+        return true
+      }
+    }
+    if (intent === 'hideItem') {
+      const id = params.itemId
+      if (!id) return false
+      const res = await api({ action: 'saveOverride', data: { id, hidden: true } })
+      if (res.ok) {
+        overrides = await res.json()
+        try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
+        updateDashboardMetrics()
+        showToast('🙈 ' + (params.itemName || 'Produit') + ' masqué du menu')
+        return true
+      }
+    }
+    if (intent === 'showItem') {
+      const id = params.itemId
+      if (!id) return false
+      const res = await api({ action: 'saveOverride', data: { id, hidden: false } })
+      if (res.ok) {
+        overrides = await res.json()
+        try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
+        updateDashboardMetrics()
+        showToast('👁️ ' + (params.itemName || 'Produit') + ' rendu visible')
+        return true
+      }
+    }
+    if (intent === 'updatePrice') {
+      const id = params.itemId
+      const priceVal = params.price
+      if (!id || !priceVal) return false
+      const ov = overrides[id] || {}
+      const res = await api({ action: 'saveOverride', data: { id, price: priceVal, outOfStock: !!ov.outOfStock } })
+      if (res.ok) {
+        overrides = await res.json()
+        try { renderMenu($('#search-item') ? $('#search-item').value : '') } catch {}
+        updateDashboardMetrics()
+        showToast('💶 Prix mis à jour pour ' + (params.itemName || id) + ' : ' + eur(priceVal))
+        return true
+      }
+    }
+    if (intent === 'closeNow') {
+      const res = await api({ action: 'updateConfig', data: { manualClosed: true, closedReason: 'Fermé temporairement par le gérant' } })
+      if (res.ok) {
+        config = await res.json()
+        try { renderStatus() } catch {}
+        updateDashboardMetrics()
+        showToast('🔒 Restaurant fermé temporairement')
+        return true
+      }
+    }
+    if (intent === 'openNow') {
+      const res = await api({ action: 'updateConfig', data: { manualClosed: false, forcedOpen: true } })
+      if (res.ok) {
+        config = await res.json()
+        try { renderStatus() } catch {}
+        updateDashboardMetrics()
+        showToast('🟢 Restaurant ouvert en direct')
+        return true
+      }
+    }
+    if (intent === 'createPromo') {
+      const code = String(params.promoCode || '').toUpperCase().trim()
+      if (!code) return false
+      const discountType = params.discountType || 'percent'
+      const discountValue = +params.discountValue || 10
+      const res = await api({ action: 'savePromo', data: { code, discountType, discountValue, active: true } })
+      if (res.ok) {
+        promos = await res.json()
+        try { renderPromos() } catch {}
+        updateDashboardMetrics()
+        showToast('🎟️ Code promo ' + code + ' créé avec succès !')
+        return true
+      }
+    }
+  } catch (err) {
+    showToast('Erreur : ' + err.message)
+    return false
+  }
+  return false
+}
+
 </script></body></html>
