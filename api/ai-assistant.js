@@ -176,7 +176,18 @@ export async function processAiAssistant(messageText) {
 
   for (const model of modelCandidates) {
     try {
-      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const payload = {
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        temperature: 0.2,
+        max_tokens: 400,
+        response_format: { type: 'json_object' },
+      }
+
+      let resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${openrouterKey}`,
@@ -184,18 +195,26 @@ export async function processAiAssistant(messageText) {
           'HTTP-Referer': 'https://github.com/farahboual/Bella-Pizza',
           'X-Title': `${restaurantName} AI Assistant`,
         },
-        body: JSON.stringify({
-          model,
-          models: modelCandidates,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: message }
-          ],
-          temperature: 0.2,
-          max_tokens: 400,
-          response_format: { type: 'json_object' },
-        })
+        body: JSON.stringify(payload)
       })
+
+      // If the model rejects response_format, retry without it
+      if (resp.status === 400) {
+        const errPeek = await resp.clone().text().catch(() => '')
+        if (errPeek.includes('response_format') || errPeek.includes('json_object')) {
+          delete payload.response_format
+          resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openrouterKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': 'https://github.com/farahboual/Bella-Pizza',
+              'X-Title': `${restaurantName} AI Assistant`,
+            },
+            body: JSON.stringify(payload)
+          })
+        }
+      }
 
       if (resp.ok) {
         orRes = resp
