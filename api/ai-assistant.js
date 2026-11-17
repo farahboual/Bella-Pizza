@@ -126,8 +126,28 @@ RÈGLES STRICTES:
 }
 
 // ── Hybrid Intent Fallback Resolver ─────────────────────────────────────────
-function resolveIntentFallback(messageText, catalog = {}) {
+function resolveIntentFallback(messageText, catalog = {}, sales = []) {
   const norm = String(messageText || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+
+  // CA & Sales queries fallback
+  if (norm.includes('chiffre') || norm.includes(' ca') || norm.includes('ventes') || norm.includes('recette') || norm.includes('commandes')) {
+    const ca = (sales || []).reduce((s, o) => s + (o.total || 0), 0)
+    const count = (sales || []).length
+    if (count === 0) {
+      return {
+        intent: 'query',
+        params: {},
+        reply: "Aucune commande enregistrée aujourd'hui pour le moment. Le chiffre d'affaires est de 0,00 €.",
+        confirm: false
+      }
+    }
+    return {
+      intent: 'query',
+      params: {},
+      reply: `Aujourd'hui, ${count} commande${count > 1 ? 's ont été enregistrées' : ' a été enregistrée'} pour un chiffre d'affaires total de ${(ca / 100).toFixed(2)} €.`,
+      confirm: false
+    }
+  }
 
   const isOutOfStock = norm.includes('epuis') || norm.includes('rupture') || norm.includes('plus de') || norm.includes('fini')
   const isRestore = norm.includes('retour') || norm.includes('remet') || norm.includes('en stock') || norm.includes('dispo')
@@ -369,13 +389,22 @@ export async function processAiAssistant(messageText) {
     let parsed = extractJson(rawContent)
 
     if (!parsed || !parsed.intent || parsed.intent === 'unknown') {
-      const fallback = resolveIntentFallback(message, catalog)
+      const fallback = resolveIntentFallback(message, catalog, sales)
       if (fallback) {
         return fallback
       }
     }
 
     if (!parsed) {
+      const trimmedText = rawContent.replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, '').trim()
+      if (trimmedText && !trimmedText.startsWith('<') && !trimmedText.startsWith('{') && !trimmedText.startsWith('Error')) {
+        return {
+          intent: 'query',
+          params: {},
+          reply: trimmedText.slice(0, 350),
+          confirm: false
+        }
+      }
       console.error('[AI Assistant] Failed to parse LLM response:', rawContent.slice(0, 300))
       return {
         intent: 'unknown',
@@ -387,7 +416,7 @@ export async function processAiAssistant(messageText) {
 
     const validIntents = ['markOutOfStock', 'restoreItem', 'hideItem', 'showItem', 'updatePrice', 'closeNow', 'openNow', 'createPromo', 'query', 'unknown']
     if (!validIntents.includes(parsed.intent)) {
-      const fallback = resolveIntentFallback(message, catalog)
+      const fallback = resolveIntentFallback(message, catalog, sales)
       if (fallback) return fallback
       parsed.intent = 'unknown'
     }
