@@ -164,6 +164,7 @@ export async function processAiAssistant(messageText) {
   const modelCandidates = configuredModel
     ? [configuredModel]
     : [
+        'openrouter/free',
         'google/gemma-4-31b-it:free',
         'google/gemma-4-26b-a4b-it:free',
         'nvidia/nemotron-3.5-lightning:free',
