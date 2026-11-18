@@ -3025,7 +3025,7 @@ async function executeAiAction(intent, params) {
       }
     }
     if (intent === 'closeNow') {
-      const res = await api({ action: 'updateConfig', data: { manualClosed: true, closedReason: 'Fermé temporairement par le gérant' } })
+      const res = await api({ action: 'updateConfig', data: { manualClosed: true, forcedOpen: false, openMode: 'closed', closedReason: 'Fermé temporairement par le gérant' } })
       if (res.ok) {
         config = await res.json()
         try { renderStatus() } catch {}
@@ -3035,7 +3035,7 @@ async function executeAiAction(intent, params) {
       }
     }
     if (intent === 'openNow') {
-      const res = await api({ action: 'updateConfig', data: { manualClosed: false, forcedOpen: true } })
+      const res = await api({ action: 'updateConfig', data: { manualClosed: false, forcedOpen: true, openMode: 'forced_open', closedReason: '' } })
       if (res.ok) {
         config = await res.json()
         try { renderStatus() } catch {}

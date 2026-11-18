@@ -38,12 +38,12 @@ function useStatus() {
 
   useEffect(() => {
     const isEn = lang === 'en'
-    if (cfg?.forcedOpen) {
-      set({ o: true, t: isEn ? 'Open · Continuous service' : 'Ouvert · Service continu' })
-      return
-    }
     if (cfg?.manualClosed) {
       set({ o: false, t: cfg.closedReason || (isEn ? 'Temporarily Closed' : 'Fermé temporairement') })
+      return
+    }
+    if (cfg?.forcedOpen) {
+      set({ o: true, t: isEn ? 'Open · Continuous service' : 'Ouvert · Service continu' })
       return
     }
 
